@@ -49,8 +49,7 @@ class WaveformBloc extends Bloc<WaveformEvent, WaveformState> {
     LoadWaveform event,
     Emitter<WaveformState> emit,
   ) async {
-    if (state.versionId == event.versionId &&
-        state.status == WaveformStatus.ready) {
+    if (state.versionId == event.versionId && state.status == WaveformStatus.ready) {
       AppLogger.debug(
         'WaveformBloc: Waveform already loaded for version ${event.versionId.value}, skipping',
         tag: 'WAVEFORM_BLOC',

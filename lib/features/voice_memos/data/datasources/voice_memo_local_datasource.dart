@@ -24,19 +24,13 @@ class IsarVoiceMemoLocalDataSource implements VoiceMemoLocalDataSource {
 
   @override
   Stream<List<VoiceMemoDocument>> watchAllMemos() {
-    return _isar.voiceMemoDocuments
-        .where()
-        .sortByRecordedAtDesc()
-        .watch(fireImmediately: true);
+    return _isar.voiceMemoDocuments.where().sortByRecordedAtDesc().watch(fireImmediately: true);
   }
 
   @override
   Future<Either<Failure, VoiceMemoDocument?>> getMemoById(String id) async {
     try {
-      final memo = await _isar.voiceMemoDocuments
-          .filter()
-          .idEqualTo(id)
-          .findFirst();
+      final memo = await _isar.voiceMemoDocuments.filter().idEqualTo(id).findFirst();
       return Right(memo);
     } catch (e) {
       return Left(CacheFailure('Failed to get memo: $e'));
@@ -71,10 +65,7 @@ class IsarVoiceMemoLocalDataSource implements VoiceMemoLocalDataSource {
   Future<Either<Failure, Unit>> deleteMemo(String id) async {
     try {
       // Get memo to find file path
-      final memo = await _isar.voiceMemoDocuments
-          .filter()
-          .idEqualTo(id)
-          .findFirst();
+      final memo = await _isar.voiceMemoDocuments.filter().idEqualTo(id).findFirst();
 
       if (memo == null) {
         return Left(CacheFailure('Memo not found'));

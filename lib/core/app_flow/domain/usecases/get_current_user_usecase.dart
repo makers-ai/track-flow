@@ -19,12 +19,7 @@ class GetCurrentUserUseCase {
   }
 
   /// Get user data including Google information for profile creation
-  Future<
-    Either<
-      Failure,
-      ({UserId? userId, String? email, String? displayName, String? photoUrl})
-    >
-  >
+  Future<Either<Failure, ({UserId? userId, String? email, String? displayName, String? photoUrl})>>
   getProfileCreationData() async {
     final result = await call();
     return result.fold((failure) => Left(failure), (user) {

@@ -20,10 +20,10 @@ class WaveformData extends Equatable {
 
   List<double> get normalizedAmplitudes {
     if (amplitudes.isEmpty) return [];
-    
+
     final maxAmplitude = amplitudes.reduce((a, b) => a.abs() > b.abs() ? a : b).abs();
     if (maxAmplitude == 0) return amplitudes;
-    
+
     return amplitudes.map((amplitude) => amplitude / maxAmplitude).toList();
   }
 

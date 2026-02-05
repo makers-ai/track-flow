@@ -19,8 +19,7 @@ import 'cache_management_state.dart';
 import '../models/cached_track_bundle_ui_model.dart';
 
 @injectable
-class CacheManagementBloc
-    extends Bloc<CacheManagementEvent, CacheManagementState> {
+class CacheManagementBloc extends Bloc<CacheManagementEvent, CacheManagementState> {
   CacheManagementBloc({
     required DeleteCachedAudioUseCase deleteOne,
     // required DeleteMultipleCachedAudiosUseCase deleteMany,
@@ -123,10 +122,7 @@ class CacheManagementBloc
     CacheManagementSelectAll event,
     Emitter<CacheManagementState> emit,
   ) async {
-    final all =
-        state.bundles
-            .map((b) => AudioTrackId.fromUniqueString(b.trackId))
-            .toSet();
+    final all = state.bundles.map((b) => AudioTrackId.fromUniqueString(b.trackId)).toSet();
     emit(state.copyWith(selected: all));
   }
 

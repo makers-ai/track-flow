@@ -4,9 +4,9 @@ import 'package:trackflow/features/projects/domain/entities/project.dart';
 
 /// Type of audio comment
 enum CommentType {
-  text,    // Text-only comment
-  audio,   // Audio-only comment
-  hybrid,  // Audio with text transcription/note
+  text, // Text-only comment
+  audio, // Audio-only comment
+  hybrid, // Audio with text transcription/note
 }
 
 class AudioComment extends Entity<AudioCommentId> {
@@ -18,10 +18,10 @@ class AudioComment extends Entity<AudioCommentId> {
   final DateTime createdAt;
 
   // NEW: Audio recording fields
-  final String? audioStorageUrl;      // Firebase Storage URL (null for text comments)
-  final String? localAudioPath;       // Local cache path (null until downloaded)
-  final Duration? audioDuration;      // Recording duration (null for text comments)
-  final CommentType commentType;      // Type of comment
+  final String? audioStorageUrl; // Firebase Storage URL (null for text comments)
+  final String? localAudioPath; // Local cache path (null until downloaded)
+  final Duration? audioDuration; // Recording duration (null for text comments)
+  final CommentType commentType; // Type of comment
 
   const AudioComment({
     required AudioCommentId id,

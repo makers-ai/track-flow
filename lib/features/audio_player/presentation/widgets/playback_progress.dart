@@ -60,8 +60,7 @@ class _PlaybackProgressState extends State<PlaybackProgress> {
             Duration duration = Duration.zero;
 
             if (contextState is AudioContextLoaded) {
-              duration =
-                  contextState.context.activeVersionDuration ?? Duration.zero;
+              duration = contextState.context.activeVersionDuration ?? Duration.zero;
             }
 
             // Calculate drag position if dragging
@@ -74,10 +73,7 @@ class _PlaybackProgressState extends State<PlaybackProgress> {
             // Calculate progress
             double progress = 0.0;
             if (duration.inMilliseconds > 0) {
-              progress =
-                  _isDragging
-                      ? _dragPosition
-                      : position.inMilliseconds / duration.inMilliseconds;
+              progress = _isDragging ? _dragPosition : position.inMilliseconds / duration.inMilliseconds;
             }
 
             // Only show slider if we have valid duration
@@ -97,12 +93,9 @@ class _PlaybackProgressState extends State<PlaybackProgress> {
                       overlayRadius: widget.thumbRadius * 1,
                     ),
                     activeTrackColor: widget.activeColor ?? theme.primaryColor,
-                    inactiveTrackColor:
-                        widget.inactiveColor ??
-                        theme.primaryColor.withValues(alpha: 0.3),
+                    inactiveTrackColor: widget.inactiveColor ?? theme.primaryColor.withValues(alpha: 0.3),
                     thumbColor: widget.thumbColor ?? theme.primaryColor,
-                    overlayColor: (widget.thumbColor ?? theme.primaryColor)
-                        .withValues(alpha: 0.2),
+                    overlayColor: (widget.thumbColor ?? theme.primaryColor).withValues(alpha: 0.2),
                   ),
                   child: Slider(
                     value: progress.clamp(0.0, 1.0),
@@ -119,8 +112,7 @@ class _PlaybackProgressState extends State<PlaybackProgress> {
                         hasValidDuration
                             ? (value) {
                               final newPosition = Duration(
-                                milliseconds:
-                                    (value * duration.inMilliseconds).round(),
+                                milliseconds: (value * duration.inMilliseconds).round(),
                               );
 
                               context.read<AudioPlayerBloc>().add(
@@ -148,8 +140,7 @@ class _PlaybackProgressState extends State<PlaybackProgress> {
                           style:
                               widget.timeTextStyle ??
                               theme.textTheme.bodySmall?.copyWith(
-                                color: theme.textTheme.bodySmall?.color
-                                    ?.withValues(alpha: 0.7),
+                                color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
                               ),
                         ),
                         Text(
@@ -157,8 +148,7 @@ class _PlaybackProgressState extends State<PlaybackProgress> {
                           style:
                               widget.timeTextStyle ??
                               theme.textTheme.bodySmall?.copyWith(
-                                color: theme.textTheme.bodySmall?.color
-                                    ?.withValues(alpha: 0.7),
+                                color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
                               ),
                         ),
                       ],

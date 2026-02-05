@@ -36,8 +36,7 @@ class AppPopupMenuButton<T> extends StatelessWidget {
       elevation: elevation,
       color: AppColors.surface,
       shape: RoundedRectangleBorder(borderRadius: AppBorders.medium),
-      icon:
-          icon ?? const Icon(Icons.sort_rounded, color: AppColors.textPrimary),
+      icon: icon ?? const Icon(Icons.sort_rounded, color: AppColors.textPrimary),
       onSelected: (value) {
         onSelected(value);
         onClosed?.call();
@@ -162,8 +161,7 @@ Future<T?> showAppMenu<T>({
   Color? backgroundColor,
   BorderRadius? borderRadius,
 }) {
-  final RenderBox overlay =
-      Overlay.of(context).context.findRenderObject() as RenderBox;
+  final RenderBox overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
 
   final RelativeRect menuPosition =
       position ??
@@ -213,9 +211,7 @@ Future<T?> showAppMenu<T>({
                         Text(
                           item.subtitle!,
                           style: AppTextStyle.bodySmall.copyWith(
-                            color:
-                                item.textColor?.withValues(alpha: 0.7) ??
-                                AppColors.textSecondary,
+                            color: item.textColor?.withValues(alpha: 0.7) ?? AppColors.textSecondary,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -257,10 +253,7 @@ Future<String?> showAppStringMenu({
     (index) => AppMenuItem<String>(
       value: options[index],
       label: options[index],
-      subtitle:
-          subtitles != null && index < subtitles.length
-              ? subtitles[index]
-              : null,
+      subtitle: subtitles != null && index < subtitles.length ? subtitles[index] : null,
       icon: icons != null && index < icons.length ? icons[index] : null,
     ),
   );

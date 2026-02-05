@@ -5,8 +5,7 @@ import 'package:trackflow/features/projects/domain/value_objects/project_role.da
 /// Value object representing parameters for sending an invitation
 class SendInvitationParams extends Equatable {
   final ProjectId projectId;
-  final UserId?
-  invitedByUserId; // Optional, will be set by use case if not provided
+  final UserId? invitedByUserId; // Optional, will be set by use case if not provided
   final UserId? invitedUserId; // For existing users
   final String invitedEmail; // For new users
   final ProjectRole proposedRole;

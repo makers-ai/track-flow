@@ -22,7 +22,8 @@ class ImageCompressionService {
       // Skip compression if already WebP and small enough
       if (sourceExtension == '.webp') {
         final fileSize = await sourceFile.length();
-        if (fileSize < 500000) { // 500KB threshold
+        if (fileSize < 500000) {
+          // 500KB threshold
           AppLogger.info(
             'Image already WebP and under 500KB, skipping compression',
             tag: 'IMAGE_COMPRESSION',

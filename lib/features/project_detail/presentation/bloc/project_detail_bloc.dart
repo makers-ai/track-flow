@@ -6,8 +6,7 @@ import 'package:trackflow/features/project_detail/presentation/bloc/project_deta
 import 'package:trackflow/features/project_detail/presentation/bloc/project_detail_state.dart';
 import 'package:dartz/dartz.dart';
 import 'package:trackflow/core/error/failures.dart';
-import 'package:trackflow/features/audio_track/presentation/models/audio_track_sort.dart'
-    as sort_helper;
+import 'package:trackflow/features/audio_track/presentation/models/audio_track_sort.dart' as sort_helper;
 import 'package:trackflow/features/projects/presentation/models/project_ui_model.dart';
 import 'package:trackflow/features/audio_track/presentation/models/audio_track_ui_model.dart';
 import 'package:trackflow/features/user_profile/presentation/models/user_profile_ui_model.dart';
@@ -18,8 +17,7 @@ class ProjectDetailBloc extends Bloc<ProjectDetailEvent, ProjectDetailState> {
 
   StreamSubscription<Either<Failure, ProjectDetailBundle>>? _detailSubscription;
 
-  ProjectDetailBloc({required this.watchProjectDetail})
-    : super(ProjectDetailState.initial()) {
+  ProjectDetailBloc({required this.watchProjectDetail}) : super(ProjectDetailState.initial()) {
     on<WatchProjectDetail>(_onWatchProjectDetail);
     on<ClearProjectDetail>(_onClearProjectDetail);
     on<ChangeTrackSort>(_onChangeTrackSort);
@@ -95,8 +93,7 @@ class ProjectDetailBloc extends Bloc<ProjectDetailEvent, ProjectDetailState> {
     ChangeTrackSort event,
     Emitter<ProjectDetailState> emit,
   ) {
-    final resorted = [...state.tracks]
-      ..sort((a, b) => sort_helper.compareTracksBySort(a.track, b.track, event.sort));
+    final resorted = [...state.tracks]..sort((a, b) => sort_helper.compareTracksBySort(a.track, b.track, event.sort));
     emit(state.copyWith(tracks: resorted, sort: event.sort));
   }
 

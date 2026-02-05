@@ -48,9 +48,7 @@ class ProjectDetailTracksComponent extends StatelessWidget {
                 style: const TextStyle(color: Colors.red),
               ),
             ],
-            if (state.tracks.isEmpty &&
-                !state.isLoadingTracks &&
-                state.tracksError == null) ...[
+            if (state.tracks.isEmpty && !state.isLoadingTracks && state.tracksError == null) ...[
               const SizedBox(height: Dimensions.space16),
               const Text('No tracks found'),
             ],

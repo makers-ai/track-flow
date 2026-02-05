@@ -58,21 +58,18 @@ class AppBlocProviders {
 
       // Auth flow
       BlocProvider<OnboardingBloc>(create: (_) => sl<OnboardingBloc>()),
-      
+
       // Current user profile management
       BlocProvider<CurrentUserBloc>(
         create: (_) => sl<CurrentUserBloc>()..add(WatchCurrentUserProfile()),
       ),
-      
+
       BlocProvider<MagicLinkBloc>(create: (_) => sl<MagicLinkBloc>()),
 
       // Audio system (global)
       BlocProvider<AudioTrackBloc>(create: (_) => sl<AudioTrackBloc>()),
       BlocProvider<AudioPlayerBloc>(
-        create:
-            (_) =>
-                sl<AudioPlayerBloc>()
-                  ..add(const AudioPlayerInitializeRequested()),
+        create: (_) => sl<AudioPlayerBloc>()..add(const AudioPlayerInitializeRequested()),
       ),
       BlocProvider<WaveformBloc>(create: (_) => sl<WaveformBloc>()),
       BlocProvider<AudioContextBloc>(create: (_) => sl<AudioContextBloc>()),
@@ -80,10 +77,7 @@ class AppBlocProviders {
 
       // Voice memos (global)
       BlocProvider<VoiceMemoBloc>(
-        create:
-            (_) =>
-                sl<VoiceMemoBloc>()
-                  ..add(const WatchVoiceMemosRequested()),
+        create: (_) => sl<VoiceMemoBloc>()..add(const WatchVoiceMemosRequested()),
       ),
     ];
   }
@@ -123,10 +117,7 @@ class AppBlocProviders {
     return [
       BlocProvider<ProjectDetailBloc>(create: (_) => sl<ProjectDetailBloc>()),
       BlocProvider<ManageCollaboratorsBloc>(
-        create:
-            (_) =>
-                sl<ManageCollaboratorsBloc>()
-                  ..add(WatchCollaborators(projectId: project.id)),
+        create: (_) => sl<ManageCollaboratorsBloc>()..add(WatchCollaborators(projectId: project.id)),
       ),
       BlocProvider<PlaylistBloc>(create: (_) => sl<PlaylistBloc>()),
     ];
@@ -136,10 +127,7 @@ class AppBlocProviders {
   static List<BlocProvider> getManageCollaboratorsProviders(Project project) {
     return [
       BlocProvider<ManageCollaboratorsBloc>(
-        create:
-            (_) =>
-                sl<ManageCollaboratorsBloc>()
-                  ..add(WatchCollaborators(projectId: project.id)),
+        create: (_) => sl<ManageCollaboratorsBloc>()..add(WatchCollaborators(projectId: project.id)),
       ),
     ];
   }
@@ -150,6 +138,4 @@ class AppBlocProviders {
       BlocProvider<UserProfilesBloc>(create: (_) => sl<UserProfilesBloc>()),
     ];
   }
-
-
 }

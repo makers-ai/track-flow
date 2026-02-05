@@ -23,10 +23,7 @@ class DashboardCommentsSection extends StatelessWidget {
           onSeeAll: null, // No "See All" for comments
         ),
         SizedBox(height: Dimensions.space12),
-        if (comments.isEmpty)
-          _buildEmptyState(context)
-        else
-          _buildCommentsList(context),
+        if (comments.isEmpty) _buildEmptyState(context) else _buildCommentsList(context),
       ],
     );
   }
@@ -47,8 +44,8 @@ class DashboardCommentsSection extends StatelessWidget {
               'No comments yet. Leave a comment on a track to get started!',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: AppColors.warning,
-                  ),
+                color: AppColors.warning,
+              ),
             ),
           ],
         ),
@@ -63,9 +60,10 @@ class DashboardCommentsSection extends StatelessWidget {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: comments.length,
-        separatorBuilder: (context, index) => Divider(
-          height: Dimensions.space16,
-        ),
+        separatorBuilder:
+            (context, index) => Divider(
+              height: Dimensions.space16,
+            ),
         itemBuilder: (context, index) {
           final comment = comments[index];
           return DashboardCommentItem(comment: comment);
@@ -74,4 +72,3 @@ class DashboardCommentsSection extends StatelessWidget {
     );
   }
 }
-

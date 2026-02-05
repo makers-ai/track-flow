@@ -55,8 +55,7 @@ class _PlaylistTracksWidgetState extends State<PlaylistTracksWidget> {
       listener: (context, state) {
         if (state is AudioTrackUploadLoading) {
           setState(() => _isUploadingTrack = true);
-        } else if (state is AudioTrackUploadSuccess ||
-            state is AudioTrackError) {
+        } else if (state is AudioTrackUploadSuccess || state is AudioTrackError) {
           setState(() => _isUploadingTrack = false);
         }
       },
@@ -67,16 +66,16 @@ class _PlaylistTracksWidgetState extends State<PlaylistTracksWidget> {
           // Permissions: determine if user can upload tracks in current project
           final projectUi = context.watch<ProjectDetailBloc>().state.project;
           final userState = context.watch<CurrentUserBloc>().state;
-          final String? currentUserId =
-              userState is CurrentUserLoaded ? userState.profile.id.value : null;
+          final String? currentUserId = userState is CurrentUserLoaded ? userState.profile.id.value : null;
           bool canUploadTrack = false;
           if (projectUi != null && currentUserId != null) {
             final me = projectUi.project.collaborators.firstWhere(
               (c) => c.userId.value == currentUserId,
-              orElse: () => ProjectCollaborator.create(
-                userId: UserId.fromUniqueString(currentUserId),
-                role: ProjectRole.viewer,
-              ),
+              orElse:
+                  () => ProjectCollaborator.create(
+                    userId: UserId.fromUniqueString(currentUserId),
+                    role: ProjectRole.viewer,
+                  ),
             );
             canUploadTrack = me.hasPermission(ProjectPermission.addTrack);
           }
@@ -89,9 +88,7 @@ class _PlaylistTracksWidgetState extends State<PlaylistTracksWidget> {
                 final row = TrackComponent(
                   vm: vm,
                   projectId:
-                      widget.projectId != null
-                          ? ProjectId.fromUniqueString(widget.projectId!)
-                          : vm.track.projectId,
+                      widget.projectId != null ? ProjectId.fromUniqueString(widget.projectId!) : vm.track.projectId,
                   onPlay: () {
                     context.read<AudioPlayerBloc>().add(
                       PlayPlaylistRequested(
@@ -105,15 +102,10 @@ class _PlaylistTracksWidgetState extends State<PlaylistTracksWidget> {
                   providers: [
                     BlocProvider(create: (_) => sl<TrackCacheBloc>()),
                     BlocProvider(
-                      create:
-                          (_) =>
-                              sl<AudioContextBloc>()
-                                ..add(LoadTrackContextRequested(vm.track.id)),
+                      create: (_) => sl<AudioContextBloc>()..add(LoadTrackContextRequested(vm.track.id)),
                     ),
                     BlocProvider(
-                      create:
-                          (_) =>
-                              sl<TrackUploadStatusCubit>()..watch(vm.track.id),
+                      create: (_) => sl<TrackUploadStatusCubit>()..watch(vm.track.id),
                     ),
                   ],
                   child: row,
@@ -122,10 +114,7 @@ class _PlaylistTracksWidgetState extends State<PlaylistTracksWidget> {
               if (widget.projectId != null && canUploadTrack)
                 UploadTrackButton(
                   projectId: ProjectId.fromUniqueString(widget.projectId!),
-                  onTap:
-                      _isUploadingTrack
-                          ? null
-                          : () => _showUploadTrackForm(context),
+                  onTap: _isUploadingTrack ? null : () => _showUploadTrackForm(context),
                 ),
             ],
           );

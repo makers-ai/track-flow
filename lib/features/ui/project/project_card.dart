@@ -64,18 +64,19 @@ class AppProjectCard extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.only(right: Dimensions.space16),
         child: Row(
-          children: [leading != null ? leading! : SizedBox.shrink(), SizedBox(width: Dimensions.space8),
+          children: [
+            leading != null ? leading! : SizedBox.shrink(), SizedBox(width: Dimensions.space8),
             // Content stacked vertically on the right
             Expanded(
               child: Text(
-                      title,
-                      style: AppTextStyle.titleMedium.copyWith(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                title,
+                style: AppTextStyle.titleMedium.copyWith(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
             // Trailing actions/icons on the far right
             if (trailing != null) ...[
@@ -91,8 +92,6 @@ class AppProjectCard extends StatelessWidget {
       ),
     );
   }
-
-  
 }
 
 class AppProjectList extends StatelessWidget {
@@ -376,4 +375,3 @@ class AppProjectSuccessState extends StatelessWidget {
     );
   }
 }
-

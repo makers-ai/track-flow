@@ -40,13 +40,13 @@ class DashboardLoaded extends DashboardState {
 
   @override
   List<Object?> get props => [
-        // REMOVED manual expansion - UI models handle equality properly
-        projectPreview,
-        trackPreview,
-        recentComments,
-        isLoading,
-        failureOption,
-      ];
+    // REMOVED manual expansion - UI models handle equality properly
+    projectPreview,
+    trackPreview,
+    recentComments,
+    isLoading,
+    failureOption,
+  ];
 
   DashboardLoaded copyWith({
     List<ProjectUiModel>? projectPreview,
@@ -74,5 +74,3 @@ class DashboardError extends DashboardState {
   @override
   List<Object?> get props => [message];
 }
-
-

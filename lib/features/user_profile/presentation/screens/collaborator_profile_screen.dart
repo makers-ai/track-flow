@@ -19,8 +19,7 @@ class CollaboratorProfileScreen extends StatefulWidget {
   const CollaboratorProfileScreen({super.key, required this.userId});
 
   @override
-  State<CollaboratorProfileScreen> createState() =>
-      _CollaboratorProfileScreenState();
+  State<CollaboratorProfileScreen> createState() => _CollaboratorProfileScreenState();
 }
 
 class _CollaboratorProfileScreenState extends State<CollaboratorProfileScreen> {
@@ -67,7 +66,7 @@ class _CollaboratorProfileScreenState extends State<CollaboratorProfileScreen> {
                   physics: const BouncingScrollPhysics(),
                   slivers: [
                     SliverAppBar(
-                      expandedHeight: Dimensions.space272,  
+                      expandedHeight: Dimensions.space272,
                       backgroundColor: Colors.transparent,
                       elevation: 0,
                       pinned: true,
@@ -81,7 +80,6 @@ class _CollaboratorProfileScreenState extends State<CollaboratorProfileScreen> {
                     ),
                     // 3. MAIN CONTENT SECTION
                     SliverToBoxAdapter(
-
                       child: Container(
                         decoration: const BoxDecoration(
                           color: AppColors.background,
@@ -92,10 +90,10 @@ class _CollaboratorProfileScreenState extends State<CollaboratorProfileScreen> {
                         ),
                         child: Padding(
                           padding: const EdgeInsets.only(
-                              left: Dimensions.space16,
-                              right: Dimensions.space16,
-                              top: Dimensions.space12,
-                              bottom: Dimensions.space24,
+                            left: Dimensions.space16,
+                            right: Dimensions.space16,
+                            top: Dimensions.space12,
+                            bottom: Dimensions.space24,
                           ),
                           child: _InfoSection(profile: profile),
                         ),
@@ -132,11 +130,9 @@ class _BackgroundAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    
+
     // Avatar image or fallback
-    if ((profile.avatarLocalPath != null &&
-            profile.avatarLocalPath!.isNotEmpty) ||
-        (profile.avatarUrl.isNotEmpty)) {
+    if ((profile.avatarLocalPath != null && profile.avatarLocalPath!.isNotEmpty) || (profile.avatarUrl.isNotEmpty)) {
       return Hero(
         tag: profile.avatarUrl,
         child: Container(
@@ -144,12 +140,13 @@ class _BackgroundAvatar extends StatelessWidget {
           height: screenWidth,
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: (profile.avatarLocalPath != null &&
-                      profile.avatarLocalPath!.isNotEmpty)
-                  ? FileImage(
-                      File(profile.avatarLocalPath!),
-                    ) as ImageProvider
-                  : NetworkImage(profile.avatarUrl),
+              image:
+                  (profile.avatarLocalPath != null && profile.avatarLocalPath!.isNotEmpty)
+                      ? FileImage(
+                            File(profile.avatarLocalPath!),
+                          )
+                          as ImageProvider
+                      : NetworkImage(profile.avatarUrl),
               fit: BoxFit.cover,
             ),
           ),
@@ -219,8 +216,7 @@ class _InfoSection extends StatelessWidget {
                 children: [
                   _buildChip(_roleName(profile.creativeRole)),
                   const SizedBox(width: 8),
-                  if (profile.role != null)
-                    _buildChip(profile.role!.toShortString()),
+                  if (profile.role != null) _buildChip(profile.role!.toShortString()),
                 ],
               ),
               const SizedBox(height: 16),

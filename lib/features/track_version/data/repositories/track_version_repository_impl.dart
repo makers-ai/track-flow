@@ -69,8 +69,7 @@ class TrackVersionRepositoryImpl implements TrackVersionRepository {
         .map(
           (either) => either.map(
             (dtos) =>
-                dtos.map((d) => d.toDomain()).toList()
-                  ..sort((a, b) => b.versionNumber.compareTo(a.versionNumber)),
+                dtos.map((d) => d.toDomain()).toList()..sort((a, b) => b.versionNumber.compareTo(a.versionNumber)),
           ),
         );
   }
@@ -81,9 +80,7 @@ class TrackVersionRepositoryImpl implements TrackVersionRepository {
   ) async {
     final dtoEither = await _local.getVersionsByTrack(trackId);
     return dtoEither.map(
-      (dtos) =>
-          dtos.map((dto) => dto.toDomain()).toList()
-            ..sort((a, b) => b.versionNumber.compareTo(a.versionNumber)),
+      (dtos) => dtos.map((dto) => dto.toDomain()).toList()..sort((a, b) => b.versionNumber.compareTo(a.versionNumber)),
     );
   }
 

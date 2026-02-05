@@ -38,9 +38,7 @@ class TrackFlowBackgroundAudioHandler extends audio_service.BaseAudioHandler
         audio_service.PlaybackState(
           controls: [
             audio_service.MediaControl.skipToPrevious,
-            _isPlaying(session.state)
-                ? audio_service.MediaControl.pause
-                : audio_service.MediaControl.play,
+            _isPlaying(session.state) ? audio_service.MediaControl.pause : audio_service.MediaControl.play,
             audio_service.MediaControl.skipToNext,
           ],
           systemActions: const {
@@ -60,8 +58,7 @@ class TrackFlowBackgroundAudioHandler extends audio_service.BaseAudioHandler
         final title = session.currentTrack!.title;
 
         // Get enhanced info from background service
-        final backgroundInfo = await _backgroundContext
-            .getTrackInfoForBackground(trackId, title);
+        final backgroundInfo = await _backgroundContext.getTrackInfoForBackground(trackId, title);
 
         mediaItem.add(
           audio_service.MediaItem(
@@ -71,9 +68,7 @@ class TrackFlowBackgroundAudioHandler extends audio_service.BaseAudioHandler
             duration: backgroundInfo.duration,
             album: backgroundInfo.projectName,
             artUri:
-                session.currentTrack!.coverUrl?.isNotEmpty == true
-                    ? Uri.parse(session.currentTrack!.coverUrl!)
-                    : null,
+                session.currentTrack!.coverUrl?.isNotEmpty == true ? Uri.parse(session.currentTrack!.coverUrl!) : null,
           ),
         );
       }

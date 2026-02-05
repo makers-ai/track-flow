@@ -29,7 +29,7 @@ class UserProfileSection extends StatelessWidget {
               children: [
                 // Profile Header
                 _buildProfileHeader(context, state),
-                
+
                 // Profile Completeness Indicator (only for loaded state)
                 if (state is CurrentUserLoaded) ...[
                   SizedBox(height: Dimensions.space12),
@@ -40,7 +40,7 @@ class UserProfileSection extends StatelessWidget {
                     },
                   ),
                 ],
-                
+
                 SizedBox(height: Dimensions.space16),
 
                 // Profile Options
@@ -71,8 +71,7 @@ class UserProfileSection extends StatelessWidget {
       return Row(
         children: [
           // User Avatar: prefer local cache path, else remote URL
-          (profile.avatarLocalPath != null &&
-                  profile.avatarLocalPath!.isNotEmpty)
+          (profile.avatarLocalPath != null && profile.avatarLocalPath!.isNotEmpty)
               ? UserAvatar(
                 imageUrl: profile.avatarLocalPath!,
                 size: 60,

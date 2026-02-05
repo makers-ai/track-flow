@@ -5,8 +5,7 @@ import 'package:trackflow/core/infrastructure/domain/directory_service.dart';
 import '../../../audio_cache/domain/entities/cached_audio.dart';
 import '../../../audio_cache/domain/failures/cache_failure.dart';
 import '../../../audio_cache/data/models/cached_audio_document_unified.dart';
-import '../../../audio_cache/data/datasources/cache_storage_local_data_source.dart'
-    as storage;
+import '../../../audio_cache/data/datasources/cache_storage_local_data_source.dart' as storage;
 
 /// Thin data source for cache management feature.
 /// Delegates to the audio_cache local storage data source.
@@ -31,16 +30,15 @@ abstract class CacheManagementLocalDataSource {
 }
 
 @LazySingleton(as: CacheManagementLocalDataSource)
-class CacheManagementLocalDataSourceImpl
-    implements CacheManagementLocalDataSource {
+class CacheManagementLocalDataSourceImpl implements CacheManagementLocalDataSource {
   final storage.CacheStorageLocalDataSource _delegate;
   final DirectoryService _directoryService;
 
   CacheManagementLocalDataSourceImpl({
     required storage.CacheStorageLocalDataSource local,
     required DirectoryService directoryService,
-  })  : _delegate = local,
-        _directoryService = directoryService;
+  }) : _delegate = local,
+       _directoryService = directoryService;
 
   @override
   Stream<List<CachedAudio>> watchCachedAudios() {
@@ -126,10 +124,12 @@ class CacheManagementLocalDataSourceImpl
           DirectoryType.audioCache,
         );
         return absPathResult.fold(
-          (f) => Left(StorageCacheFailure(
-            message: f.message,
-            type: StorageFailureType.diskError,
-          )),
+          (f) => Left(
+            StorageCacheFailure(
+              message: f.message,
+              type: StorageFailureType.diskError,
+            ),
+          ),
           (absolutePath) => Right(
             CachedAudio(
               trackId: doc.trackId,

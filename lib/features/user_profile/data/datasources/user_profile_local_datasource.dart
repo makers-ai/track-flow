@@ -38,15 +38,11 @@ class IsarUserProfileLocalDataSource implements UserProfileLocalDataSource {
         fastHash(profile.id),
       );
 
-      final existingByEmail = await _isar.userProfileDocuments
-          .where()
-          .emailEqualTo(profile.email)
-          .findFirst();
+      final existingByEmail = await _isar.userProfileDocuments.where().emailEqualTo(profile.email).findFirst();
 
       // Preserve any existing local avatar path preference
-      final preservedLocalPath = profile.avatarLocalPath ??
-          existingById?.avatarLocalPath ??
-          existingByEmail?.avatarLocalPath;
+      final preservedLocalPath =
+          profile.avatarLocalPath ?? existingById?.avatarLocalPath ?? existingByEmail?.avatarLocalPath;
 
       // If there's a different record with the same email, delete it to avoid unique index violation
       if (existingByEmail != null && existingByEmail.id != profile.id) {
@@ -63,18 +59,12 @@ class IsarUserProfileLocalDataSource implements UserProfileLocalDataSource {
 
   @override
   Stream<UserProfileDTO?> watchUserProfile(String userId) {
-    return _isar.userProfileDocuments
-        .watchObject(fastHash(userId), fireImmediately: true)
-        .map((doc) => doc?.toDTO());
+    return _isar.userProfileDocuments.watchObject(fastHash(userId), fireImmediately: true).map((doc) => doc?.toDTO());
   }
 
   @override
   Future<UserProfileDTO?> findUserByEmail(String email) async {
-    final profileDoc =
-        await _isar.userProfileDocuments
-            .where()
-            .emailEqualTo(email)
-            .findFirst();
+    final profileDoc = await _isar.userProfileDocuments.where().emailEqualTo(email).findFirst();
     return profileDoc?.toDTO();
   }
 

@@ -16,5 +16,3 @@ class WatchDashboard extends DashboardEvent {
 class StopWatchingDashboard extends DashboardEvent {
   const StopWatchingDashboard();
 }
-
-

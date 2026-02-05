@@ -111,16 +111,14 @@ class InvitationCannotBeAcceptedException implements Exception {
   const InvitationCannotBeAcceptedException();
 
   @override
-  String toString() =>
-      'Invitation cannot be accepted. It may be expired, already processed, or cancelled.';
+  String toString() => 'Invitation cannot be accepted. It may be expired, already processed, or cancelled.';
 }
 
 class InvitationCannotBeCancelledException implements Exception {
   const InvitationCannotBeCancelledException();
 
   @override
-  String toString() =>
-      'Invitation cannot be cancelled. Only pending invitations can be cancelled.';
+  String toString() => 'Invitation cannot be cancelled. Only pending invitations can be cancelled.';
 }
 
 class InvitationNotFoundException implements Exception {

@@ -31,16 +31,13 @@ class DashboardProjectsSection extends StatelessWidget {
           onSeeAll: () => context.go(AppRoutes.projects),
         ),
         SizedBox(height: Dimensions.space12),
-        if (projects.isEmpty)
-          _buildEmptyState(context)
-        else
-          _buildProjectsGrid(context),
+        if (projects.isEmpty) _buildEmptyState(context) else _buildProjectsGrid(context),
       ],
     );
   }
 
   Widget _buildEmptyState(BuildContext context) {
-    return Padding( 
+    return Padding(
       padding: EdgeInsets.all(Dimensions.space12),
       child: Center(
         child: Column(
@@ -54,15 +51,15 @@ class DashboardProjectsSection extends StatelessWidget {
             Text(
               'No projects yet',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
             SizedBox(height: Dimensions.space8),
             Text(
               'Create your first project to get started!',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
             SizedBox(height: Dimensions.space16),
             FilledButton.icon(
@@ -115,10 +112,11 @@ class DashboardProjectsSection extends StatelessWidget {
           title: projectUi.name,
           description: projectUi.description,
           createdAt: projectUi.createdAt,
-          onTap: () => context.push(
-            AppRoutes.projectDetails.replaceAll(':id', projectUi.id),
-            extra: projectUi.project,
-          ),
+          onTap:
+              () => context.push(
+                AppRoutes.projectDetails.replaceAll(':id', projectUi.id),
+                extra: projectUi.project,
+              ),
           leading: ProjectCoverArt(
             key: ValueKey(
               '${projectUi.id}:${projectUi.coverLocalPath ?? projectUi.coverUrl ?? ''}:${projectUi.name}',
@@ -142,5 +140,3 @@ class DashboardProjectsSection extends StatelessWidget {
     );
   }
 }
-
-

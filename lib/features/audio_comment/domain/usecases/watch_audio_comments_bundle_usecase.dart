@@ -96,8 +96,7 @@ class WatchAudioCommentsBundleUseCase {
         ),
       );
     }).onErrorReturnWith(
-      (e, _) =>
-          left(ServerFailure('Failed to watch audio comments bundle: $e')),
+      (e, _) => left(ServerFailure('Failed to watch audio comments bundle: $e')),
     );
   }
 }

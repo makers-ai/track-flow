@@ -4,8 +4,7 @@ abstract class Entity<T> {
   const Entity(this.id);
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is Entity<T> && other.id == id;
+  bool operator ==(Object other) => identical(this, other) || other is Entity<T> && other.id == id;
 
   @override
   int get hashCode => id.hashCode;

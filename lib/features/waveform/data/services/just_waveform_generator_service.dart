@@ -15,8 +15,7 @@ class JustWaveformGeneratorService implements WaveformGeneratorService {
 
   final Directory _cacheDir;
 
-  JustWaveformGeneratorService({required Directory cacheDir})
-    : _cacheDir = cacheDir;
+  JustWaveformGeneratorService({required Directory cacheDir}) : _cacheDir = cacheDir;
 
   @override
   Future<Either<Failure, WaveformData>> generateWaveformData(

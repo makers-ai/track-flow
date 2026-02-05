@@ -112,8 +112,7 @@ class AudioCommentOperationExecutor implements OperationExecutor {
     // 3. Create Firestore document
     final result = await _remoteDataSource.addComment(audioCommentDto);
     result.fold(
-      (failure) =>
-          throw Exception('Comment creation failed: ${failure.message}'),
+      (failure) => throw Exception('Comment creation failed: ${failure.message}'),
       (_) {
         // Successfully created
       },
@@ -155,8 +154,7 @@ class AudioCommentOperationExecutor implements OperationExecutor {
     // 1. Delete Firestore document
     final result = await _remoteDataSource.deleteComment(operation.entityId);
     result.fold(
-      (failure) =>
-          throw Exception('Comment deletion failed: ${failure.message}'),
+      (failure) => throw Exception('Comment deletion failed: ${failure.message}'),
       (_) {
         // Successfully deleted
       },
@@ -195,10 +193,11 @@ class AudioCommentOperationExecutor implements OperationExecutor {
       final commentDtos = await _remoteDataSource.getCommentsByVersionId(versionId);
 
       // Extract storage URLs from comments that have audio
-      audioStorageUrls = commentDtos
-          .where((dto) => dto.audioStorageUrl != null && dto.audioStorageUrl!.isNotEmpty)
-          .map((dto) => dto.audioStorageUrl!)
-          .toList();
+      audioStorageUrls =
+          commentDtos
+              .where((dto) => dto.audioStorageUrl != null && dto.audioStorageUrl!.isNotEmpty)
+              .map((dto) => dto.audioStorageUrl!)
+              .toList();
     } catch (e) {
       // If we can't fetch comments, still try to delete the Firestore collection
       // Audio files may be orphaned but better to delete what we can
@@ -207,8 +206,7 @@ class AudioCommentOperationExecutor implements OperationExecutor {
     // 2. Delete all comments for this version from Firestore
     final result = await _remoteDataSource.deleteByVersionId(versionId);
     result.fold(
-      (failure) =>
-          throw Exception('Bulk comment deletion failed: ${failure.message}'),
+      (failure) => throw Exception('Bulk comment deletion failed: ${failure.message}'),
       (_) {
         // Successfully deleted Firestore documents
       },

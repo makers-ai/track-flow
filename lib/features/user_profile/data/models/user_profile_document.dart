@@ -80,16 +80,17 @@ class UserProfileDocument {
       ..genres = dto.genres
       ..skills = dto.skills
       ..availabilityStatus = dto.availabilityStatus
-      ..socialLinks = dto.socialLinks?.map((l) {
-        final doc = SocialLinkDocument();
-        doc.platform = l['platform']!;
-        doc.url = l['url']!;
-        return doc;
-      }).toList()
+      ..socialLinks =
+          dto.socialLinks?.map((l) {
+            final doc = SocialLinkDocument();
+            doc.platform = l['platform']!;
+            doc.url = l['url']!;
+            return doc;
+          }).toList()
       ..websiteUrl = dto.websiteUrl
       ..linktreeUrl = dto.linktreeUrl
-      ..contactInfo = dto.contactInfo != null ? (ContactInfoDocument()
-        ..phone = dto.contactInfo!['phone'] as String?) : null
+      ..contactInfo =
+          dto.contactInfo != null ? (ContactInfoDocument()..phone = dto.contactInfo!['phone'] as String?) : null
       ..verified = dto.verified
       // ⭐ NEW: Use sync metadata from DTO if available (from remote)
       ..syncMetadata =
@@ -121,16 +122,17 @@ class UserProfileDocument {
       ..genres = dto.genres
       ..skills = dto.skills
       ..availabilityStatus = dto.availabilityStatus
-      ..socialLinks = dto.socialLinks?.map((l) {
-        final doc = SocialLinkDocument();
-        doc.platform = l['platform']!;
-        doc.url = l['url']!;
-        return doc;
-      }).toList()
+      ..socialLinks =
+          dto.socialLinks?.map((l) {
+            final doc = SocialLinkDocument();
+            doc.platform = l['platform']!;
+            doc.url = l['url']!;
+            return doc;
+          }).toList()
       ..websiteUrl = dto.websiteUrl
       ..linktreeUrl = dto.linktreeUrl
-      ..contactInfo = dto.contactInfo != null ? (ContactInfoDocument()
-        ..phone = dto.contactInfo!['phone'] as String?) : null
+      ..contactInfo =
+          dto.contactInfo != null ? (ContactInfoDocument()..phone = dto.contactInfo!['phone'] as String?) : null
       ..verified = dto.verified
       ..syncMetadata = SyncMetadataDocument.fromRemote(
         version: version ?? 1,
@@ -174,16 +176,16 @@ class UserProfileDocument {
       ..genres = genres
       ..skills = skills
       ..availabilityStatus = availabilityStatus
-      ..socialLinks = socialLinks?.map((l) {
-        final doc = SocialLinkDocument();
-        doc.platform = l['platform']!;
-        doc.url = l['url']!;
-        return doc;
-      }).toList()
+      ..socialLinks =
+          socialLinks?.map((l) {
+            final doc = SocialLinkDocument();
+            doc.platform = l['platform']!;
+            doc.url = l['url']!;
+            return doc;
+          }).toList()
       ..websiteUrl = websiteUrl
       ..linktreeUrl = linktreeUrl
-      ..contactInfo = contactInfo != null ? (ContactInfoDocument()
-        ..phone = contactInfo['phone'] as String?) : null
+      ..contactInfo = contactInfo != null ? (ContactInfoDocument()..phone = contactInfo['phone'] as String?) : null
       ..verified = verified
       ..syncMetadata = SyncMetadataDocument.initial();
   }
@@ -204,15 +206,23 @@ class UserProfileDocument {
       genres: genres,
       skills: skills,
       availabilityStatus: availabilityStatus,
-      socialLinks: socialLinks?.map((l) => {
-        'platform': l.platform,
-        'url': l.url,
-      }).toList(),
+      socialLinks:
+          socialLinks
+              ?.map(
+                (l) => {
+                  'platform': l.platform,
+                  'url': l.url,
+                },
+              )
+              .toList(),
       websiteUrl: websiteUrl,
       linktreeUrl: linktreeUrl,
-      contactInfo: contactInfo != null ? {
-        'phone': contactInfo!.phone,
-      } : null,
+      contactInfo:
+          contactInfo != null
+              ? {
+                'phone': contactInfo!.phone,
+              }
+              : null,
       verified: verified,
       // ⭐ NEW: Include sync metadata from document (CRITICAL FIX!)
       version: syncMetadata?.version ?? 1,

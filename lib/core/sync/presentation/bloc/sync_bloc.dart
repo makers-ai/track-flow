@@ -35,8 +35,6 @@ class SyncBloc extends Bloc<SyncEvent, SyncBlocState> {
     on<DownstreamSyncRequested>(_onDownstreamSyncRequested);
   }
 
-
-
   /// Trigger initial sync on app startup
   /// This performs both upstream (push pending) and downstream (pull critical data)
   Future<void> _onStartupSyncRequested(

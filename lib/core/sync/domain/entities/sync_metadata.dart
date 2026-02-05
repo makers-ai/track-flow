@@ -1,28 +1,28 @@
 import 'package:equatable/equatable.dart';
 
 /// Sync metadata attached to entities for conflict resolution
-/// 
+///
 /// Contains version information and sync status to handle
 /// offline changes and conflicts when syncing with remote.
 class SyncMetadata extends Equatable {
   /// Version number for optimistic locking
   final int version;
-  
+
   /// Timestamp when entity was last modified locally
   final DateTime lastModified;
-  
+
   /// Timestamp when entity was last successfully synced
   final DateTime? lastSyncTime;
-  
+
   /// Whether this entity needs to be synced to remote
   final bool needsSync;
-  
+
   /// Current sync status
   final SyncStatus syncStatus;
-  
+
   /// Number of sync retry attempts
   final int retryCount;
-  
+
   /// Error message if sync failed
   final String? syncError;
 
@@ -123,33 +123,33 @@ class SyncMetadata extends Equatable {
 
   @override
   List<Object?> get props => [
-        version,
-        lastModified,
-        lastSyncTime,
-        needsSync,
-        syncStatus,
-        retryCount,
-        syncError,
-      ];
+    version,
+    lastModified,
+    lastSyncTime,
+    needsSync,
+    syncStatus,
+    retryCount,
+    syncError,
+  ];
 }
 
 /// Sync status enumeration
 enum SyncStatus {
   /// Entity is pending sync to remote
   pending,
-  
+
   /// Entity is currently being synced
   syncing,
-  
+
   /// Entity is successfully synced
   synced,
-  
+
   /// Sync failed with error
   error,
-  
+
   /// Sync conflict detected
   conflict,
-  
+
   /// Entity is merged from conflict resolution
   merged,
 }
@@ -172,7 +172,7 @@ extension SyncStatusExtension on SyncStatus {
         return 'Merged';
     }
   }
-  
+
   bool get isErrorState => this == SyncStatus.error || this == SyncStatus.conflict;
   bool get needsAttention => isErrorState;
   bool get canRetry => this == SyncStatus.error;

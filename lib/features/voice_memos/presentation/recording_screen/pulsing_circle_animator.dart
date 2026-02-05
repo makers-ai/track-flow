@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 
@@ -16,8 +15,7 @@ class PulsingCircleAnimator extends StatefulWidget {
   State<PulsingCircleAnimator> createState() => _PulsingCircleAnimatorState();
 }
 
-class _PulsingCircleAnimatorState extends State<PulsingCircleAnimator>
-    with SingleTickerProviderStateMixin {
+class _PulsingCircleAnimatorState extends State<PulsingCircleAnimator> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -48,9 +46,7 @@ class _PulsingCircleAnimatorState extends State<PulsingCircleAnimator>
     return AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {
-        final totalScale = widget.isRecording
-            ? _animation.value * amplitudeScale
-            : 1.0;
+        final totalScale = widget.isRecording ? _animation.value * amplitudeScale : 1.0;
 
         return Transform.scale(
           scale: totalScale,

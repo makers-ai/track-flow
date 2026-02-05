@@ -20,10 +20,7 @@ class AudioMetadataService {
       }
 
       // Validate file is readable
-      if (!await audioFile
-          .readAsBytes()
-          .then((_) => true)
-          .catchError((_) => false)) {
+      if (!await audioFile.readAsBytes().then((_) => true).catchError((_) => false)) {
         return Left(AudioProcessingFailure('Cannot read audio file'));
       }
 

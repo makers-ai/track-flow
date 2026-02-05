@@ -20,8 +20,7 @@ abstract class OnboardingStateLocalDataSource {
 }
 
 @LazySingleton(as: OnboardingStateLocalDataSource)
-class OnboardingStateLocalDataSourceImpl
-    implements OnboardingStateLocalDataSource {
+class OnboardingStateLocalDataSourceImpl implements OnboardingStateLocalDataSource {
   final SharedPreferences _prefs;
 
   OnboardingStateLocalDataSourceImpl(this._prefs);

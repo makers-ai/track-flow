@@ -21,8 +21,7 @@ class RemoveCollaboratorDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppConfirmationDialog(
       title: 'Confirm Removal',
-      message:
-          'Are you sure you want to remove collaborator $collaboratorName?',
+      message: 'Are you sure you want to remove collaborator $collaboratorName?',
       confirmText: 'Yes',
       cancelText: 'Cancel',
       isDestructive: true,

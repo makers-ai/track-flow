@@ -101,10 +101,7 @@ class ProjectsLocalDataSourceImpl implements ProjectsLocalDataSource {
         .isDeletedEqualTo(false)
         .and()
         .group(
-          (q) => q
-              .ownerIdEqualTo(ownerId)
-              .or()
-              .collaboratorIdsElementEqualTo(ownerId),
+          (q) => q.ownerIdEqualTo(ownerId).or().collaboratorIdsElementEqualTo(ownerId),
         )
         .watch(fireImmediately: true)
         .map(

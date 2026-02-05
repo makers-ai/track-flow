@@ -27,8 +27,7 @@ class EditUserProfileScreen extends StatefulWidget {
 }
 
 class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
-  final GlobalKey<EditProfileFormState> _formKey =
-      GlobalKey<EditProfileFormState>();
+  final GlobalKey<EditProfileFormState> _formKey = GlobalKey<EditProfileFormState>();
 
   bool _isLoading = false;
 
@@ -84,12 +83,10 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
         body: SafeArea(
           bottom: true,
           child: SingleChildScrollView(
-            
             padding: EdgeInsets.symmetric(horizontal: Dimensions.space16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                
                 EditProfileForm(
                   key: _formKey,
                   initialProfile: widget.profile,
@@ -99,11 +96,12 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
                 const SizedBox(height: 24),
                 PrimaryButton(
                   text: 'Save Changes',
-                  onPressed: _isLoading
-                      ? null
-                      : () {
-                          _formKey.currentState?.submit();
-                        },
+                  onPressed:
+                      _isLoading
+                          ? null
+                          : () {
+                            _formKey.currentState?.submit();
+                          },
                   isLoading: _isLoading,
                   width: double.infinity,
                 ),

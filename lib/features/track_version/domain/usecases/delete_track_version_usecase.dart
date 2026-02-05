@@ -51,8 +51,7 @@ class DeleteTrackVersionUseCase {
       }
 
       // Delete comments for the version
-      final commentResult = await audioCommentRepository
-          .deleteCommentsByVersion(params.versionId);
+      final commentResult = await audioCommentRepository.deleteCommentsByVersion(params.versionId);
       if (commentResult.isLeft()) {
         // Log error but continue with other deletions
         // You might want to add logging here

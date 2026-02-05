@@ -36,8 +36,7 @@ abstract class InvitationRemoteDataSource {
 }
 
 @LazySingleton(as: InvitationRemoteDataSource)
-class FirestoreInvitationRemoteDataSource
-    implements InvitationRemoteDataSource {
+class FirestoreInvitationRemoteDataSource implements InvitationRemoteDataSource {
   final FirebaseFirestore _firestore;
 
   FirestoreInvitationRemoteDataSource(this._firestore);
@@ -47,10 +46,7 @@ class FirestoreInvitationRemoteDataSource
     InvitationDto invitation,
   ) async {
     try {
-      await _firestore
-          .collection(InvitationDto.collection)
-          .doc(invitation.id)
-          .set(invitation.toJson());
+      await _firestore.collection(InvitationDto.collection).doc(invitation.id).set(invitation.toJson());
       return Right(invitation);
     } on FirebaseException catch (e) {
       return Left(ServerFailure(e.message ?? 'Failed to create invitation'));
@@ -64,11 +60,7 @@ class FirestoreInvitationRemoteDataSource
     String invitationId,
   ) async {
     try {
-      final doc =
-          await _firestore
-              .collection(InvitationDto.collection)
-              .doc(invitationId)
-              .get();
+      final doc = await _firestore.collection(InvitationDto.collection).doc(invitationId).get();
 
       if (!doc.exists) {
         return Left(DatabaseFailure('Invitation not found'));
@@ -87,10 +79,7 @@ class FirestoreInvitationRemoteDataSource
     InvitationDto invitation,
   ) async {
     try {
-      await _firestore
-          .collection(InvitationDto.collection)
-          .doc(invitation.id)
-          .update(invitation.toJson());
+      await _firestore.collection(InvitationDto.collection).doc(invitation.id).update(invitation.toJson());
       return Right(invitation);
     } on FirebaseException catch (e) {
       return Left(ServerFailure(e.message ?? 'Failed to update invitation'));
@@ -102,10 +91,7 @@ class FirestoreInvitationRemoteDataSource
   @override
   Future<Either<Failure, Unit>> deleteInvitation(String invitationId) async {
     try {
-      await _firestore
-          .collection(InvitationDto.collection)
-          .doc(invitationId)
-          .delete();
+      await _firestore.collection(InvitationDto.collection).doc(invitationId).delete();
       return Right(unit);
     } on FirebaseException catch (e) {
       return Left(ServerFailure(e.message ?? 'Failed to delete invitation'));
@@ -126,8 +112,7 @@ class FirestoreInvitationRemoteDataSource
               .where('status', isEqualTo: 'pending')
               .get();
 
-      final invitations =
-          query.docs.map((doc) => InvitationDto.fromJson(doc.data())).toList();
+      final invitations = query.docs.map((doc) => InvitationDto.fromJson(doc.data())).toList();
 
       return Right(invitations);
     } on FirebaseException catch (e) {
@@ -145,13 +130,9 @@ class FirestoreInvitationRemoteDataSource
   ) async {
     try {
       final query =
-          await _firestore
-              .collection(InvitationDto.collection)
-              .where('invitedByUserId', isEqualTo: userId)
-              .get();
+          await _firestore.collection(InvitationDto.collection).where('invitedByUserId', isEqualTo: userId).get();
 
-      final invitations =
-          query.docs.map((doc) => InvitationDto.fromJson(doc.data())).toList();
+      final invitations = query.docs.map((doc) => InvitationDto.fromJson(doc.data())).toList();
 
       return Right(invitations);
     } on FirebaseException catch (e) {

@@ -48,13 +48,11 @@ class WatchTrackVersionsBundleUseCase {
         (failure) => left(failure),
         (track) => versionsEither.fold(
           (failure) => left(failure),
-          (versions) =>
-              right(TrackVersionsBundle(track: track, versions: versions)),
+          (versions) => right(TrackVersionsBundle(track: track, versions: versions)),
         ),
       );
     }).onErrorReturnWith(
-      (e, _) =>
-          left(ServerFailure('Failed to watch track versions bundle: $e')),
+      (e, _) => left(ServerFailure('Failed to watch track versions bundle: $e')),
     );
   }
 }

@@ -17,9 +17,7 @@ class UploadTrackButton extends StatelessWidget {
       onTap: onTap,
       margin: EdgeInsets.zero,
       borderRadius: BorderRadius.zero,
-      padding: EdgeInsets.symmetric(
-        horizontal: Dimensions.space16
-      ),
+      padding: EdgeInsets.symmetric(horizontal: Dimensions.space16),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

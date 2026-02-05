@@ -89,9 +89,7 @@ class _AvatarUploaderState extends State<AvatarUploader> {
         ),
         SizedBox(height: Dimensions.space16),
         Text(
-          widget.isGoogleUser
-              ? 'Google Account Connected'
-              : 'Tap to change profile picture',
+          widget.isGoogleUser ? 'Google Account Connected' : 'Tap to change profile picture',
           style: AppTextStyle.bodySmall.copyWith(
             color: AppColors.textSecondary,
           ),

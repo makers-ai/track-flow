@@ -182,8 +182,7 @@ class _HeroUserProfileScreenState extends State<HeroUserProfileScreen> {
                             ),
                             const SizedBox(width: 8),
                           ],
-                          if (profile.role != null)
-                            _buildGlassChip(profile.role!.toShortString()),
+                          if (profile.role != null) _buildGlassChip(profile.role!.toShortString()),
                         ],
                       ),
                     ],

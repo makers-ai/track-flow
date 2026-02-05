@@ -11,9 +11,7 @@ class SyncBlocState extends Equatable {
     required this.pendingCount,
   });
 
-  const SyncBlocState.initial()
-      : syncState = SyncState.initial,
-        pendingCount = 0;
+  const SyncBlocState.initial() : syncState = SyncState.initial, pendingCount = 0;
 
   SyncBlocState copyWith({
     SyncState? syncState,

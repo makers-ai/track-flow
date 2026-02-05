@@ -46,16 +46,16 @@ class AudioTrackMetadata extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        title,
-        artist,
-        duration,
-        coverUrl,
-        fileSize,
-        bitrate,
-        sampleRate,
-        format,
-      ];
+    id,
+    title,
+    artist,
+    duration,
+    coverUrl,
+    fileSize,
+    bitrate,
+    sampleRate,
+    format,
+  ];
 
   AudioTrackMetadata copyWith({
     AudioTrackId? id,

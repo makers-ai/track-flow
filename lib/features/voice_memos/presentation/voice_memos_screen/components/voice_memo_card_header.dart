@@ -17,7 +17,6 @@ class VoiceMemoCardHeader extends StatelessWidget {
     required this.onDeletePressed,
   });
 
-
   void _showMenu(BuildContext context) {
     showAppMenu<String>(
       context: context,

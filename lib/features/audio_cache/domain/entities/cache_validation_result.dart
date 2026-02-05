@@ -20,14 +20,9 @@ class CacheValidationResult extends Equatable {
   final int inconsistentSizes;
   final List<String> issues;
 
-  bool get isValid =>
-      corruptedFiles == 0 &&
-      orphanedFiles == 0 &&
-      missingMetadata == 0 &&
-      inconsistentSizes == 0;
+  bool get isValid => corruptedFiles == 0 && orphanedFiles == 0 && missingMetadata == 0 && inconsistentSizes == 0;
 
-  double get validityPercentage =>
-      totalFiles > 0 ? (validFiles / totalFiles) : 1.0;
+  double get validityPercentage => totalFiles > 0 ? (validFiles / totalFiles) : 1.0;
 
   @override
   List<Object?> get props => [

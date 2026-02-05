@@ -31,18 +31,14 @@ class GlassmorphismCard extends StatelessWidget {
     return Container(
       margin: margin ?? EdgeInsets.all(Dimensions.space16),
       child: ClipRRect(
-        borderRadius:
-            borderRadius ?? BorderRadius.circular(Dimensions.radiusLarge),
+        borderRadius: borderRadius ?? BorderRadius.circular(Dimensions.radiusLarge),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
           child: Container(
             padding: padding ?? EdgeInsets.all(Dimensions.space24),
             decoration: BoxDecoration(
-              color:
-                  backgroundColor ??
-                  AppColors.textPrimary.withValues(alpha: opacity),
-              borderRadius:
-                  borderRadius ?? BorderRadius.circular(Dimensions.radiusLarge),
+              color: backgroundColor ?? AppColors.textPrimary.withValues(alpha: opacity),
+              borderRadius: borderRadius ?? BorderRadius.circular(Dimensions.radiusLarge),
               border:
                   border ??
                   Border.all(
@@ -92,9 +88,7 @@ class GlassmorphismButton extends StatelessWidget {
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
             decoration: BoxDecoration(
-              color:
-                  backgroundColor ??
-                  AppColors.textPrimary.withValues(alpha: 0.2),
+              color: backgroundColor ?? AppColors.textPrimary.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(Dimensions.radiusMedium),
               border: Border.all(
                 color: AppColors.textPrimary.withValues(alpha: 0.3),

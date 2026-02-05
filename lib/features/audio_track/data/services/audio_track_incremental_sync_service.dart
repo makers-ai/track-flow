@@ -10,8 +10,7 @@ import 'package:trackflow/features/audio_track/data/models/audio_track_dto.dart'
 import 'package:trackflow/features/projects/data/datasources/project_local_data_source.dart';
 
 @LazySingleton(as: IncrementalSyncService<AudioTrackDTO>)
-class AudioTrackIncrementalSyncService
-    implements IncrementalSyncService<AudioTrackDTO> {
+class AudioTrackIncrementalSyncService implements IncrementalSyncService<AudioTrackDTO> {
   final AudioTrackRemoteDataSource _remoteDataSource;
   final AudioTrackLocalDataSource _localDataSource;
   final ProjectsLocalDataSource _projectsLocalDataSource;
@@ -84,8 +83,10 @@ class AudioTrackIncrementalSyncService
   }
 
   @override
-  Future<Either<Failure, IncrementalSyncResult<AudioTrackDTO>>>
-  performIncrementalSync(DateTime lastSyncTime, String userId) async {
+  Future<Either<Failure, IncrementalSyncResult<AudioTrackDTO>>> performIncrementalSync(
+    DateTime lastSyncTime,
+    String userId,
+  ) async {
     try {
       AppLogger.sync(
         'AUDIO_TRACKS',
@@ -132,10 +133,8 @@ class AudioTrackIncrementalSyncService
       final allModifiedTracks = modifiedResult.getOrElse(() => []);
 
       // 2. Separate active and deleted tracks
-      final activeTracks =
-          allModifiedTracks.where((t) => !t.isDeleted).toList();
-      final deletedTracks =
-          allModifiedTracks.where((t) => t.isDeleted).toList();
+      final activeTracks = allModifiedTracks.where((t) => !t.isDeleted).toList();
+      final deletedTracks = allModifiedTracks.where((t) => t.isDeleted).toList();
       final deletedIds = deletedTracks.map((t) => t.id.value).toList();
 
       AppLogger.sync(
@@ -158,16 +157,12 @@ class AudioTrackIncrementalSyncService
       // 4. Compute next cursor using max lastModified from server to avoid clock skew
       DateTime serverTimestamp = lastSyncTime;
       for (final t in allModifiedTracks) {
-        if (t.lastModified != null &&
-            t.lastModified!.isAfter(serverTimestamp)) {
+        if (t.lastModified != null && t.lastModified!.isAfter(serverTimestamp)) {
           serverTimestamp = t.lastModified!;
         }
       }
       // Do NOT advance cursor when there are no changes
-      serverTimestamp =
-          allModifiedTracks.isEmpty
-              ? lastSyncTime.toUtc()
-              : serverTimestamp.toUtc();
+      serverTimestamp = allModifiedTracks.isEmpty ? lastSyncTime.toUtc() : serverTimestamp.toUtc();
 
       final result = IncrementalSyncResult(
         modifiedItems: activeTracks,

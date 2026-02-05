@@ -7,9 +7,7 @@ class ProfileCompletenessValidator {
   /// - A creative role set
   /// - An email address
   static bool isComplete(UserProfile profile) {
-    return _hasValidName(profile.name) &&
-        _hasCreativeRole(profile.creativeRole) &&
-        _hasValidEmail(profile.email);
+    return _hasValidName(profile.name) && _hasCreativeRole(profile.creativeRole) && _hasValidEmail(profile.email);
   }
 
   /// Gets the reason why a profile is incomplete
@@ -27,10 +25,7 @@ class ProfileCompletenessValidator {
   }
 
   static bool _hasValidName(String name) {
-    return name.isNotEmpty &&
-        name.trim().length >= 2 &&
-        name != 'No Name' &&
-        name != 'Unknown';
+    return name.isNotEmpty && name.trim().length >= 2 && name != 'No Name' && name != 'Unknown';
   }
 
   static bool _hasCreativeRole(CreativeRole? creativeRole) {

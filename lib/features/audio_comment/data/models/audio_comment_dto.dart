@@ -55,8 +55,7 @@ class AudioCommentDTO {
       createdAt: audioComment.createdAt.toIso8601String(),
       // Include sync metadata for new comments
       version: 1, // Initial version for new comments
-      lastModified:
-          audioComment.createdAt, // Use createdAt as initial lastModified
+      lastModified: audioComment.createdAt, // Use createdAt as initial lastModified
       // Audio fields
       audioStorageUrl: audioComment.audioStorageUrl,
       localAudioPath: audioComment.localAudioPath,
@@ -77,8 +76,7 @@ class AudioCommentDTO {
       // Audio fields
       audioStorageUrl: audioStorageUrl,
       localAudioPath: localAudioPath,
-      audioDuration:
-          audioDurationMs != null ? Duration(milliseconds: audioDurationMs!) : null,
+      audioDuration: audioDurationMs != null ? Duration(milliseconds: audioDurationMs!) : null,
       commentType: _parseCommentType(commentType),
     );
   }
@@ -117,8 +115,7 @@ class AudioCommentDTO {
   }
 
   factory AudioCommentDTO.fromJson(Map<String, dynamic> json) {
-    final versionId =
-        (json['versionId'] as String?) ?? (json['trackId'] as String);
+    final versionId = (json['versionId'] as String?) ?? (json['trackId'] as String);
 
     // Parse lastModified - handle both Timestamp and String types
     DateTime? lastModified;

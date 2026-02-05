@@ -31,8 +31,10 @@ abstract class UserProfileRemoteDataSource {
   );
 
   /// Get metadata for user profiles modified since a specific timestamp for specific user IDs
-  Future<Either<Failure, List<EntityMetadata>>>
-  getUserProfilesMetadataModifiedSince(DateTime since, List<String> userIds);
+  Future<Either<Failure, List<EntityMetadata>>> getUserProfilesMetadataModifiedSince(
+    DateTime since,
+    List<String> userIds,
+  );
 }
 
 @LazySingleton(as: UserProfileRemoteDataSource)
@@ -45,11 +47,7 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
   @override
   Future<Either<Failure, UserProfileDTO>> getProfileById(String userId) async {
     try {
-      final query =
-          await _firestore
-              .collection(UserProfileDTO.collection)
-              .doc(userId)
-              .get();
+      final query = await _firestore.collection(UserProfileDTO.collection).doc(userId).get();
 
       if (!query.exists) {
         return left(DatabaseFailure('User profile not found for ID: $userId'));
@@ -93,11 +91,7 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
   Future<Either<Failure, UserProfileDTO?>> findUserByEmail(String email) async {
     try {
       final query =
-          await _firestore
-              .collection(UserProfileDTO.collection)
-              .where('email', isEqualTo: email)
-              .limit(1)
-              .get();
+          await _firestore.collection(UserProfileDTO.collection).where('email', isEqualTo: email).limit(1).get();
 
       if (query.docs.isEmpty) {
         return right(null); // User not found
@@ -120,11 +114,7 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
       final List<UserProfileDTO> result = [];
       for (var i = 0; i < userIds.length; i += 10) {
         final batch = userIds.skip(i).take(10).toList();
-        final query =
-            await _firestore
-                .collection(UserProfileDTO.collection)
-                .where('id', whereIn: batch)
-                .get();
+        final query = await _firestore.collection(UserProfileDTO.collection).where('id', whereIn: batch).get();
         result.addAll(
           query.docs.map((doc) => UserProfileDTO.fromJson(doc.data())),
         );
@@ -166,8 +156,7 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
   }
 
   @override
-  Future<Either<Failure, List<EntityMetadata>>>
-  getUserProfilesMetadataModifiedSince(
+  Future<Either<Failure, List<EntityMetadata>>> getUserProfilesMetadataModifiedSince(
     DateTime since,
     List<String> userIds,
   ) async {
@@ -215,8 +204,7 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
       }
 
       final extension = p.extension(localPath).replaceFirst('.', '');
-      final fileName =
-          'avatar_${DateTime.now().millisecondsSinceEpoch}.$extension';
+      final fileName = 'avatar_${DateTime.now().millisecondsSinceEpoch}.$extension';
       final ref = _storage.ref().child('avatars/$userId/$fileName');
 
       await ref.putFile(File(localPath));

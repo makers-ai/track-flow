@@ -23,11 +23,7 @@ class WaveformLocalDataSourceImpl implements WaveformLocalDataSource {
     TrackVersionId versionId,
   ) async {
     // Filter only by versionId since waveforms are now purely version-based
-    final document =
-        await _isar.audioWaveformDocuments
-            .filter()
-            .versionIdEqualTo(versionId.value)
-            .findFirst();
+    final document = await _isar.audioWaveformDocuments.filter().versionIdEqualTo(versionId.value).findFirst();
     return document?.toEntity();
   }
 
@@ -44,10 +40,7 @@ class WaveformLocalDataSourceImpl implements WaveformLocalDataSource {
   Future<void> deleteWaveformsForVersion(TrackVersionId versionId) async {
     await _isar.writeTxn(() async {
       // Delete all waveforms for this specific version
-      await _isar.audioWaveformDocuments
-          .filter()
-          .versionIdEqualTo(versionId.value)
-          .deleteAll();
+      await _isar.audioWaveformDocuments.filter().versionIdEqualTo(versionId.value).deleteAll();
     });
   }
 

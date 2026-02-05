@@ -7,8 +7,7 @@ import '../services/audio_playback_service.dart';
 /// ONLY handles shuffle mode toggle - NO business domain concerns
 @injectable
 class ToggleShuffleUseCase {
-  const ToggleShuffleUseCase({required AudioPlaybackService playbackService})
-    : _playbackService = playbackService;
+  const ToggleShuffleUseCase({required AudioPlaybackService playbackService}) : _playbackService = playbackService;
 
   final AudioPlaybackService _playbackService;
 

@@ -53,21 +53,14 @@ class UIComponentRegistry {
 
   // Usage guidelines
   static const Map<String, String> usageGuidelines = {
-    'buttons':
-        'Use PrimaryButton for main actions, SecondaryButton for secondary actions',
-    'cards':
-        'Use BaseCard as foundation, specialized cards for specific content types',
-    'inputs':
-        'Use AppTextField for basic input, AppFormField for forms with validation',
+    'buttons': 'Use PrimaryButton for main actions, SecondaryButton for secondary actions',
+    'cards': 'Use BaseCard as foundation, specialized cards for specific content types',
+    'inputs': 'Use AppTextField for basic input, AppFormField for forms with validation',
     'navigation': 'Use AppScaffold as main container, AppBar for headers',
-    'modals':
-        'Use TrackFlowActionSheet for action lists, TrackFlowFormSheet for forms',
-    'loading':
-        'Use AppLoading for full-screen, AppShimmer for content placeholders',
-    'feedback':
-        'Use AppToast for success/error messages, AppSnackBar for actions',
-    'audio':
-        'Use AudioPlayPauseButton for play controls, SoundbarAnimation for visual feedback',
+    'modals': 'Use TrackFlowActionSheet for action lists, TrackFlowFormSheet for forms',
+    'loading': 'Use AppLoading for full-screen, AppShimmer for content placeholders',
+    'feedback': 'Use AppToast for success/error messages, AppSnackBar for actions',
+    'audio': 'Use AudioPlayPauseButton for play controls, SoundbarAnimation for visual feedback',
   };
 
   // Migration status
@@ -116,9 +109,7 @@ class ComponentUsageTracker {
   }
 
   static Map<String, int> getMostUsedComponents() {
-    final sorted =
-        _usageCount.entries.toList()
-          ..sort((a, b) => b.value.compareTo(a.value));
+    final sorted = _usageCount.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
     return Map.fromEntries(sorted);
   }
 }

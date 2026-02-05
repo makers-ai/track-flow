@@ -78,21 +78,27 @@ class UserProfileDTO {
       genres: userProfile.genres,
       skills: userProfile.skills,
       availabilityStatus: userProfile.availabilityStatus,
-      socialLinks: userProfile.socialLinks?.map((l) => {
-        'platform': l.platform,
-        'url': l.url,
-      }).toList(),
+      socialLinks:
+          userProfile.socialLinks
+              ?.map(
+                (l) => {
+                  'platform': l.platform,
+                  'url': l.url,
+                },
+              )
+              .toList(),
       websiteUrl: userProfile.websiteUrl,
       linktreeUrl: userProfile.linktreeUrl,
-      contactInfo: userProfile.contactInfo != null ? {
-        'phone': userProfile.contactInfo!.phone,
-      } : null,
+      contactInfo:
+          userProfile.contactInfo != null
+              ? {
+                'phone': userProfile.contactInfo!.phone,
+              }
+              : null,
       verified: userProfile.verified,
       // ⭐ NEW: Include sync metadata for user profiles
       version: 1, // Initial version for new user profiles
-      lastModified:
-          userProfile.updatedAt ??
-          userProfile.createdAt, // Use updatedAt or createdAt
+      lastModified: userProfile.updatedAt ?? userProfile.createdAt, // Use updatedAt or createdAt
     );
   }
 
@@ -112,15 +118,23 @@ class UserProfileDTO {
       genres: genres,
       skills: skills,
       availabilityStatus: availabilityStatus,
-      socialLinks: socialLinks?.map((l) => SocialLink(
-        platform: l['platform']!,
-        url: l['url']!,
-      )).toList(),
+      socialLinks:
+          socialLinks
+              ?.map(
+                (l) => SocialLink(
+                  platform: l['platform']!,
+                  url: l['url']!,
+                ),
+              )
+              .toList(),
       websiteUrl: websiteUrl,
       linktreeUrl: linktreeUrl,
-      contactInfo: contactInfo != null ? ContactInfo(
-        phone: contactInfo!['phone'] as String?,
-      ) : null,
+      contactInfo:
+          contactInfo != null
+              ? ContactInfo(
+                phone: contactInfo!['phone'] as String?,
+              )
+              : null,
       verified: verified,
     );
   }
@@ -162,10 +176,7 @@ class UserProfileDTO {
       verified: json['verified'] as bool? ?? false,
       // ⭐ NEW: Parse sync metadata from JSON
       version: json['version'] as int? ?? 1,
-      lastModified:
-          json['lastModified'] != null
-              ? DateTime.tryParse(json['lastModified'] as String)
-              : null,
+      lastModified: json['lastModified'] != null ? DateTime.tryParse(json['lastModified'] as String) : null,
     );
   }
 

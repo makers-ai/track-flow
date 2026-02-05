@@ -66,10 +66,7 @@ class _UploadTrackFormState extends State<UploadTrackForm> {
 
     // Otherwise, write bytes or stream to a temporary file (iOS Files/iCloud)
     final tempDir = await getTemporaryDirectory();
-    final safeName =
-        pf.name.isNotEmpty
-            ? pf.name
-            : 'audio_${DateTime.now().millisecondsSinceEpoch}';
+    final safeName = pf.name.isNotEmpty ? pf.name : 'audio_${DateTime.now().millisecondsSinceEpoch}';
     final ext = p.extension(safeName);
     final base = ext.isEmpty ? safeName : p.basenameWithoutExtension(safeName);
     final outPath = p.join(

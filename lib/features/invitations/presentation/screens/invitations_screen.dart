@@ -22,8 +22,7 @@ class InvitationsScreen extends StatefulWidget {
   State<InvitationsScreen> createState() => _InvitationsScreenState();
 }
 
-class _InvitationsScreenState extends State<InvitationsScreen>
-    with TickerProviderStateMixin {
+class _InvitationsScreenState extends State<InvitationsScreen> with TickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -70,8 +69,7 @@ class _InvitationsScreenState extends State<InvitationsScreen>
               left: Dimensions.space16,
               right: Dimensions.space16,
               top: Dimensions.space16,
-              bottom:
-                  MediaQuery.of(context).viewInsets.bottom + Dimensions.space16,
+              bottom: MediaQuery.of(context).viewInsets.bottom + Dimensions.space16,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,

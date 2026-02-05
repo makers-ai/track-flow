@@ -47,8 +47,7 @@ abstract class AppModule {
 
   // Network
   @lazySingleton
-  InternetConnectionChecker get internetConnectionChecker =>
-      InternetConnectionChecker();
+  InternetConnectionChecker get internetConnectionChecker => InternetConnectionChecker();
 
   @lazySingleton
   Connectivity get connectivity => Connectivity();

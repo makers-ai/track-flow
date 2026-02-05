@@ -100,10 +100,10 @@ class AudioQueue extends Equatable {
     final newSources = List<AudioSource>.from(sources);
     final clampedIndex = index.clamp(0, sources.length);
     newSources.insert(clampedIndex, source);
-    
+
     // Adjust current index if insertion affects it
     final newCurrentIndex = index <= currentIndex ? currentIndex + 1 : currentIndex;
-    
+
     return copyWith(
       sources: newSources,
       currentIndex: newCurrentIndex,
@@ -115,10 +115,10 @@ class AudioQueue extends Equatable {
     if (index < 0 || index >= sources.length) {
       return this; // No change if index is invalid
     }
-    
+
     final newSources = List<AudioSource>.from(sources);
     newSources.removeAt(index);
-    
+
     // Adjust current index after removal
     int newCurrentIndex = currentIndex;
     if (index < currentIndex) {
@@ -126,7 +126,7 @@ class AudioQueue extends Equatable {
     } else if (index == currentIndex && currentIndex >= newSources.length) {
       newCurrentIndex = newSources.length - 1;
     }
-    
+
     return copyWith(
       sources: newSources,
       currentIndex: newSources.isEmpty ? -1 : newCurrentIndex,
@@ -154,19 +154,17 @@ class AudioQueue extends Equatable {
   /// Enable or disable shuffle
   AudioQueue withShuffle(bool enabled) {
     if (enabled == shuffleEnabled) return this;
-    
+
     if (enabled) {
       // Enable shuffle: save original order and shuffle
       final originalOrder = List<AudioSource>.from(sources);
       final shuffledSources = List<AudioSource>.from(sources);
       shuffledSources.shuffle();
-      
+
       // Find new index of current track in shuffled list
       final currentSource = this.currentSource;
-      final newCurrentIndex = currentSource != null 
-          ? shuffledSources.indexOf(currentSource)
-          : -1;
-      
+      final newCurrentIndex = currentSource != null ? shuffledSources.indexOf(currentSource) : -1;
+
       return AudioQueue(
         sources: shuffledSources,
         currentIndex: newCurrentIndex,
@@ -177,10 +175,8 @@ class AudioQueue extends Equatable {
       // Disable shuffle: restore original order
       final originalSources = originalOrder ?? sources;
       final currentSource = this.currentSource;
-      final newCurrentIndex = currentSource != null 
-          ? originalSources.indexOf(currentSource)
-          : -1;
-      
+      final newCurrentIndex = currentSource != null ? originalSources.indexOf(currentSource) : -1;
+
       return AudioQueue(
         sources: originalSources,
         currentIndex: newCurrentIndex,

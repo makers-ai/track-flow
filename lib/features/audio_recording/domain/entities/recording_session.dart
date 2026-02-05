@@ -7,7 +7,7 @@ class RecordingSession extends Equatable {
   final Duration elapsed;
   final RecordingState state;
   final String outputPath;
-  final double? currentAmplitude;  // For waveform visualization
+  final double? currentAmplitude; // For waveform visualization
 
   const RecordingSession({
     required this.sessionId,

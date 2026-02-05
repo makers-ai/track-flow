@@ -17,8 +17,7 @@ class DeleteProjectDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppConfirmationDialog(
       title: 'Delete Project',
-      message:
-          'Are you sure you want to delete this project? This action cannot be undone.',
+      message: 'Are you sure you want to delete this project? This action cannot be undone.',
       confirmText: 'Delete',
       cancelText: 'Cancel',
       isDestructive: true,

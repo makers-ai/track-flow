@@ -9,8 +9,7 @@ import 'package:trackflow/features/invitations/presentation/blocs/events/invitat
 import 'package:trackflow/features/invitations/presentation/blocs/states/invitation_states.dart';
 
 @injectable
-class ProjectInvitationWatcherBloc
-    extends Bloc<InvitationWatcherEvent, InvitationWatcherState> {
+class ProjectInvitationWatcherBloc extends Bloc<InvitationWatcherEvent, InvitationWatcherState> {
   final InvitationRepository _invitationRepository;
   final CurrentUserService _currentUserService;
 
@@ -95,8 +94,7 @@ class ProjectInvitationWatcherBloc
         onData: (result) {
           result.fold(
             (failure) => emit(InvitationWatcherError(failure.message)),
-            (invitations) =>
-                emit(InvitationCountWatcherState(invitations.length)),
+            (invitations) => emit(InvitationCountWatcherState(invitations.length)),
           );
         },
         onError: (error, stackTrace) {

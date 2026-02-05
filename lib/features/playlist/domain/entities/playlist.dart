@@ -30,6 +30,5 @@ class Playlist extends AggregateRoot<PlaylistId> {
   }
 
   @override
-  String toString() =>
-      'Playlist(id: $id, name: $name, trackIds: $trackIds, playlistSource: $playlistSource)';
+  String toString() => 'Playlist(id: $id, name: $name, trackIds: $trackIds, playlistSource: $playlistSource)';
 }

@@ -34,10 +34,7 @@ class ProjectRole {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is ProjectRole &&
-          runtimeType == other.runtimeType &&
-          value == other.value;
+      identical(this, other) || other is ProjectRole && runtimeType == other.runtimeType && value == other.value;
 
   @override
   int get hashCode => value.hashCode;

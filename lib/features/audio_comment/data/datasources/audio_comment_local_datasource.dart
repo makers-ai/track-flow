@@ -99,11 +99,7 @@ class IsarAudioCommentLocalDataSource implements AudioCommentLocalDataSource {
     String versionId,
   ) async {
     try {
-      final commentDocs =
-          await _isar.audioCommentDocuments
-              .filter()
-              .trackIdEqualTo(versionId)
-              .findAll();
+      final commentDocs = await _isar.audioCommentDocuments.filter().trackIdEqualTo(versionId).findAll();
       return Right(commentDocs.map((doc) => doc.toDTO()).toList());
     } catch (e) {
       return Left(CacheFailure('Failed to get cached comments by track: $e'));
@@ -113,8 +109,7 @@ class IsarAudioCommentLocalDataSource implements AudioCommentLocalDataSource {
   @override
   Future<Either<Failure, AudioCommentDTO?>> getCommentById(String id) async {
     try {
-      final commentDoc =
-          await _isar.audioCommentDocuments.filter().idEqualTo(id).findFirst();
+      final commentDoc = await _isar.audioCommentDocuments.filter().idEqualTo(id).findFirst();
       return Right(commentDoc?.toDTO());
     } catch (e) {
       return Left(CacheFailure('Failed to get comment by id: $e'));
@@ -182,10 +177,7 @@ class IsarAudioCommentLocalDataSource implements AudioCommentLocalDataSource {
     try {
       await _isar.writeTxn(() async {
         // Delete existing comments for the track
-        await _isar.audioCommentDocuments
-            .filter()
-            .trackIdEqualTo(versionId)
-            .deleteAll();
+        await _isar.audioCommentDocuments.filter().trackIdEqualTo(versionId).deleteAll();
 
         if (comments.isEmpty) return;
 
@@ -203,10 +195,7 @@ class IsarAudioCommentLocalDataSource implements AudioCommentLocalDataSource {
   Future<Either<Failure, Unit>> deleteByVersion(String versionId) async {
     try {
       await _isar.writeTxn(() async {
-        await _isar.audioCommentDocuments
-            .filter()
-            .trackIdEqualTo(versionId)
-            .deleteAll();
+        await _isar.audioCommentDocuments.filter().trackIdEqualTo(versionId).deleteAll();
       });
       return const Right(unit);
     } catch (e) {
@@ -219,39 +208,33 @@ class IsarAudioCommentLocalDataSource implements AudioCommentLocalDataSource {
     required String userId,
     required int limit,
   }) {
-    return _isar.audioCommentDocuments
-        .where()
-        .sortByCreatedAtDesc()
-        .watch(fireImmediately: true)
-        .asyncMap((comments) async {
-          // Filter comments to only those from accessible projects
-          final accessibleComments = <AudioCommentDocument>[];
+    return _isar.audioCommentDocuments.where().sortByCreatedAtDesc().watch(fireImmediately: true).asyncMap((
+      comments,
+    ) async {
+      // Filter comments to only those from accessible projects
+      final accessibleComments = <AudioCommentDocument>[];
 
-          for (final comment in comments) {
-            // Get the project for this comment
-            final project = await _isar.projectDocuments
-                .filter()
-                .idEqualTo(comment.projectId)
-                .isDeletedEqualTo(false)
-                .findFirst();
+      for (final comment in comments) {
+        // Get the project for this comment
+        final project =
+            await _isar.projectDocuments.filter().idEqualTo(comment.projectId).isDeletedEqualTo(false).findFirst();
 
-            if (project != null) {
-              // Check if user has access (is owner or collaborator)
-              final hasAccess = project.ownerId == userId ||
-                  project.collaboratorIds.contains(userId);
+        if (project != null) {
+          // Check if user has access (is owner or collaborator)
+          final hasAccess = project.ownerId == userId || project.collaboratorIds.contains(userId);
 
-              if (hasAccess) {
-                accessibleComments.add(comment);
+          if (hasAccess) {
+            accessibleComments.add(comment);
 
-                // Early exit when we have enough comments
-                if (accessibleComments.length >= limit) {
-                  break;
-                }
-              }
+            // Early exit when we have enough comments
+            if (accessibleComments.length >= limit) {
+              break;
             }
           }
+        }
+      }
 
-          return accessibleComments.map((doc) => doc.toDTO()).toList();
-        });
+      return accessibleComments.map((doc) => doc.toDTO()).toList();
+    });
   }
 }

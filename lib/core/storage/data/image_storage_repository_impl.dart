@@ -156,9 +156,7 @@ class ImageStorageRepositoryImpl implements ImageStorageRepository {
     required String entityType,
   }) async {
     try {
-      final directoryType = entityType == 'project'
-          ? DirectoryType.projectCovers
-          : DirectoryType.trackCovers;
+      final directoryType = entityType == 'project' ? DirectoryType.projectCovers : DirectoryType.trackCovers;
 
       final dirResult = await _directoryService.getDirectory(directoryType);
 

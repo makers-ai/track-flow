@@ -22,10 +22,7 @@ class WatchTrackCacheStatusUseCase {
     return _audioStorageRepository
         .watchTrackCacheStatus(
           AudioTrackId.fromUniqueString(trackId),
-          versionId:
-              versionId != null
-                  ? TrackVersionId.fromUniqueString(versionId)
-                  : null,
+          versionId: versionId != null ? TrackVersionId.fromUniqueString(versionId) : null,
         )
         .map<Either<CacheFailure, CacheStatus>>(
           (exists) => Right<CacheFailure, CacheStatus>(

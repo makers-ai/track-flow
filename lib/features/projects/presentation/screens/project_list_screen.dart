@@ -30,7 +30,7 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
   void initState() {
     super.initState();
 
-   context.read<SyncBloc>().add(const StartupSyncRequested());
+    context.read<SyncBloc>().add(const StartupSyncRequested());
     context.read<ProjectsBloc>().add(StartWatchingProjects());
   }
 
@@ -134,8 +134,7 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
                     Column(
                       children: [
                         AppListHeaderBar(
-                          leadingText:
-                              'Sort: ${state.sort.label} • ${projects.length}',
+                          leadingText: 'Sort: ${state.sort.label} • ${projects.length}',
                           trailing: AppPopupMenuButton<ProjectSort>(
                             tooltip: 'Sort projects',
                             initialValue: state.sort,
@@ -161,10 +160,8 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
                                 icon: Icons.sort_rounded,
                               ),
                             ],
-                            onOpened:
-                                () => setState(() => _isSortMenuOpen = true),
-                            onClosed:
-                                () => setState(() => _isSortMenuOpen = false),
+                            onOpened: () => setState(() => _isSortMenuOpen = true),
+                            onClosed: () => setState(() => _isSortMenuOpen = false),
                             onSelected: (sort) {
                               context.read<ProjectsBloc>().add(
                                 ChangeProjectsSort(sort),
@@ -181,11 +178,10 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
                                         project: project,
                                         onTap:
                                             () => context.push(
-                                              AppRoutes.projectDetails
-                                                  .replaceAll(
-                                                    ':id',
-                                                    project.id,
-                                                  ),
+                                              AppRoutes.projectDetails.replaceAll(
+                                                ':id',
+                                                project.id,
+                                              ),
                                               extra: project.project,
                                             ),
                                       ),

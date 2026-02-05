@@ -13,8 +13,7 @@ class TrackUploadStatusCubit extends Cubit<TrackUploadStatusState> {
   final WatchTrackUploadStatusUseCase _watchUseCase;
   StreamSubscription<TrackUploadStatus>? _subscription;
 
-  TrackUploadStatusCubit(this._watchUseCase)
-    : super(const TrackUploadStatusState.initial());
+  TrackUploadStatusCubit(this._watchUseCase) : super(const TrackUploadStatusState.initial());
 
   void watch(AudioTrackId trackId) {
     _subscription?.cancel();

@@ -9,12 +9,10 @@ class CachedTracksManagerComponent extends StatefulWidget {
   const CachedTracksManagerComponent({super.key});
 
   @override
-  State<CachedTracksManagerComponent> createState() =>
-      _CachedTracksManagerComponentState();
+  State<CachedTracksManagerComponent> createState() => _CachedTracksManagerComponentState();
 }
 
-class _CachedTracksManagerComponentState
-    extends State<CachedTracksManagerComponent> {
+class _CachedTracksManagerComponentState extends State<CachedTracksManagerComponent> {
   late final CacheMaintenanceService _cacheMaintenanceService;
 
   List<CachedAudio> _cachedTracks = [];

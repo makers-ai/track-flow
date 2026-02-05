@@ -3,12 +3,12 @@ import 'package:uuid/uuid.dart';
 
 /// Represents a completed audio recording with metadata
 class AudioRecording extends Equatable {
-  final String id;                  // Unique identifier
-  final String localPath;           // Local file path
-  final Duration duration;          // Recording length
-  final AudioFormat format;         // File format
-  final int fileSizeBytes;          // File size
-  final DateTime recordedAt;        // Recording timestamp
+  final String id; // Unique identifier
+  final String localPath; // Local file path
+  final Duration duration; // Recording length
+  final AudioFormat format; // File format
+  final int fileSizeBytes; // File size
+  final DateTime recordedAt; // Recording timestamp
   final Map<String, dynamic>? metadata; // Optional consumer metadata
 
   const AudioRecording({
@@ -66,7 +66,7 @@ class AudioRecording extends Equatable {
 
 /// Supported audio formats
 enum AudioFormat {
-  m4a,  // AAC in M4A container (iOS & Android compatible)
-  aac,  // Raw AAC
-  mp3,  // MP3 (future support)
+  m4a, // AAC in M4A container (iOS & Android compatible)
+  aac, // Raw AAC
+  mp3, // MP3 (future support)
 }

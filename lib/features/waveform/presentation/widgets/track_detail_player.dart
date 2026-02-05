@@ -14,10 +14,8 @@ class TrackDetailPlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     // Determine which versionId to use
-    final TrackVersionId? effectiveVersionId =
-        versionId ?? track.activeVersionId;
+    final TrackVersionId? effectiveVersionId = versionId ?? track.activeVersionId;
 
     return SafeArea(
       top: true,
@@ -37,8 +35,7 @@ class TrackDetailPlayer extends StatelessWidget {
               height: 96,
               child: EnhancedWaveformDisplay(
                 track: track,
-                versionId:
-                    versionId, // ✅ Pass versionId for version-specific waveforms
+                versionId: versionId, // ✅ Pass versionId for version-specific waveforms
                 height: 96,
               ),
             ),
@@ -55,6 +52,3 @@ class TrackDetailPlayer extends StatelessWidget {
     );
   }
 }
-
-
-

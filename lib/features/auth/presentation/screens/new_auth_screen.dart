@@ -197,7 +197,7 @@ class _NewAuthScreenState extends State<NewAuthScreen> {
                 width: 2,
               ),
             ),
-            child: Container( 
+            child: Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('assets/logo/trackflow_staging.png'),
@@ -210,7 +210,7 @@ class _NewAuthScreenState extends State<NewAuthScreen> {
         SizedBox(height: Dimensions.space24),
 
         Padding(
-          padding: const EdgeInsets.only(left:16.0),
+          padding: const EdgeInsets.only(left: 16.0),
           child: Text(
             'Enjoy your\nown music',
             style: AppTextStyle.displayLarge,
@@ -219,7 +219,7 @@ class _NewAuthScreenState extends State<NewAuthScreen> {
         SizedBox(height: Dimensions.space12),
 
         Padding(
-          padding: const EdgeInsets.only(left:16.0),
+          padding: const EdgeInsets.only(left: 16.0),
           child: Text(
             'All your team in the same place',
             style: TextStyle(
@@ -371,9 +371,7 @@ class _NewAuthScreenState extends State<NewAuthScreen> {
                     ),
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _isPasswordVisible
-                            ? Icons.visibility_off
-                            : Icons.visibility,
+                        _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
                         color: AppColors.textPrimary.withValues(alpha: 0.7),
                       ),
                       onPressed: _togglePasswordVisibility,
@@ -430,9 +428,7 @@ class _NewAuthScreenState extends State<NewAuthScreen> {
                     });
                   },
                   child: Text(
-                    _isLogin
-                        ? 'Need an account? Sign up'
-                        : 'Already have an account? Sign in',
+                    _isLogin ? 'Need an account? Sign up' : 'Already have an account? Sign in',
                     style: TextStyle(
                       color: AppColors.textPrimary.withValues(alpha: 0.8),
                       fontSize: 14,

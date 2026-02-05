@@ -8,8 +8,7 @@ import 'package:trackflow/features/projects/domain/entities/project.dart';
 import 'package:trackflow/features/projects/domain/repositories/projects_repository.dart';
 import 'package:trackflow/features/track_version/domain/entities/track_version.dart';
 import 'package:trackflow/features/track_version/domain/repositories/track_version_repository.dart';
-import 'package:trackflow/features/user_profile/domain/entities/user_profile.dart'
-    as profile;
+import 'package:trackflow/features/user_profile/domain/entities/user_profile.dart' as profile;
 import 'package:trackflow/features/user_profile/domain/repositories/user_profile_repository.dart';
 
 import '../entities/track_context.dart';
@@ -75,8 +74,7 @@ class LoadTrackContextUseCase {
 
     return result.fold(
       (_) => null,
-      (profile.UserProfile? user) =>
-          user != null ? _mapUserProfile(user) : null,
+      (profile.UserProfile? user) => user != null ? _mapUserProfile(user) : null,
     );
   }
 

@@ -31,10 +31,7 @@ class SavePlaybackStateUseCase {
 
       // 3. Save queue information separately for faster access
       if (currentSession.queue.isNotEmpty) {
-        final trackIds =
-            currentSession.queue.sources
-                .map((source) => source.metadata.id.value)
-                .toList();
+        final trackIds = currentSession.queue.sources.map((source) => source.metadata.id.value).toList();
         await _persistenceRepository.saveQueue(
           trackIds,
           currentSession.queue.currentIndex,
@@ -42,8 +39,7 @@ class SavePlaybackStateUseCase {
       }
 
       // 4. Save current track position for resume capability
-      if (currentSession.currentTrack != null &&
-          currentSession.position.inMilliseconds > 0) {
+      if (currentSession.currentTrack != null && currentSession.position.inMilliseconds > 0) {
         await _persistenceRepository.saveTrackPosition(
           currentSession.currentTrack!.id.value,
           currentSession.position,

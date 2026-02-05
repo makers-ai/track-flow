@@ -14,8 +14,7 @@ import 'package:trackflow/features/user_profile/data/models/user_profile_dto.dar
 /// Special case: only one profile (current user), so "incremental" means
 /// checking if the remote profile is newer than local cache.
 @LazySingleton(as: IncrementalSyncService<UserProfileDTO>)
-class UserProfileIncrementalSyncService
-    implements IncrementalSyncService<UserProfileDTO> {
+class UserProfileIncrementalSyncService implements IncrementalSyncService<UserProfileDTO> {
   final UserProfileRemoteDataSource _remoteDataSource;
   final UserProfileLocalDataSource _localDataSource;
 
@@ -53,8 +52,7 @@ class UserProfileIncrementalSyncService
       final localProfiles = await _localDataSource.getUserProfilesByIds([
         userId,
       ]);
-      final localProfile =
-          localProfiles.isNotEmpty ? localProfiles.first : null;
+      final localProfile = localProfiles.isNotEmpty ? localProfiles.first : null;
 
       // Check if remote is newer than local
       if (localProfile == null ||
@@ -87,8 +85,10 @@ class UserProfileIncrementalSyncService
   }
 
   @override
-  Future<Either<Failure, IncrementalSyncResult<UserProfileDTO>>>
-  performIncrementalSync(DateTime lastSyncTime, String userId) async {
+  Future<Either<Failure, IncrementalSyncResult<UserProfileDTO>>> performIncrementalSync(
+    DateTime lastSyncTime,
+    String userId,
+  ) async {
     try {
       AppLogger.sync(
         'USER_PROFILE',
@@ -137,8 +137,7 @@ class UserProfileIncrementalSyncService
   }
 
   @override
-  Future<Either<Failure, IncrementalSyncResult<UserProfileDTO>>>
-  performFullSync(String userId) async {
+  Future<Either<Failure, IncrementalSyncResult<UserProfileDTO>>> performFullSync(String userId) async {
     try {
       AppLogger.sync('USER_PROFILE', 'Starting full sync', syncKey: userId);
 

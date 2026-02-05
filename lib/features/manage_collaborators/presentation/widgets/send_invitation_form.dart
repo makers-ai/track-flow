@@ -158,10 +158,7 @@ class _SendInvitationFormState extends State<SendInvitationForm> {
                   builder: (context, state) {
                     return PrimaryButton(
                       text: 'Add Collaborator',
-                      onPressed:
-                          _canAddCollaborator(state)
-                              ? () => _addCollaborator(state)
-                              : null,
+                      onPressed: _canAddCollaborator(state) ? () => _addCollaborator(state) : null,
                       isLoading: state is ManageCollaboratorsLoading,
                       isDisabled: state is ManageCollaboratorsLoading,
                     );

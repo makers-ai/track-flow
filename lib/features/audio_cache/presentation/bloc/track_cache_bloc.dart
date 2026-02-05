@@ -15,8 +15,7 @@ import '../../../projects/domain/exceptions/project_exceptions.dart';
 class TrackCacheBloc extends Bloc<TrackCacheEvent, TrackCacheState> {
   TrackCacheBloc({
     required CacheTrackUseCase cacheTrackUseCase,
-    required status_usecase.WatchTrackCacheStatusUseCase
-    watchTrackCacheStatusUseCase,
+    required status_usecase.WatchTrackCacheStatusUseCase watchTrackCacheStatusUseCase,
     required RemoveTrackCacheUseCase removeTrackCacheUseCase,
     required GetCachedTrackPathUseCase getCachedTrackPathUseCase,
     required DownloadTrackUseCase downloadTrackUseCase,
@@ -57,8 +56,7 @@ class TrackCacheBloc extends Bloc<TrackCacheEvent, TrackCacheState> {
   }
 
   final CacheTrackUseCase _cacheTrackUseCase;
-  final status_usecase.WatchTrackCacheStatusUseCase
-  _watchTrackCacheStatusUseCase;
+  final status_usecase.WatchTrackCacheStatusUseCase _watchTrackCacheStatusUseCase;
   final RemoveTrackCacheUseCase _removeTrackCacheUseCase;
   final GetCachedTrackPathUseCase _getCachedTrackPathUseCase;
   final DownloadTrackUseCase _downloadTrackUseCase;
@@ -129,8 +127,7 @@ class TrackCacheBloc extends Bloc<TrackCacheEvent, TrackCacheState> {
           trackId: event.trackId,
           error: failure.message,
         ),
-        (filePath) =>
-            TrackCachePathLoaded(trackId: event.trackId, filePath: filePath),
+        (filePath) => TrackCachePathLoaded(trackId: event.trackId, filePath: filePath),
       ),
     );
   }

@@ -38,14 +38,15 @@ class CreativeRoleSelector extends StatelessWidget {
         Wrap(
           spacing: Dimensions.space8,
           runSpacing: Dimensions.space8,
-          children: CreativeRole.values.map((role) {
-            final isSelected = selectedRole == role;
-            return _RoleChip(
-              role: role,
-              isSelected: isSelected,
-              onTap: () => onRoleChanged(role),
-            );
-          }).toList(),
+          children:
+              CreativeRole.values.map((role) {
+                final isSelected = selectedRole == role;
+                return _RoleChip(
+                  role: role,
+                  isSelected: isSelected,
+                  onTap: () => onRoleChanged(role),
+                );
+              }).toList(),
         ),
       ],
     );

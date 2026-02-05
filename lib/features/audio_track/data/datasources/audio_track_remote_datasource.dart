@@ -53,10 +53,7 @@ class AudioTrackRemoteDataSourceImpl implements AudioTrackRemoteDataSource {
       // Ensure server authoritative timestamp
       data['lastModified'] = FieldValue.serverTimestamp();
 
-      await _firestore
-          .collection(AudioTrackDTO.collection)
-          .doc(trackData.id.value)
-          .set(data);
+      await _firestore.collection(AudioTrackDTO.collection).doc(trackData.id.value).set(data);
 
       return Right(trackData);
     } catch (e) {
@@ -88,10 +85,7 @@ class AudioTrackRemoteDataSourceImpl implements AudioTrackRemoteDataSource {
       // Ensure server authoritative timestamp regardless of client value
       data['lastModified'] = FieldValue.serverTimestamp();
 
-      await _firestore
-          .collection(AudioTrackDTO.collection)
-          .doc(trackData.id.value)
-          .update(data);
+      await _firestore.collection(AudioTrackDTO.collection).doc(trackData.id.value).update(data);
 
       return const Right(unit);
     } catch (e) {

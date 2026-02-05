@@ -92,4 +92,3 @@ class CurrentUserCreationDataLoaded extends CurrentUserState {
   @override
   List<Object?> get props => [userId, email, displayName, photoUrl, isGoogleUser];
 }
-

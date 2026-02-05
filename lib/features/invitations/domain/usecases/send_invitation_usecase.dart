@@ -65,8 +65,7 @@ class SendInvitationUseCase {
         invitedEmail: params.invitedEmail,
         proposedRole: params.proposedRole,
         message: params.message,
-        expirationDuration:
-            params.expirationDuration ?? const Duration(days: 30),
+        expirationDuration: params.expirationDuration ?? const Duration(days: 30),
       );
 
       // 3. Create the invitation
@@ -117,9 +116,7 @@ class SendInvitationUseCase {
       projectId: invitation.projectId,
       projectName: projectName,
       inviterName: inviterName,
-      inviterEmail:
-          invitation
-              .invitedEmail, // This should be inviter's email, but we'll use invited email for now
+      inviterEmail: invitation.invitedEmail, // This should be inviter's email, but we'll use invited email for now
     );
   }
 

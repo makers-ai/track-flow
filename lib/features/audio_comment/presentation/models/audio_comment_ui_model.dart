@@ -86,19 +86,19 @@ class AudioCommentUiModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        projectId,
-        versionId,
-        createdBy,
-        content,
-        timestamp,
-        createdAt,
-        audioStorageUrl,
-        localAudioPath,
-        audioDuration,
-        commentType,
-        formattedTimestamp,
-        formattedCreatedAt,
-        hasAudio,
-      ];
+    id,
+    projectId,
+    versionId,
+    createdBy,
+    content,
+    timestamp,
+    createdAt,
+    audioStorageUrl,
+    localAudioPath,
+    audioDuration,
+    commentType,
+    formattedTimestamp,
+    formattedCreatedAt,
+    hasAudio,
+  ];
 }

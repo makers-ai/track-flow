@@ -25,18 +25,19 @@ class VoiceMemoCard extends StatelessWidget {
       return false;
     }
   }
-  
+
   void _showRenameDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (_) => VoiceMemoRenameDialog(
-        memo: memo.memo,
-        onRename: (newTitle) {
-          context.read<VoiceMemoBloc>().add(
-            UpdateVoiceMemoRequested(memo.memo, newTitle),
-          );
-        },
-      ),
+      builder:
+          (_) => VoiceMemoRenameDialog(
+            memo: memo.memo,
+            onRename: (newTitle) {
+              context.read<VoiceMemoBloc>().add(
+                UpdateVoiceMemoRequested(memo.memo, newTitle),
+              );
+            },
+          ),
     );
   }
 
@@ -84,9 +85,10 @@ class VoiceMemoCard extends StatelessWidget {
                     VoiceMemoCardHeader(
                       memo: memo.memo,
                       onRenamePressed: () => _showRenameDialog(context),
-                      onDeletePressed: () => context.read<VoiceMemoBloc>().add(
-                        DeleteVoiceMemoRequested(memo.memo.id),
-                      ),
+                      onDeletePressed:
+                          () => context.read<VoiceMemoBloc>().add(
+                            DeleteVoiceMemoRequested(memo.memo.id),
+                          ),
                     ),
                     VoiceMemoWaveformDisplay(
                       memo: memo.memo,
@@ -102,7 +104,4 @@ class VoiceMemoCard extends StatelessWidget {
       ),
     );
   }
-
-
-  
 }

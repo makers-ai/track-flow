@@ -6,9 +6,7 @@ class SyncStatusState extends Equatable {
 
   const SyncStatusState({required this.syncState, required this.pendingCount});
 
-  const SyncStatusState.initial()
-    : syncState = SyncState.initial,
-      pendingCount = 0;
+  const SyncStatusState.initial() : syncState = SyncState.initial, pendingCount = 0;
 
   SyncStatusState copyWith({SyncState? syncState, int? pendingCount}) {
     return SyncStatusState(

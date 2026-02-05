@@ -88,7 +88,7 @@ class ProjectCoverArt extends StatelessWidget {
   Widget _buildGeneratedCover() {
     final gradient = _generateGradientFromName(projectName);
     final initials = _generateInitials(projectName);
-    
+
     return Container(
       width: size,
       height: size,
@@ -130,12 +130,11 @@ class ProjectCoverArt extends StatelessWidget {
     );
   }
 
-
   LinearGradient _generateGradientFromName(String name) {
     // Generate a consistent gradient based on project name
     final hash = name.hashCode;
     final random = math.Random(hash);
-    
+
     // Create Spotify-style gradients with predefined color combinations
     final gradientSets = [
       [const Color(0xFF1DB954), const Color(0xFF1ED760)], // Spotify green
@@ -151,7 +150,7 @@ class ProjectCoverArt extends StatelessWidget {
     ];
 
     final selectedGradient = gradientSets[random.nextInt(gradientSets.length)];
-    
+
     return LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
@@ -162,17 +161,16 @@ class ProjectCoverArt extends StatelessWidget {
 
   String _generateInitials(String name) {
     if (name.isEmpty) return 'P';
-    
+
     final words = name.trim().split(' ');
     if (words.length == 1) {
       return words[0].substring(0, math.min(2, words[0].length)).toUpperCase();
     }
-    
+
     // Take first letter of first two words
     return (words[0].substring(0, 1) + words[1].substring(0, 1)).toUpperCase();
   }
 }
-
 
 // Factory methods for different sizes
 class ProjectCoverArtSizes {

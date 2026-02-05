@@ -29,14 +29,15 @@ class UserAvatar extends StatelessWidget {
           width: size,
           height: size,
           fit: BoxFit.cover,
-          placeholder: (context, url) => Container(
-            width: size,
-            height: size,
-            color: Colors.grey[300],
-            child: const Center(
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
-          ),
+          placeholder:
+              (context, url) => Container(
+                width: size,
+                height: size,
+                color: Colors.grey[300],
+                child: const Center(
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              ),
           errorWidget: (context, url, error) => _buildFallback(),
         ),
       );

@@ -117,12 +117,10 @@ class _AppBottomSheetListItem extends StatefulWidget {
   });
 
   @override
-  State<_AppBottomSheetListItem> createState() =>
-      _AppBottomSheetListItemState();
+  State<_AppBottomSheetListItem> createState() => _AppBottomSheetListItemState();
 }
 
-class _AppBottomSheetListItemState extends State<_AppBottomSheetListItem>
-    with SingleTickerProviderStateMixin {
+class _AppBottomSheetListItemState extends State<_AppBottomSheetListItem> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
   bool _isPressed = false;
@@ -193,8 +191,7 @@ class _AppBottomSheetListItemState extends State<_AppBottomSheetListItem>
                       children: [
                         Icon(
                           widget.action.icon,
-                          color:
-                              widget.action.iconColor ?? AppColors.textPrimary,
+                          color: widget.action.iconColor ?? AppColors.textPrimary,
                           size: Dimensions.iconMedium,
                         ),
                         SizedBox(width: Dimensions.space16),
@@ -205,9 +202,7 @@ class _AppBottomSheetListItemState extends State<_AppBottomSheetListItem>
                               Text(
                                 widget.action.title,
                                 style: AppTextStyle.bodyLarge.copyWith(
-                                  color:
-                                      widget.action.textColor ??
-                                      AppColors.textPrimary,
+                                  color: widget.action.textColor ?? AppColors.textPrimary,
                                 ),
                               ),
                               if (widget.action.subtitle != null) ...[

@@ -9,8 +9,7 @@ import 'package:trackflow/features/invitations/presentation/blocs/states/invitat
 import 'package:trackflow/features/manage_collaborators/domain/usecases/find_user_by_email_usecase.dart';
 
 @injectable
-class ProjectInvitationActorBloc
-    extends Bloc<InvitationActorEvent, InvitationActorState> {
+class ProjectInvitationActorBloc extends Bloc<InvitationActorEvent, InvitationActorState> {
   final SendInvitationUseCase _sendInvitationUseCase;
   final AcceptInvitationUseCase _acceptInvitationUseCase;
   final DeclineInvitationUseCase _declineInvitationUseCase;

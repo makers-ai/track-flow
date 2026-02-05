@@ -106,8 +106,7 @@ class AppToast extends StatefulWidget {
   State<AppToast> createState() => _AppToastState();
 }
 
-class _AppToastState extends State<AppToast>
-    with SingleTickerProviderStateMixin {
+class _AppToastState extends State<AppToast> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _slideAnimation;
   late Animation<double> _fadeAnimation;

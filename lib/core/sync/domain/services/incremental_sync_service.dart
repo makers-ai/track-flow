@@ -126,10 +126,7 @@ class EntityMetadata {
   factory EntityMetadata.fromMap(Map<String, dynamic> data, String entityType) {
     return EntityMetadata(
       id: data['id'] ?? '',
-      lastModified:
-          data['updatedAt'] != null
-              ? DateTime.parse(data['updatedAt'])
-              : DateTime.now(),
+      lastModified: data['updatedAt'] != null ? DateTime.parse(data['updatedAt']) : DateTime.now(),
       version: data['version'] ?? 1,
       etag: data['etag'],
       isDeleted: data['isDeleted'] ?? false,

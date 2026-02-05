@@ -65,13 +65,9 @@ class InvalidEmailFailure extends Failure {
 }
 
 class InvalidPasswordFailure extends Failure {
-  const InvalidPasswordFailure()
-    : super('Password must be at least 6 characters');
+  const InvalidPasswordFailure() : super('Password must be at least 6 characters');
 }
 
-
-
-
 /// ------------------------------------------------------------
-/// 
-/// 
+///
+///

@@ -39,9 +39,7 @@ class WatchProjectDetailUseCase {
   }) {
     final ProjectId pid = ProjectId.fromUniqueString(projectId);
 
-    final project$ = _projectsRepository
-        .watchProjectById(pid)
-        .shareReplay(maxSize: 1);
+    final project$ = _projectsRepository.watchProjectById(pid).shareReplay(maxSize: 1);
 
     // Tracks stream depends only on project id
     final tracks$ = _audioTrackRepository

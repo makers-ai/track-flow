@@ -70,16 +70,16 @@ class VoiceMemoUiModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        title,
-        fileLocalPath,
-        fileRemoteUrl,
-        duration,
-        recordedAt,
-        convertedToTrackId,
-        createdBy,
-        formattedDuration,
-        formattedDate,
-        isConverted,
-      ];
+    id,
+    title,
+    fileLocalPath,
+    fileRemoteUrl,
+    duration,
+    recordedAt,
+    convertedToTrackId,
+    createdBy,
+    formattedDuration,
+    formattedDate,
+    isConverted,
+  ];
 }

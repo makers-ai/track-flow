@@ -35,8 +35,7 @@ class SecondaryButton extends StatefulWidget {
   State<SecondaryButton> createState() => _SecondaryButtonState();
 }
 
-class _SecondaryButtonState extends State<SecondaryButton>
-    with SingleTickerProviderStateMixin {
+class _SecondaryButtonState extends State<SecondaryButton> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
   bool _isPressed = false;
@@ -146,12 +145,7 @@ class _SecondaryButtonState extends State<SecondaryButton>
                   color: _isDisabled ? AppColors.disabled : AppColors.primary,
                   width: AppBorders.widthThin,
                 ),
-                boxShadow:
-                    _isDisabled
-                        ? AppShadows.none
-                        : (_isPressed
-                            ? AppShadows.buttonPressed
-                            : AppShadows.none),
+                boxShadow: _isDisabled ? AppShadows.none : (_isPressed ? AppShadows.buttonPressed : AppShadows.none),
               ),
               child: Material(
                 color: Colors.transparent,
@@ -172,9 +166,7 @@ class _SecondaryButtonState extends State<SecondaryButton>
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
                                   valueColor: AlwaysStoppedAnimation<Color>(
-                                    _isDisabled
-                                        ? AppColors.disabled
-                                        : AppColors.primary,
+                                    _isDisabled ? AppColors.disabled : AppColors.primary,
                                   ),
                                 ),
                               ),
@@ -183,15 +175,11 @@ class _SecondaryButtonState extends State<SecondaryButton>
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                if (widget.icon != null &&
-                                    !widget.iconRight) ...[
+                                if (widget.icon != null && !widget.iconRight) ...[
                                   Icon(
                                     widget.icon,
                                     size: _iconSize,
-                                    color:
-                                        _isDisabled
-                                            ? AppColors.disabled
-                                            : AppColors.primary,
+                                    color: _isDisabled ? AppColors.disabled : AppColors.primary,
                                   ),
                                   SizedBox(width: Dimensions.space8),
                                 ],
@@ -199,25 +187,18 @@ class _SecondaryButtonState extends State<SecondaryButton>
                                   child: Text(
                                     widget.text,
                                     style: _textStyle.copyWith(
-                                      color:
-                                          _isDisabled
-                                              ? AppColors.disabled
-                                              : AppColors.primary,
+                                      color: _isDisabled ? AppColors.disabled : AppColors.primary,
                                     ),
                                     textAlign: TextAlign.center,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                                if (widget.icon != null &&
-                                    widget.iconRight) ...[
+                                if (widget.icon != null && widget.iconRight) ...[
                                   SizedBox(width: Dimensions.space8),
                                   Icon(
                                     widget.icon,
                                     size: _iconSize,
-                                    color:
-                                        _isDisabled
-                                            ? AppColors.disabled
-                                            : AppColors.primary,
+                                    color: _isDisabled ? AppColors.disabled : AppColors.primary,
                                   ),
                                 ],
                               ],

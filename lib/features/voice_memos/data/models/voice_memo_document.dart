@@ -48,9 +48,7 @@ class VoiceMemoDocument {
       ..convertedToTrackId = memo.convertedToTrackId
       ..createdBy = memo.createdBy?.value
       // Encode waveform data
-      ..waveformAmplitudesJson = memo.waveformData != null
-          ? jsonEncode(memo.waveformData!.amplitudes)
-          : null
+      ..waveformAmplitudesJson = memo.waveformData != null ? jsonEncode(memo.waveformData!.amplitudes) : null
       ..waveformSampleRate = memo.waveformData?.sampleRate
       ..waveformTargetSampleCount = memo.waveformData?.targetSampleCount;
   }
@@ -59,11 +57,8 @@ class VoiceMemoDocument {
   VoiceMemo toDomain() {
     // Decode waveform data
     WaveformData? waveformData;
-    if (waveformAmplitudesJson != null &&
-        waveformSampleRate != null &&
-        waveformTargetSampleCount != null) {
-      final amplitudes = (jsonDecode(waveformAmplitudesJson!) as List)
-          .cast<double>();
+    if (waveformAmplitudesJson != null && waveformSampleRate != null && waveformTargetSampleCount != null) {
+      final amplitudes = (jsonDecode(waveformAmplitudesJson!) as List).cast<double>();
       waveformData = WaveformData(
         amplitudes: amplitudes,
         sampleRate: waveformSampleRate!,

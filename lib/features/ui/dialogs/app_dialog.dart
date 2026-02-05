@@ -133,9 +133,7 @@ class AppDialog extends StatelessWidget {
       );
     }
 
-    return actions.isNotEmpty
-        ? [Row(mainAxisAlignment: MainAxisAlignment.end, children: actions)]
-        : [];
+    return actions.isNotEmpty ? [Row(mainAxisAlignment: MainAxisAlignment.end, children: actions)] : [];
   }
 }
 

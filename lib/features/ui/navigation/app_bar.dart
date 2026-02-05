@@ -148,8 +148,7 @@ class AppIconButton extends StatefulWidget {
   State<AppIconButton> createState() => _AppIconButtonState();
 }
 
-class _AppIconButtonState extends State<AppIconButton>
-    with SingleTickerProviderStateMixin {
+class _AppIconButtonState extends State<AppIconButton> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
 

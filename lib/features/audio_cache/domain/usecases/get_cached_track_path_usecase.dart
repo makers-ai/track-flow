@@ -34,10 +34,7 @@ class GetCachedTrackPathUseCase {
     try {
       final result = await _audioStorageRepository.getCachedAudioPath(
         AudioTrackId.fromUniqueString(trackId),
-        versionId:
-            versionId != null && versionId.isNotEmpty
-                ? TrackVersionId.fromUniqueString(versionId)
-                : null,
+        versionId: versionId != null && versionId.isNotEmpty ? TrackVersionId.fromUniqueString(versionId) : null,
       );
 
       return result.fold(

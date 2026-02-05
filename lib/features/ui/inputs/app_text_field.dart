@@ -73,8 +73,7 @@ class AppTextField extends StatefulWidget {
   State<AppTextField> createState() => _AppTextFieldState();
 }
 
-class _AppTextFieldState extends State<AppTextField>
-    with SingleTickerProviderStateMixin {
+class _AppTextFieldState extends State<AppTextField> with SingleTickerProviderStateMixin {
   late FocusNode _focusNode;
   late AnimationController _animationController;
   late Animation<double> _borderAnimation;
@@ -85,7 +84,7 @@ class _AppTextFieldState extends State<AppTextField>
     super.initState();
     _focusNode = widget.focusNode ?? FocusNode();
     _focusNode.addListener(_onFocusChange);
-    
+
     _animationController = AnimationController(
       duration: AppAnimations.fast,
       vsync: this,
@@ -93,10 +92,12 @@ class _AppTextFieldState extends State<AppTextField>
     _borderAnimation = Tween<double>(
       begin: AppBorders.widthThin,
       end: AppBorders.widthMedium,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: AppAnimations.easeOut,
-    ));
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: AppAnimations.easeOut,
+      ),
+    );
   }
 
   @override
@@ -113,7 +114,7 @@ class _AppTextFieldState extends State<AppTextField>
     setState(() {
       _isFocused = _focusNode.hasFocus;
     });
-    
+
     if (_isFocused) {
       _animationController.forward();
     } else {
@@ -145,24 +146,23 @@ class _AppTextFieldState extends State<AppTextField>
           Text(
             widget.labelText!,
             style: AppTextStyle.labelMedium.copyWith(
-              color: widget.errorText != null 
-                  ? AppColors.error 
-                  : AppColors.textSecondary,
+              color: widget.errorText != null ? AppColors.error : AppColors.textSecondary,
             ),
           ),
           SizedBox(height: Dimensions.space8),
         ],
-        
+
         AnimatedBuilder(
           animation: _borderAnimation,
           builder: (context, child) {
             return Container(
               height: widget.maxLines == 1 ? _inputHeight : null,
-              constraints: widget.maxLines == 1 
-                  ? null 
-                  : BoxConstraints(
-                      minHeight: _inputHeight,
-                    ),
+              constraints:
+                  widget.maxLines == 1
+                      ? null
+                      : BoxConstraints(
+                        minHeight: _inputHeight,
+                      ),
               decoration: BoxDecoration(
                 color: widget.enabled ? AppColors.surface : AppColors.disabled.withValues(alpha: 0.1),
                 borderRadius: AppBorders.medium,
@@ -189,9 +189,11 @@ class _AppTextFieldState extends State<AppTextField>
                 textInputAction: widget.textInputAction,
                 textAlign: widget.textAlign,
                 showCursor: widget.showCursor,
-                style: widget.textStyle ?? AppTextStyle.bodyMedium.copyWith(
-                  color: widget.enabled ? AppColors.textPrimary : AppColors.disabled,
-                ),
+                style:
+                    widget.textStyle ??
+                    AppTextStyle.bodyMedium.copyWith(
+                      color: widget.enabled ? AppColors.textPrimary : AppColors.disabled,
+                    ),
                 decoration: InputDecoration(
                   hintText: widget.hintText,
                   hintStyle: AppTextStyle.bodyMedium.copyWith(
@@ -202,27 +204,31 @@ class _AppTextFieldState extends State<AppTextField>
                   focusedBorder: InputBorder.none,
                   errorBorder: InputBorder.none,
                   disabledBorder: InputBorder.none,
-                  contentPadding: widget.contentPadding ?? EdgeInsets.symmetric(
-                    horizontal: Dimensions.space16,
-                    vertical: Dimensions.space12,
-                  ),
-                  prefixIcon: widget.prefixIcon != null
-                      ? Icon(
-                          widget.prefixIcon,
-                          color: _borderColor,
-                          size: Dimensions.iconMedium,
-                        )
-                      : null,
-                  suffixIcon: widget.suffixIcon != null
-                      ? IconButton(
-                          icon: Icon(
-                            widget.suffixIcon,
+                  contentPadding:
+                      widget.contentPadding ??
+                      EdgeInsets.symmetric(
+                        horizontal: Dimensions.space16,
+                        vertical: Dimensions.space12,
+                      ),
+                  prefixIcon:
+                      widget.prefixIcon != null
+                          ? Icon(
+                            widget.prefixIcon,
                             color: _borderColor,
                             size: Dimensions.iconMedium,
-                          ),
-                          onPressed: widget.onSuffixIconPressed,
-                        )
-                      : null,
+                          )
+                          : null,
+                  suffixIcon:
+                      widget.suffixIcon != null
+                          ? IconButton(
+                            icon: Icon(
+                              widget.suffixIcon,
+                              color: _borderColor,
+                              size: Dimensions.iconMedium,
+                            ),
+                            onPressed: widget.onSuffixIconPressed,
+                          )
+                          : null,
                   prefixText: widget.prefixText,
                   suffixText: widget.suffixText,
                   prefixStyle: AppTextStyle.bodyMedium.copyWith(
@@ -237,7 +243,7 @@ class _AppTextFieldState extends State<AppTextField>
             );
           },
         ),
-        
+
         if (widget.errorText != null) ...[
           SizedBox(height: Dimensions.space4),
           Text(
@@ -247,7 +253,7 @@ class _AppTextFieldState extends State<AppTextField>
             ),
           ),
         ],
-        
+
         if (widget.helperText != null && widget.errorText == null) ...[
           SizedBox(height: Dimensions.space4),
           Text(

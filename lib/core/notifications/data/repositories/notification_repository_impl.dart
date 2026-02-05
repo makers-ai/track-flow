@@ -143,8 +143,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       try {
         final isConnected = await _networkStateManager.isConnected;
         if (isConnected) {
-          final remoteResult = await _remoteDataSource
-              .markAllNotificationsAsRead(userId.value);
+          final remoteResult = await _remoteDataSource.markAllNotificationsAsRead(userId.value);
           remoteResult.fold(
             (failure) {
               AppLogger.warning(
@@ -495,13 +494,11 @@ class NotificationRepositoryImpl implements NotificationRepository {
         },
         (remoteNotifications) async {
           // Get existing local notifications for comparison
-          final localNotifications = await _localDataSource
-              .getNotificationsForUser(userId.value);
+          final localNotifications = await _localDataSource.getNotificationsForUser(userId.value);
 
           // Create a map of local notifications by ID for quick lookup
           final localNotificationMap = <String, NotificationDto>{
-            for (final notification in localNotifications)
-              notification.id: notification
+            for (final notification in localNotifications) notification.id: notification,
           };
 
           int newCount = 0;
@@ -524,7 +521,6 @@ class NotificationRepositoryImpl implements NotificationRepository {
               // unless it was explicitly changed remotely
               if (remoteTimestamp.isAfter(localTimestamp) ||
                   _shouldUpdateNotification(localNotification, remoteNotification)) {
-                
                 // Preserve local read status if it was marked as read locally
                 // but remote shows unread (user read it locally but sync hadn't happened)
                 final updatedNotification = remoteNotification.copyWith(

@@ -43,8 +43,7 @@ class AppleAuthService {
   }
 
   String _generateNonce([int length = 32]) {
-    const charset =
-        '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+    const charset = '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
     final random = Random.secure();
     return List.generate(
       length,

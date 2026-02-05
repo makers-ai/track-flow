@@ -28,14 +28,11 @@ class RecordingButton extends StatelessWidget {
         color: isRecording ? AppColors.error : AppColors.primary,
       ),
       label: Text(
-        isRecording
-            ? (stopLabel ?? 'Stop Recording')
-            : (startLabel ?? 'Start Recording'),
+        isRecording ? (stopLabel ?? 'Stop Recording') : (startLabel ?? 'Start Recording'),
       ),
       style: ElevatedButton.styleFrom(
-        backgroundColor: isRecording
-            ? AppColors.error.withValues(alpha: 0.1)
-            : AppColors.primary.withValues(alpha: 0.1),
+        backgroundColor:
+            isRecording ? AppColors.error.withValues(alpha: 0.1) : AppColors.primary.withValues(alpha: 0.1),
         foregroundColor: isRecording ? AppColors.error : AppColors.primary,
         padding: const EdgeInsets.symmetric(
           horizontal: Dimensions.space24,

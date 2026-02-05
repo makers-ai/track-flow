@@ -28,8 +28,7 @@ class UploadAudioTrackUseCase {
   final ProjectsRepository projectsRepository;
   final SessionStorage sessionStorage;
   final AddTrackVersionUseCase addTrackVersionUseCase;
-  final AudioTrackRepository
-  audioTrackRepository; // Para actualizar activeVersionId
+  final AudioTrackRepository audioTrackRepository; // Para actualizar activeVersionId
 
   UploadAudioTrackUseCase(
     this.projectTrackService,
@@ -94,8 +93,10 @@ class UploadAudioTrackUseCase {
       final version = addVersionResult.getOrElse(() => throw Exception());
 
       // 4. UPDATE TRACK WITH ACTIVE VERSION
-      final updateActiveVersionResult = await audioTrackRepository
-          .setActiveVersion(trackId: track.id, versionId: version.id);
+      final updateActiveVersionResult = await audioTrackRepository.setActiveVersion(
+        trackId: track.id,
+        versionId: version.id,
+      );
       if (updateActiveVersionResult.isLeft()) {
         // Rollback: delete track if active version update fails
         await projectTrackService.deleteTrack(

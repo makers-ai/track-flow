@@ -120,7 +120,7 @@ class IsarAudioTrackLocalDataSource implements AudioTrackLocalDataSource {
   }
 
   @override
-  Stream<Either<Failure, List<AudioTrackDTO>>> watchTracksByProject (
+  Stream<Either<Failure, List<AudioTrackDTO>>> watchTracksByProject(
     String projectId,
   ) {
     return _isar.audioTrackDocuments
@@ -131,8 +131,8 @@ class IsarAudioTrackLocalDataSource implements AudioTrackLocalDataSource {
         .map(
           (docs) {
             return right<Failure, List<AudioTrackDTO>>(
-            docs.map((doc) => doc.toDTO()).toList(),
-          );
+              docs.map((doc) => doc.toDTO()).toList(),
+            );
           },
         )
         .handleError((e) => left(ServerFailure(e.toString())));
@@ -224,33 +224,26 @@ class IsarAudioTrackLocalDataSource implements AudioTrackLocalDataSource {
 
   @override
   Stream<List<AudioTrackDTO>> watchAllAccessibleTracks(String userId) {
-    return _isar.audioTrackDocuments
-        .where()
-        .watch(fireImmediately: true)
-        .asyncMap((tracks) async {
-          // Filter tracks to only include those from accessible projects
-          final accessibleTracks = <AudioTrackDocument>[];
+    return _isar.audioTrackDocuments.where().watch(fireImmediately: true).asyncMap((tracks) async {
+      // Filter tracks to only include those from accessible projects
+      final accessibleTracks = <AudioTrackDocument>[];
 
-          for (final track in tracks) {
-            // Get the project for this track
-            final project = await _isar.projectDocuments
-                .filter()
-                .idEqualTo(track.projectId)
-                .isDeletedEqualTo(false)
-                .findFirst();
+      for (final track in tracks) {
+        // Get the project for this track
+        final project =
+            await _isar.projectDocuments.filter().idEqualTo(track.projectId).isDeletedEqualTo(false).findFirst();
 
-            if (project != null) {
-              // Check if user has access (is owner or collaborator)
-              final hasAccess = project.ownerId == userId ||
-                  project.collaboratorIds.contains(userId);
+        if (project != null) {
+          // Check if user has access (is owner or collaborator)
+          final hasAccess = project.ownerId == userId || project.collaboratorIds.contains(userId);
 
-              if (hasAccess) {
-                accessibleTracks.add(track);
-              }
-            }
+          if (hasAccess) {
+            accessibleTracks.add(track);
           }
+        }
+      }
 
-          return accessibleTracks.map((doc) => doc.toDTO()).toList();
-        });
+      return accessibleTracks.map((doc) => doc.toDTO()).toList();
+    });
   }
 }

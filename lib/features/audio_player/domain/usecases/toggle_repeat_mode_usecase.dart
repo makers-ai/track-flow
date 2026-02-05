@@ -8,8 +8,7 @@ import '../services/audio_playback_service.dart';
 /// ONLY handles repeat mode cycling - NO business domain concerns
 @injectable
 class ToggleRepeatModeUseCase {
-  const ToggleRepeatModeUseCase({required AudioPlaybackService playbackService})
-    : _playbackService = playbackService;
+  const ToggleRepeatModeUseCase({required AudioPlaybackService playbackService}) : _playbackService = playbackService;
 
   final AudioPlaybackService _playbackService;
 

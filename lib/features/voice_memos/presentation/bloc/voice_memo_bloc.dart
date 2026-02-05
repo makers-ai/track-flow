@@ -46,9 +46,11 @@ class VoiceMemoBloc extends Bloc<VoiceMemoEvent, VoiceMemoState> {
       onData: (either) {
         either.fold(
           (failure) => emit(VoiceMemoError(failure.message)),
-          (memos) => emit(VoiceMemosLoaded(
-            memos.map(VoiceMemoUiModel.fromDomain).toList(),
-          )),
+          (memos) => emit(
+            VoiceMemosLoaded(
+              memos.map(VoiceMemoUiModel.fromDomain).toList(),
+            ),
+          ),
         );
       },
       onError: (error, stackTrace) {

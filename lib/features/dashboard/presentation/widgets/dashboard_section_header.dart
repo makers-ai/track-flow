@@ -21,8 +21,8 @@ class DashboardSectionHeader extends StatelessWidget {
           Text(
             title,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+              fontWeight: FontWeight.bold,
+            ),
           ),
           if (onSeeAll != null)
             TextButton(
@@ -34,5 +34,3 @@ class DashboardSectionHeader extends StatelessWidget {
     );
   }
 }
-
-

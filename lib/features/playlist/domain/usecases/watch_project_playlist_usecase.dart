@@ -20,9 +20,7 @@ class WatchProjectPlaylistUseCase {
   );
 
   Stream<Either<Failure, PlaylistTracksBundle>> call(ProjectId projectId) {
-    final tracks$ = _audioTrackRepository
-        .watchTracksByProject(projectId)
-        .shareReplay(maxSize: 1);
+    final tracks$ = _audioTrackRepository.watchTracksByProject(projectId).shareReplay(maxSize: 1);
 
     // For each set of tracks, build a consistent snapshot of summaries.
     return tracks$.switchMap((eitherTracks) {
@@ -41,9 +39,7 @@ class WatchProjectPlaylistUseCase {
           return _trackVersionRepository
               .watchVersionsByTrack(t.id)
               .map(
-                (eitherVersions) => eitherVersions.fold<
-                  Either<Failure, TrackSummary>
-                >((f) => left(f), (versions) {
+                (eitherVersions) => eitherVersions.fold<Either<Failure, TrackSummary>>((f) => left(f), (versions) {
                   // Determine active version: prefer track.activeVersionId, then first ready, else most recent
                   TrackVersion? active;
                   if (t.activeVersionId != null) {
@@ -56,10 +52,7 @@ class WatchProjectPlaylistUseCase {
                     final ready = versions.where(
                       (v) => v.status == TrackVersionStatus.ready,
                     );
-                    active =
-                        ready.isNotEmpty
-                            ? ready.first
-                            : (versions.isNotEmpty ? versions.first : null);
+                    active = ready.isNotEmpty ? ready.first : (versions.isNotEmpty ? versions.first : null);
                   }
 
                   if (active == null) {
@@ -101,8 +94,7 @@ class WatchProjectPlaylistUseCase {
               );
             })
             .onErrorReturnWith(
-              (e, _) =>
-                  left(ServerFailure('Failed to build playlist summaries: $e')),
+              (e, _) => left(ServerFailure('Failed to build playlist summaries: $e')),
             );
       });
     });

@@ -11,12 +11,10 @@ class NotificationCenterScreen extends StatefulWidget {
   const NotificationCenterScreen({super.key});
 
   @override
-  State<NotificationCenterScreen> createState() =>
-      _NotificationCenterScreenState();
+  State<NotificationCenterScreen> createState() => _NotificationCenterScreenState();
 }
 
-class _NotificationCenterScreenState extends State<NotificationCenterScreen>
-    with TickerProviderStateMixin {
+class _NotificationCenterScreenState extends State<NotificationCenterScreen> with TickerProviderStateMixin {
   late TabController _tabController;
 
   @override

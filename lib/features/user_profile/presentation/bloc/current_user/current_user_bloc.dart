@@ -36,13 +36,13 @@ class CurrentUserBloc extends Bloc<CurrentUserEvent, CurrentUserState>
     required CheckProfileCompletenessUseCase checkProfileCompletenessUseCase,
     required GetCurrentUserUseCase getCurrentUserUseCase,
     required GetAuthStateUseCase getAuthStateUseCase,
-  })  : _updateUserProfileUseCase = updateUserProfileUseCase,
-        _createUserProfileUseCase = createUserProfileUseCase,
-        _watchUserProfileUseCase = watchUserProfileUseCase,
-        _checkProfileCompletenessUseCase = checkProfileCompletenessUseCase,
-        _getCurrentUserUseCase = getCurrentUserUseCase,
-        _getAuthStateUseCase = getAuthStateUseCase,
-        super(CurrentUserInitial()) {
+  }) : _updateUserProfileUseCase = updateUserProfileUseCase,
+       _createUserProfileUseCase = createUserProfileUseCase,
+       _watchUserProfileUseCase = watchUserProfileUseCase,
+       _checkProfileCompletenessUseCase = checkProfileCompletenessUseCase,
+       _getCurrentUserUseCase = getCurrentUserUseCase,
+       _getAuthStateUseCase = getAuthStateUseCase,
+       super(CurrentUserInitial()) {
     on<WatchCurrentUserProfile>(_onWatchCurrentUserProfile);
     on<CreateCurrentUserProfile>(_onCreateCurrentUserProfile);
     on<UpdateCurrentUserProfile>(_onUpdateCurrentUserProfile);
@@ -90,8 +90,7 @@ class CurrentUserBloc extends Bloc<CurrentUserEvent, CurrentUserState>
         onData: (eitherProfile) {
           eitherProfile.fold(
             (failure) {
-              if (failure.message.contains('No user found') ||
-                  failure.message.contains('not authenticated')) {
+              if (failure.message.contains('No user found') || failure.message.contains('not authenticated')) {
                 emit(CurrentUserError('Not authenticated'));
               } else {
                 emit(CurrentUserError(failure.message));
@@ -100,9 +99,11 @@ class CurrentUserBloc extends Bloc<CurrentUserEvent, CurrentUserState>
             (profile) {
               if (profile != null) {
                 // Convert domain entity to UI model in BLoC
-                emit(CurrentUserLoaded(
-                  uiModel: UserProfileUiModel.fromDomain(profile),
-                ));
+                emit(
+                  CurrentUserLoaded(
+                    uiModel: UserProfileUiModel.fromDomain(profile),
+                  ),
+                );
               } else {
                 // Keep lightweight loading state while profile is being seeded
                 if (state is! CurrentUserLoading) {
@@ -135,9 +136,11 @@ class CurrentUserBloc extends Bloc<CurrentUserEvent, CurrentUserState>
     CreateCurrentUserProfile event,
     Emitter<CurrentUserState> emit,
   ) async {
-    emit(CurrentUserUpdating(
-      currentProfile: null, // No profile exists yet
-    ));
+    emit(
+      CurrentUserUpdating(
+        currentProfile: null, // No profile exists yet
+      ),
+    );
 
     final result = await _createUserProfileUseCase.call(event.profile);
 
@@ -153,9 +156,11 @@ class CurrentUserBloc extends Bloc<CurrentUserEvent, CurrentUserState>
       (profile) {
         // Profile created successfully
         // The watch stream will emit the new profile, so we can just show success briefly
-        emit(CurrentUserSaved(
-          uiModel: UserProfileUiModel.fromDomain(event.profile),
-        ));
+        emit(
+          CurrentUserSaved(
+            uiModel: UserProfileUiModel.fromDomain(event.profile),
+          ),
+        );
 
         // Auto-transition to watching after 2 seconds
         Future.delayed(const Duration(seconds: 2), () {
@@ -173,9 +178,7 @@ class CurrentUserBloc extends Bloc<CurrentUserEvent, CurrentUserState>
   ) async {
     // Keep current profile data visible during update
     final currentState = state;
-    final currentProfile = currentState is CurrentUserLoaded
-        ? currentState.profile
-        : null;
+    final currentProfile = currentState is CurrentUserLoaded ? currentState.profile : null;
 
     emit(CurrentUserUpdating(currentProfile: currentProfile));
 
@@ -192,18 +195,22 @@ class CurrentUserBloc extends Bloc<CurrentUserEvent, CurrentUserState>
       },
       (unit) async {
         // Update succeeded - show success briefly then return to loaded
-        emit(CurrentUserSaved(
-          uiModel: UserProfileUiModel.fromDomain(event.profile),
-        ));
+        emit(
+          CurrentUserSaved(
+            uiModel: UserProfileUiModel.fromDomain(event.profile),
+          ),
+        );
 
         // Auto-transition back to loaded after 2 seconds
         await Future.delayed(const Duration(seconds: 2));
         if (!isClosed && state is CurrentUserSaved) {
           // The watch stream should have emitted the updated profile by now
           // But if not, we'll emit loaded state with the profile we just saved
-          emit(CurrentUserLoaded(
-            uiModel: UserProfileUiModel.fromDomain(event.profile),
-          ));
+          emit(
+            CurrentUserLoaded(
+              uiModel: UserProfileUiModel.fromDomain(event.profile),
+            ),
+          );
         }
       },
     );
@@ -214,9 +221,11 @@ class CurrentUserBloc extends Bloc<CurrentUserEvent, CurrentUserState>
     Emitter<CurrentUserState> emit,
   ) async {
     if (event.userId == null) {
-      emit(CurrentUserProfileIncomplete(
-        reason: 'User ID is required',
-      ));
+      emit(
+        CurrentUserProfileIncomplete(
+          reason: 'User ID is required',
+        ),
+      );
       return;
     }
 
@@ -233,9 +242,11 @@ class CurrentUserBloc extends Bloc<CurrentUserEvent, CurrentUserState>
       // Profile is complete - start watching
       add(WatchCurrentUserProfile());
     } else {
-      emit(CurrentUserProfileIncomplete(
-        reason: 'Profile is not complete',
-      ));
+      emit(
+        CurrentUserProfileIncomplete(
+          reason: 'Profile is not complete',
+        ),
+      );
     }
   }
 
@@ -253,16 +264,17 @@ class CurrentUserBloc extends Bloc<CurrentUserEvent, CurrentUserState>
       },
       (userData) {
         if (userData.userId != null && userData.email != null) {
-          final isGoogleUser =
-              userData.displayName != null || userData.photoUrl != null;
+          final isGoogleUser = userData.displayName != null || userData.photoUrl != null;
 
-          emit(CurrentUserCreationDataLoaded(
-            userId: userData.userId!.value,
-            email: userData.email!,
-            displayName: userData.displayName,
-            photoUrl: userData.photoUrl,
-            isGoogleUser: isGoogleUser,
-          ));
+          emit(
+            CurrentUserCreationDataLoaded(
+              userId: userData.userId!.value,
+              email: userData.email!,
+              displayName: userData.displayName,
+              photoUrl: userData.photoUrl,
+              isGoogleUser: isGoogleUser,
+            ),
+          );
         } else {
           emit(CurrentUserError('User data not available'));
         }
@@ -286,4 +298,3 @@ class CurrentUserBloc extends Bloc<CurrentUserEvent, CurrentUserState>
     return super.close();
   }
 }
-

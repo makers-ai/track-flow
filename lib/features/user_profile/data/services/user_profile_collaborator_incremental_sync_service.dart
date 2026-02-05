@@ -10,8 +10,7 @@ import 'package:trackflow/features/user_profile/data/datasources/user_profile_re
 import 'package:trackflow/features/user_profile/data/models/user_profile_dto.dart';
 
 @lazySingleton
-class UserProfileCollaboratorIncrementalSyncService
-    implements IncrementalSyncService<UserProfileDTO> {
+class UserProfileCollaboratorIncrementalSyncService implements IncrementalSyncService<UserProfileDTO> {
   final UserProfileRemoteDataSource _remoteDataSource;
   final UserProfileLocalDataSource _localDataSource;
   final ProjectsLocalDataSource _projectsLocalDataSource;
@@ -85,16 +84,17 @@ class UserProfileCollaboratorIncrementalSyncService
   }
 
   @override
-  Future<Either<Failure, IncrementalSyncResult<UserProfileDTO>>>
-  performIncrementalSync(DateTime lastSyncTime, String userId) async {
+  Future<Either<Failure, IncrementalSyncResult<UserProfileDTO>>> performIncrementalSync(
+    DateTime lastSyncTime,
+    String userId,
+  ) async {
     // For collaborators, we do full sync since incremental based on timestamps
     // doesn't work well when collaborators are derived from projects
     return performFullSync(userId);
   }
 
   @override
-  Future<Either<Failure, IncrementalSyncResult<UserProfileDTO>>>
-  performFullSync(String userId) async {
+  Future<Either<Failure, IncrementalSyncResult<UserProfileDTO>>> performFullSync(String userId) async {
     try {
       AppLogger.sync(
         'USER_PROFILES',
@@ -205,10 +205,7 @@ class UserProfileCollaboratorIncrementalSyncService
     return projectsResult.fold(
       (failure) => Left(failure),
       (projects) => Right(
-        projects
-            .expand((p) => p.collaboratorIds.map((c) => c))
-            .toSet()
-            .toList(),
+        projects.expand((p) => p.collaboratorIds.map((c) => c)).toSet().toList(),
       ),
     );
   }

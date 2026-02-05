@@ -61,8 +61,7 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
     final result = await updateProject(event.project);
     result.fold(
       (failure) => emit(ProjectsError(_mapFailureToMessage(failure))),
-      (_) =>
-          emit(const ProjectOperationSuccess('Project updated successfully')),
+      (_) => emit(const ProjectOperationSuccess('Project updated successfully')),
     );
   }
 
@@ -74,8 +73,7 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
     final result = await deleteProject.call(event.project);
     result.fold(
       (failure) => emit(ProjectsError(_mapFailureToMessage(failure))),
-      (_) =>
-          emit(const ProjectOperationSuccess('Project deleted successfully')),
+      (_) => emit(const ProjectOperationSuccess('Project deleted successfully')),
     );
   }
 
@@ -93,8 +91,7 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
         eitherProjects.fold(
           (failure) => emit(ProjectsError(_mapFailureToMessage(failure))),
           (projects) {
-            final sorted = [...projects]
-              ..sort((a, b) => compareProjectsBySort(a, b, _currentSort));
+            final sorted = [...projects]..sort((a, b) => compareProjectsBySort(a, b, _currentSort));
             emit(
               ProjectsLoaded(
                 projects: sorted.map(ProjectUiModel.fromDomain).toList(),
@@ -124,12 +121,13 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
     if (current is ProjectsLoaded) {
       // Extract domain entities, sort them, then convert back to UI models
       final domainProjects = current.projects.map((ui) => ui.project).toList();
-      final resorted = [...domainProjects]
-        ..sort((a, b) => compareProjectsBySort(a, b, _currentSort));
-      emit(current.copyWith(
-        projects: resorted.map(ProjectUiModel.fromDomain).toList(),
-        sort: _currentSort,
-      ));
+      final resorted = [...domainProjects]..sort((a, b) => compareProjectsBySort(a, b, _currentSort));
+      emit(
+        current.copyWith(
+          projects: resorted.map(ProjectUiModel.fromDomain).toList(),
+          sort: _currentSort,
+        ),
+      );
     }
   }
 
@@ -146,8 +144,7 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
     );
     result.fold(
       (failure) => emit(ProjectsError(_mapFailureToMessage(failure))),
-      (coverUrl) =>
-          emit(const ProjectOperationSuccess('Cover art uploaded successfully')),
+      (coverUrl) => emit(const ProjectOperationSuccess('Cover art uploaded successfully')),
     );
   }
 

@@ -9,8 +9,7 @@ import 'package:trackflow/core/notifications/presentation/blocs/events/notificat
 import 'package:trackflow/core/notifications/presentation/blocs/states/notification_states.dart';
 
 @injectable
-class NotificationWatcherBloc
-    extends Bloc<NotificationWatcherEvent, NotificationWatcherState> {
+class NotificationWatcherBloc extends Bloc<NotificationWatcherEvent, NotificationWatcherState> {
   final NotificationRepository _notificationRepository;
   final CurrentUserService _currentUserService;
 
@@ -41,8 +40,7 @@ class NotificationWatcherBloc
         onData: (result) {
           result.fold(
             (failure) => emit(NotificationWatcherError(failure.message)),
-            (notifications) =>
-                emit(AllNotificationsWatcherState(notifications)),
+            (notifications) => emit(AllNotificationsWatcherState(notifications)),
           );
         },
         onError: (error, stackTrace) {
@@ -69,8 +67,7 @@ class NotificationWatcherBloc
         onData: (result) {
           result.fold(
             (failure) => emit(NotificationWatcherError(failure.message)),
-            (notifications) =>
-                emit(UnreadNotificationsWatcherState(notifications)),
+            (notifications) => emit(UnreadNotificationsWatcherState(notifications)),
           );
         },
         onError: (error, stackTrace) {
@@ -97,8 +94,7 @@ class NotificationWatcherBloc
         onData: (result) {
           result.fold(
             (failure) => emit(NotificationWatcherError(failure.message)),
-            (notifications) =>
-                emit(NotificationCountWatcherState(notifications.length)),
+            (notifications) => emit(NotificationCountWatcherState(notifications.length)),
           );
         },
         onError: (error, stackTrace) {

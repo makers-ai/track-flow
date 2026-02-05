@@ -40,10 +40,10 @@ class _AudioCommentPlayerState extends State<AudioCommentPlayer> {
     }
 
     // Not playing: start playback for this comment (prefer local path)
-    final String? localPath = widget.comment.localAudioPath != null &&
-            File(widget.comment.localAudioPath!).existsSync()
-        ? widget.comment.localAudioPath!
-        : null;
+    final String? localPath =
+        widget.comment.localAudioPath != null && File(widget.comment.localAudioPath!).existsSync()
+            ? widget.comment.localAudioPath!
+            : null;
     final String? remoteUrl = widget.comment.audioStorageUrl;
 
     _commentCubit.play(
@@ -139,16 +139,17 @@ class _AudioCommentPlayerState extends State<AudioCommentPlayer> {
                 children: [
                   // Play/Pause Button
                   IconButton(
-                    icon: isBuffering
-                        ? SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
-                            ),
-                          )
-                        : Icon(isPlaying ? Icons.pause : Icons.play_arrow),
+                    icon:
+                        isBuffering
+                            ? SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                              ),
+                            )
+                            : Icon(isPlaying ? Icons.pause : Icons.play_arrow),
                     onPressed: isBuffering ? null : () => _onPlayPause(cState),
                     color: AppColors.primary,
                     iconSize: 28,
@@ -176,7 +177,8 @@ class _AudioCommentPlayerState extends State<AudioCommentPlayer> {
                                 displayDuration.inMilliseconds.toDouble(),
                               ),
                               max: displayDuration.inMilliseconds.toDouble(),
-                              onChanged: isBuffering ? null : (v) => _commentCubit.seek(Duration(milliseconds: v.toInt())),
+                              onChanged:
+                                  isBuffering ? null : (v) => _commentCubit.seek(Duration(milliseconds: v.toInt())),
                               activeColor: AppColors.primary,
                               inactiveColor: AppColors.grey700,
                             ),

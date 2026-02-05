@@ -76,8 +76,7 @@ class CacheMaintenanceServiceImpl implements CacheMaintenanceService {
           temporaryFilesRemoved: temporaryRemoved,
           oldestFilesRemoved: 0,
           totalSpaceFreed: spaceFreed,
-          totalFilesRemoved:
-              corruptedRemoved + orphanedRemoved + temporaryRemoved,
+          totalFilesRemoved: corruptedRemoved + orphanedRemoved + temporaryRemoved,
         ),
       );
     } catch (e) {
@@ -158,9 +157,7 @@ class CacheMaintenanceServiceImpl implements CacheMaintenanceService {
           final files = dir.listSync();
           for (final entity in files) {
             if (entity is File &&
-                (entity.path.contains('.tmp') ||
-                    entity.path.contains('.download') ||
-                    entity.path.contains('.part'))) {
+                (entity.path.contains('.tmp') || entity.path.contains('.download') || entity.path.contains('.part'))) {
               try {
                 await entity.delete();
                 removedCount++;
@@ -211,8 +208,7 @@ class CacheMaintenanceServiceImpl implements CacheMaintenanceService {
   }
 
   @override
-  Future<Either<CacheFailure, CacheValidationResult>>
-  validateCacheIntegrity() async {
+  Future<Either<CacheFailure, CacheValidationResult>> validateCacheIntegrity() async {
     try {
       final allAudios = await getAllCachedAudios();
       return await allAudios.fold((failure) => Left(failure), (audios) async {

@@ -27,8 +27,7 @@ abstract class WaveformRemoteDataSource {
 }
 
 @LazySingleton(as: WaveformRemoteDataSource)
-class FirebaseStorageWaveformRemoteDataSource
-    implements WaveformRemoteDataSource {
+class FirebaseStorageWaveformRemoteDataSource implements WaveformRemoteDataSource {
   final FirebaseStorage _storage;
 
   FirebaseStorageWaveformRemoteDataSource(this._storage);
@@ -107,11 +106,7 @@ class FirebaseStorageWaveformRemoteDataSource
       id: AudioWaveformId.fromUniqueString(m['id'] as String),
       versionId: TrackVersionId.fromUniqueString(m['versionId'] as String),
       data: WaveformData(
-        amplitudes:
-            (m['amplitudes'] as List)
-                .cast<num>()
-                .map((e) => e.toDouble())
-                .toList(),
+        amplitudes: (m['amplitudes'] as List).cast<num>().map((e) => e.toDouble()).toList(),
         sampleRate: m['sampleRate'] as int,
         duration: Duration(milliseconds: m['durationMs'] as int),
         targetSampleCount: m['targetSampleCount'] as int,

@@ -8,6 +8,7 @@ import 'package:trackflow/core/utils/app_logger.dart';
 import 'package:trackflow/core/app/screens/app_error_screen.dart';
 import 'package:trackflow/config/flavor_config.dart';
 import 'package:trackflow/config/firebase_config.dart';
+
 void main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
@@ -41,8 +42,7 @@ void main() async {
       try {
         // On Apple platforms prefer platform-default configuration to avoid
         // duplicate default app when a GoogleService-Info.plist is present.
-        if (defaultTargetPlatform == TargetPlatform.iOS ||
-            defaultTargetPlatform == TargetPlatform.macOS) {
+        if (defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.macOS) {
           await Firebase.initializeApp();
         } else {
           await Firebase.initializeApp(options: FirebaseConfig.currentPlatform);

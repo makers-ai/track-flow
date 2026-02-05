@@ -77,8 +77,7 @@ class ConflictResolutionServiceImpl<T> implements ConflictResolutionService<T> {
         return useLocal ? conflict.localVersion : conflict.remoteVersion;
 
       case ConflictResolutionStrategy.useHighestVersion:
-        final useLocal =
-            conflict.localMetadata.version > conflict.remoteMetadata.version;
+        final useLocal = conflict.localMetadata.version > conflict.remoteMetadata.version;
         return useLocal ? conflict.localVersion : conflict.remoteVersion;
 
       case ConflictResolutionStrategy.merge:
@@ -132,8 +131,7 @@ class ConflictResolutionServiceImpl<T> implements ConflictResolutionService<T> {
 
 /// Project-specific conflict resolution service
 @lazySingleton
-class ProjectConflictResolutionService
-    extends ConflictResolutionServiceImpl<dynamic> {
+class ProjectConflictResolutionService extends ConflictResolutionServiceImpl<dynamic> {
   @override
   Future<dynamic> _performMerge(SyncConflict<dynamic> conflict) async {
     // Project-specific merge logic
@@ -160,8 +158,7 @@ class ProjectConflictResolutionService
     final remoteCollaborators = Set<String>.from(
       remote['collaboratorIds'] ?? [],
     );
-    merged['collaboratorIds'] =
-        localCollaborators.union(remoteCollaborators).toList();
+    merged['collaboratorIds'] = localCollaborators.union(remoteCollaborators).toList();
 
     // Use latest modification time
     final latestModified =
@@ -179,8 +176,7 @@ class ProjectConflictResolutionService
 
 /// Audio Track conflict resolution service
 @lazySingleton
-class AudioTrackConflictResolutionService
-    extends ConflictResolutionServiceImpl<dynamic> {
+class AudioTrackConflictResolutionService extends ConflictResolutionServiceImpl<dynamic> {
   @override
   Future<dynamic> _performMerge(SyncConflict<dynamic> conflict) async {
     // Audio track specific merge logic

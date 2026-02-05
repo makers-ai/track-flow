@@ -100,15 +100,13 @@ class TrackContext extends Equatable {
       activeVersionNumber: activeVersionNumber ?? this.activeVersionNumber,
       activeVersionLabel: activeVersionLabel ?? this.activeVersionLabel,
       activeVersionStatus: activeVersionStatus ?? this.activeVersionStatus,
-      activeVersionDuration:
-          activeVersionDuration ?? this.activeVersionDuration,
+      activeVersionDuration: activeVersionDuration ?? this.activeVersionDuration,
       activeVersionFileUrl: activeVersionFileUrl ?? this.activeVersionFileUrl,
     );
   }
 
   @override
-  String toString() =>
-      'TrackContext(trackId: $trackId, collaborator: ${collaborator?.name}, project: $projectName)';
+  String toString() => 'TrackContext(trackId: $trackId, collaborator: ${collaborator?.name}, project: $projectName)';
 }
 
 /// Lightweight collaborator information used by track context

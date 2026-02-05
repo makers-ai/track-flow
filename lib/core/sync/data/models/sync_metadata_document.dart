@@ -8,22 +8,22 @@ part 'sync_metadata_document.g.dart';
 class SyncMetadataDocument {
   /// Version number for optimistic locking
   late int version;
-  
+
   /// Timestamp when entity was last modified locally
   late DateTime lastModified;
-  
+
   /// Timestamp when entity was last successfully synced
   DateTime? lastSyncTime;
-  
+
   /// Whether this entity needs to be synced to remote
   late bool needsSync;
-  
+
   /// Current sync status as string
   late String syncStatus;
-  
+
   /// Number of sync retry attempts
   late int retryCount;
-  
+
   /// Error message if sync failed
   String? syncError;
 

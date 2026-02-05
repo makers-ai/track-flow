@@ -65,9 +65,7 @@ class AudioPlayPauseButton extends StatelessWidget {
                       ),
                     )
                     : Icon(
-                      isPlaying
-                          ? Icons.pause_rounded
-                          : Icons.play_arrow_rounded,
+                      isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
                       size: iconSize,
                       color: fg,
                     ),

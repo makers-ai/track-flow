@@ -10,7 +10,6 @@ import 'package:trackflow/features/audio_context/presentation/bloc/audio_context
 import 'package:trackflow/features/audio_context/presentation/bloc/audio_context_state.dart';
 import 'package:trackflow/core/theme/app_colors.dart';
 
-
 /// Pure audio player widget with full controls
 /// NO business logic - only audio playback features
 /// NO context dependency - works standalone
@@ -35,9 +34,8 @@ class PureAudioPlayer extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final availableHeight = constraints.maxHeight.isFinite
-            ? constraints.maxHeight
-            : MediaQuery.of(context).size.height;
+        final availableHeight =
+            constraints.maxHeight.isFinite ? constraints.maxHeight : MediaQuery.of(context).size.height;
         return ConstrainedBox(
           constraints: BoxConstraints(
             maxHeight: availableHeight * 0.9,
@@ -87,7 +85,7 @@ class PureAudioPlayer extends StatelessWidget {
                                   child: TrackCoverArt(
                                     metadata: null,
                                     imageUrl: coverUrl,
-                                    showShadow: false,  
+                                    showShadow: false,
                                     size: Dimensions.playerCoverArtSize,
                                   ),
                                 ),
@@ -97,9 +95,11 @@ class PureAudioPlayer extends StatelessWidget {
                                   child: Text(
                                     title ?? 'No track selected',
                                     textAlign: TextAlign.center,
-                                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge?.copyWith(
                                           fontWeight: FontWeight.bold,
-                                        ) ?? const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                        ) ??
+                                        const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -116,8 +116,8 @@ class PureAudioPlayer extends StatelessWidget {
                                       uploaderName,
                                       textAlign: TextAlign.center,
                                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                            color: AppColors.textSecondary,
-                                          ),
+                                        color: AppColors.textSecondary,
+                                      ),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     );

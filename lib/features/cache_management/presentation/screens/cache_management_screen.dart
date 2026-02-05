@@ -20,8 +20,7 @@ class CacheManagementScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create:
-          (_) => sl<CacheManagementBloc>()..add(const CacheManagementStarted()),
+      create: (_) => sl<CacheManagementBloc>()..add(const CacheManagementStarted()),
       child: AppScaffold(
         appBar: const AppAppBar(
           title: 'Storage Management',
@@ -35,10 +34,7 @@ class CacheManagementScreen extends StatelessWidget {
             children: [
               // Compact header: usage + small cleanup row
               BlocBuilder<CacheManagementBloc, CacheManagementState>(
-                buildWhen:
-                    (p, n) =>
-                        p.storageUsageBytes != n.storageUsageBytes ||
-                        p.storageStats != n.storageStats,
+                buildWhen: (p, n) => p.storageUsageBytes != n.storageUsageBytes || p.storageStats != n.storageStats,
                 builder: (context, state) {
                   return Row(
                     crossAxisAlignment: CrossAxisAlignment.start,

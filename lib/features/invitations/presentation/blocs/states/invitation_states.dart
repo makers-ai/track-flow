@@ -162,7 +162,7 @@ class UserSearchLoading extends InvitationActorState {
 /// State for user search success
 class UserSearchSuccess extends InvitationActorState {
   final UserProfile? user; // null = new user (not found)
-  
+
   const UserSearchSuccess(this.user);
 
   @override
@@ -172,7 +172,7 @@ class UserSearchSuccess extends InvitationActorState {
 /// State for user search error
 class UserSearchError extends InvitationActorState {
   final String message;
-  
+
   const UserSearchError(this.message);
 
   @override

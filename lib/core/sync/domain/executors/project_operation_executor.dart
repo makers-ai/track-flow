@@ -61,21 +61,12 @@ class ProjectOperationExecutor implements OperationExecutor {
       updatedAt: null,
       // ✅ Include collaborators data for creation
       collaborators:
-          (operationData['collaborators'] as List<dynamic>?)
-              ?.map((e) => (e as Map).cast<String, dynamic>())
-              .toList() ??
+          (operationData['collaborators'] as List<dynamic>?)?.map((e) => (e as Map).cast<String, dynamic>()).toList() ??
           [],
-      collaboratorIds:
-          (operationData['collaboratorIds'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          [],
+      collaboratorIds: (operationData['collaboratorIds'] as List<dynamic>?)?.map((e) => e as String).toList() ?? [],
       isDeleted: operationData['isDeleted'] as bool? ?? false,
       version: operationData['version'] as int? ?? 1,
-      lastModified:
-          operationData['lastModified'] != null
-              ? DateTime.parse(operationData['lastModified'])
-              : null,
+      lastModified: operationData['lastModified'] != null ? DateTime.parse(operationData['lastModified']) : null,
       // ✅ Include cover art fields
       coverUrl: operationData['coverUrl'] as String?,
       // Note: coverLocalPath is intentionally not synced to Firestore (local-only)
@@ -83,8 +74,7 @@ class ProjectOperationExecutor implements OperationExecutor {
 
     final result = await _remoteDataSource.createProject(projectDto);
     result.fold(
-      (failure) =>
-          throw Exception('Failed to create project: ${failure.message}'),
+      (failure) => throw Exception('Failed to create project: ${failure.message}'),
       (_) => {}, // Success case
     );
   }
@@ -96,10 +86,8 @@ class ProjectOperationExecutor implements OperationExecutor {
   ) async {
     // ✅ Ensure timestamps exist for incremental queries
     final now = DateTime.now().toUtc();
-    operationData['updatedAt'] =
-        operationData['updatedAt'] ?? now.toIso8601String();
-    operationData['lastModified'] =
-        operationData['lastModified'] ?? operationData['updatedAt'];
+    operationData['updatedAt'] = operationData['updatedAt'] ?? now.toIso8601String();
+    operationData['lastModified'] = operationData['lastModified'] ?? operationData['updatedAt'];
 
     // ✅ FIXED: Use complete data from operationData instead of creating incomplete DTO
     final projectDto = ProjectDTO(
@@ -110,28 +98,16 @@ class ProjectOperationExecutor implements OperationExecutor {
       createdAt: DateTime.parse(
         operationData['createdAt'] ?? DateTime.now().toIso8601String(),
       ),
-      updatedAt:
-          operationData['updatedAt'] != null
-              ? DateTime.parse(operationData['updatedAt'])
-              : null,
+      updatedAt: operationData['updatedAt'] != null ? DateTime.parse(operationData['updatedAt']) : null,
       // ✅ CRITICAL FIX: Include collaborators data to prevent data loss
       collaborators:
-          (operationData['collaborators'] as List<dynamic>?)
-              ?.map((e) => (e as Map).cast<String, dynamic>())
-              .toList() ??
+          (operationData['collaborators'] as List<dynamic>?)?.map((e) => (e as Map).cast<String, dynamic>()).toList() ??
           [],
-      collaboratorIds:
-          (operationData['collaboratorIds'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          [],
+      collaboratorIds: (operationData['collaboratorIds'] as List<dynamic>?)?.map((e) => e as String).toList() ?? [],
       isDeleted: operationData['isDeleted'] as bool? ?? false,
       // ✅ Include sync metadata
       version: operationData['version'] as int? ?? 1,
-      lastModified:
-          operationData['lastModified'] != null
-              ? DateTime.parse(operationData['lastModified'])
-              : null,
+      lastModified: operationData['lastModified'] != null ? DateTime.parse(operationData['lastModified']) : null,
       // ✅ CRITICAL FIX: Include cover art fields to prevent data loss
       coverUrl: operationData['coverUrl'] as String?,
       // Note: coverLocalPath is intentionally not synced to Firestore (local-only)
@@ -139,8 +115,7 @@ class ProjectOperationExecutor implements OperationExecutor {
 
     final result = await _remoteDataSource.updateProject(projectDto);
     result.fold(
-      (failure) =>
-          throw Exception('Failed to update project: ${failure.message}'),
+      (failure) => throw Exception('Failed to update project: ${failure.message}'),
       (_) => {}, // Success case
     );
   }
@@ -159,33 +134,20 @@ class ProjectOperationExecutor implements OperationExecutor {
       createdAt: DateTime.parse(
         operationData['createdAt'] ?? DateTime.now().toIso8601String(),
       ),
-      updatedAt:
-          operationData['updatedAt'] != null
-              ? DateTime.parse(operationData['updatedAt'])
-              : null,
+      updatedAt: operationData['updatedAt'] != null ? DateTime.parse(operationData['updatedAt']) : null,
       collaborators:
-          (operationData['collaborators'] as List<dynamic>?)
-              ?.map((e) => (e as Map).cast<String, dynamic>())
-              .toList() ??
+          (operationData['collaborators'] as List<dynamic>?)?.map((e) => (e as Map).cast<String, dynamic>()).toList() ??
           [],
-      collaboratorIds:
-          (operationData['collaboratorIds'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          [],
+      collaboratorIds: (operationData['collaboratorIds'] as List<dynamic>?)?.map((e) => e as String).toList() ?? [],
       isDeleted: true, // Soft delete
       version: operationData['version'] as int? ?? 1,
-      lastModified:
-          operationData['lastModified'] != null
-              ? DateTime.parse(operationData['lastModified'])
-              : null,
+      lastModified: operationData['lastModified'] != null ? DateTime.parse(operationData['lastModified']) : null,
     );
 
     // Use updateProject for soft delete instead of deleteProject
     final result = await _remoteDataSource.updateProject(projectDto);
     result.fold(
-      (failure) =>
-          throw Exception('Failed to soft delete project: ${failure.message}'),
+      (failure) => throw Exception('Failed to soft delete project: ${failure.message}'),
       (_) => {}, // Success case
     );
   }

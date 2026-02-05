@@ -11,36 +11,36 @@ class SyncOperationDocument {
   /// Type of entity being synced (e.g., 'project', 'audio_track', 'audio_comment')
   @Index()
   late String entityType;
-  
+
   /// ID of the entity being synced
   @Index()
   late String entityId;
-  
+
   /// Type of operation ('create', 'update', 'delete')
   @Index()
   late String operationType;
-  
+
   /// When this operation was created
   @Index()
   late DateTime timestamp;
-  
+
   /// Priority of this operation
   @Index()
   late String priority; // 'critical', 'high', 'medium', 'low'
 
   /// Serialized data for the operation (JSON string)
   String? operationData;
-  
+
   /// Number of retry attempts
   late int retryCount;
-  
+
   /// Error message if operation failed
   String? errorMessage;
-  
+
   /// Whether this operation is completed
   @Index()
   late bool isCompleted;
-  
+
   /// When this operation was last attempted
   DateTime? lastAttemptTime;
 
@@ -85,10 +85,10 @@ class SyncOperationDocument {
 
 /// Priority levels for sync operations
 enum SyncPriority {
-  critical,  // User profile, authentication
-  high,      // Projects, collaborators
-  medium,    // Audio tracks
-  low,       // Comments, metadata
+  critical, // User profile, authentication
+  high, // Projects, collaborators
+  medium, // Audio tracks
+  low, // Comments, metadata
 }
 
 /// Extension for display names

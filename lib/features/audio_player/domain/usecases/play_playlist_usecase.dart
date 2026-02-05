@@ -140,11 +140,11 @@ class PlayPlaylistUseCase {
             // 4. If no cached path, try version's local file first, then remote
             if (urlToUse == null || urlToUse!.isEmpty) {
               // Try fileLocalPath first if available
-              if (version.fileLocalPath != null &&
-                  version.fileLocalPath!.isNotEmpty) {
-                final filePath = version.fileLocalPath!.startsWith('file://')
-                    ? version.fileLocalPath!.replaceFirst('file://', '')
-                    : version.fileLocalPath!;
+              if (version.fileLocalPath != null && version.fileLocalPath!.isNotEmpty) {
+                final filePath =
+                    version.fileLocalPath!.startsWith('file://')
+                        ? version.fileLocalPath!.replaceFirst('file://', '')
+                        : version.fileLocalPath!;
 
                 // Validate local file exists
                 if (File(filePath).existsSync()) {
@@ -163,17 +163,12 @@ class PlayPlaylistUseCase {
 
             // 5. Validate final URL
             if (urlToUse != null && urlToUse!.isNotEmpty) {
-              final looksLocal =
-                  urlToUse!.startsWith('/') || urlToUse!.startsWith('file://');
+              final looksLocal = urlToUse!.startsWith('/') || urlToUse!.startsWith('file://');
               if (looksLocal) {
-                final filePath =
-                    urlToUse!.startsWith('file://')
-                        ? urlToUse!.replaceFirst('file://', '')
-                        : urlToUse!;
+                final filePath = urlToUse!.startsWith('file://') ? urlToUse!.replaceFirst('file://', '') : urlToUse!;
                 if (!File(filePath).existsSync()) {
                   // Fallback to remote URL if local file is stale
-                  if (version.fileRemoteUrl != null &&
-                      version.fileRemoteUrl!.isNotEmpty) {
+                  if (version.fileRemoteUrl != null && version.fileRemoteUrl!.isNotEmpty) {
                     urlToUse = version.fileRemoteUrl;
                   } else {
                     urlToUse = null;
@@ -181,8 +176,7 @@ class PlayPlaylistUseCase {
                 }
               } else {
                 final uri = Uri.tryParse(urlToUse!);
-                if (uri == null ||
-                    (uri.scheme != 'http' && uri.scheme != 'https')) {
+                if (uri == null || (uri.scheme != 'http' && uri.scheme != 'https')) {
                   urlToUse = null;
                 }
               }
@@ -194,9 +188,7 @@ class PlayPlaylistUseCase {
                 id: track.id,
                 title: track.name,
                 artist: track.uploadedBy.value,
-                duration: version.durationMs != null
-                    ? Duration(milliseconds: version.durationMs!)
-                    : track.duration,
+                duration: version.durationMs != null ? Duration(milliseconds: version.durationMs!) : track.duration,
                 coverUrl: track.coverUrl, // Cover art URL
               );
               audioSources.add(AudioSource(url: urlToUse!, metadata: metadata));

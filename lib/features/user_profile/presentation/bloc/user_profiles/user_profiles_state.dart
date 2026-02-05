@@ -33,8 +33,7 @@ class UserProfilesLoaded extends UserProfilesState {
   UserProfilesLoaded({required this.uiModels});
 
   // Access domain entities when needed via composition
-  Map<String, UserProfile> get profiles => 
-      uiModels.map((key, uiModel) => MapEntry(key, uiModel.profile));
+  Map<String, UserProfile> get profiles => uiModels.map((key, uiModel) => MapEntry(key, uiModel.profile));
 
   UserProfilesLoaded copyWith({Map<String, UserProfileUiModel>? uiModels}) {
     return UserProfilesLoaded(uiModels: uiModels ?? this.uiModels);
@@ -53,4 +52,3 @@ class UserProfilesError extends UserProfilesState {
   @override
   List<Object?> get props => [message];
 }
-

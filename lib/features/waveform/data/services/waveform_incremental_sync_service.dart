@@ -11,8 +11,7 @@ import 'package:trackflow/features/waveform/data/datasources/waveform_remote_dat
 import 'package:trackflow/features/track_version/data/models/track_version_dto.dart';
 
 @LazySingleton()
-class WaveformIncrementalSyncService
-    implements IncrementalSyncService<dynamic> {
+class WaveformIncrementalSyncService implements IncrementalSyncService<dynamic> {
   final TrackVersionLocalDataSource _versionLocalDataSource;
   final WaveformLocalDataSource _waveformLocalDataSource;
   final WaveformRemoteDataSource _waveformRemoteDataSource;
@@ -38,8 +37,10 @@ class WaveformIncrementalSyncService
   }
 
   @override
-  Future<Either<Failure, IncrementalSyncResult<dynamic>>>
-  performIncrementalSync(DateTime lastSyncTime, String userId) async {
+  Future<Either<Failure, IncrementalSyncResult<dynamic>>> performIncrementalSync(
+    DateTime lastSyncTime,
+    String userId,
+  ) async {
     try {
       AppLogger.sync(
         'WAVEFORMS',
@@ -59,11 +60,10 @@ class WaveformIncrementalSyncService
           versionId,
         );
         if (local == null) {
-          final remote = await _waveformRemoteDataSource
-              .fetchCanonicalForVersion(
-                trackId: v.trackId,
-                versionId: versionId,
-              );
+          final remote = await _waveformRemoteDataSource.fetchCanonicalForVersion(
+            trackId: v.trackId,
+            versionId: versionId,
+          );
           if (remote != null) {
             await _waveformLocalDataSource.saveWaveform(remote);
             downloads++;
@@ -79,8 +79,7 @@ class WaveformIncrementalSyncService
       final result = IncrementalSyncResult(
         modifiedItems: const [],
         deletedItemIds: const [],
-        serverTimestamp:
-            downloads == 0 ? lastSyncTime.toUtc() : DateTime.now().toUtc(),
+        serverTimestamp: downloads == 0 ? lastSyncTime.toUtc() : DateTime.now().toUtc(),
         totalProcessed: downloads,
       );
 

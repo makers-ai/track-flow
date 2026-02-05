@@ -13,8 +13,7 @@ import 'package:trackflow/features/auth/domain/entities/password.dart';
 import 'package:trackflow/core/common/mixins/resetable_bloc_mixin.dart';
 
 @injectable
-class AuthBloc extends Bloc<AuthEvent, AuthState>
-    with ResetableBlocMixin<AuthEvent, AuthState> {
+class AuthBloc extends Bloc<AuthEvent, AuthState> with ResetableBlocMixin<AuthEvent, AuthState> {
   final SignInUseCase signIn;
   final SignUpUseCase signUp;
   final GoogleSignInUseCase googleSignIn;

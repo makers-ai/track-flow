@@ -11,8 +11,7 @@ import 'package:trackflow/features/track_version/data/datasources/track_version_
 import 'package:trackflow/features/audio_track/data/datasources/audio_track_local_datasource.dart';
 
 @LazySingleton(as: IncrementalSyncService<TrackVersionDTO>)
-class TrackVersionIncrementalSyncService
-    implements IncrementalSyncService<TrackVersionDTO> {
+class TrackVersionIncrementalSyncService implements IncrementalSyncService<TrackVersionDTO> {
   final TrackVersionRemoteDataSource _remoteDataSource;
   final TrackVersionLocalDataSource _localDataSource;
   final AudioTrackLocalDataSource _trackLocalDataSource;
@@ -37,8 +36,7 @@ class TrackVersionIncrementalSyncService
       // Get track IDs from local cache (only active tracks)
       final tracksResult = await _trackLocalDataSource.getAllTracks();
       final tracks = tracksResult.getOrElse(() => []);
-      final trackIds =
-          tracks.where((t) => !t.isDeleted).map((t) => t.id.value).toList();
+      final trackIds = tracks.where((t) => !t.isDeleted).map((t) => t.id.value).toList();
 
       if (trackIds.isEmpty) {
         return const Right([]);
@@ -64,8 +62,10 @@ class TrackVersionIncrementalSyncService
   }
 
   @override
-  Future<Either<Failure, IncrementalSyncResult<TrackVersionDTO>>>
-  performIncrementalSync(DateTime lastSyncTime, String userId) async {
+  Future<Either<Failure, IncrementalSyncResult<TrackVersionDTO>>> performIncrementalSync(
+    DateTime lastSyncTime,
+    String userId,
+  ) async {
     try {
       AppLogger.sync(
         'TRACK_VERSIONS',
@@ -105,13 +105,11 @@ class TrackVersionIncrementalSyncService
       // Compute next cursor from max lastModified
       DateTime serverTimestamp = lastSyncTime;
       for (final v in allModified) {
-        if (v.lastModified != null &&
-            v.lastModified!.isAfter(serverTimestamp)) {
+        if (v.lastModified != null && v.lastModified!.isAfter(serverTimestamp)) {
           serverTimestamp = v.lastModified!;
         }
       }
-      serverTimestamp =
-          allModified.isEmpty ? lastSyncTime.toUtc() : serverTimestamp.toUtc();
+      serverTimestamp = allModified.isEmpty ? lastSyncTime.toUtc() : serverTimestamp.toUtc();
 
       final result = IncrementalSyncResult(
         modifiedItems: active,
@@ -133,8 +131,7 @@ class TrackVersionIncrementalSyncService
   }
 
   @override
-  Future<Either<Failure, IncrementalSyncResult<TrackVersionDTO>>>
-  performFullSync(String userId) async {
+  Future<Either<Failure, IncrementalSyncResult<TrackVersionDTO>>> performFullSync(String userId) async {
     try {
       AppLogger.sync(
         'TRACK_VERSIONS',
@@ -145,8 +142,7 @@ class TrackVersionIncrementalSyncService
       // Get all active tracks locally to derive track IDs
       final tracksResult = await _trackLocalDataSource.getAllTracks();
       final tracks = tracksResult.getOrElse(() => []);
-      final trackIds =
-          tracks.where((t) => !t.isDeleted).map((t) => t.id.value).toList();
+      final trackIds = tracks.where((t) => !t.isDeleted).map((t) => t.id.value).toList();
 
       if (trackIds.isEmpty) {
         return Right(

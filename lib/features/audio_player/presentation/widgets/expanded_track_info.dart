@@ -70,19 +70,21 @@ class ExpandedTrackInfo extends StatelessWidget {
                       width: albumArtSize,
                       height: albumArtSize,
                       fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                        width: albumArtSize,
-                        height: albumArtSize,
-                        color: AppColors.grey800,
-                        child: const Center(
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                      ),
-                      errorWidget: (context, url, error) => Icon(
-                        Icons.music_note,
-                        color: AppColors.primary,
-                        size: albumArtSize * 0.3,
-                      ),
+                      placeholder:
+                          (context, url) => Container(
+                            width: albumArtSize,
+                            height: albumArtSize,
+                            color: AppColors.grey800,
+                            child: const Center(
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          ),
+                      errorWidget:
+                          (context, url, error) => Icon(
+                            Icons.music_note,
+                            color: AppColors.primary,
+                            size: albumArtSize * 0.3,
+                          ),
                     ),
                   )
                   : Icon(
@@ -114,8 +116,7 @@ class ExpandedTrackInfo extends StatelessWidget {
               String displayArtist = artist; // Fallback from audio metadata
 
               // Override with context if available (more accurate user name)
-              if (contextState is AudioContextLoaded &&
-                  contextState.collaborator != null) {
+              if (contextState is AudioContextLoaded && contextState.collaborator != null) {
                 displayArtist = contextState.collaborator!.name;
               }
 

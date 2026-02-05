@@ -14,8 +14,8 @@ class ResolveTrackVersionUseCase {
   const ResolveTrackVersionUseCase({
     required AudioTrackRepository audioTrackRepository,
     required TrackVersionRepository trackVersionRepository,
-  })  : _audioTrackRepository = audioTrackRepository,
-        _trackVersionRepository = trackVersionRepository;
+  }) : _audioTrackRepository = audioTrackRepository,
+       _trackVersionRepository = trackVersionRepository;
 
   final AudioTrackRepository _audioTrackRepository;
   final TrackVersionRepository _trackVersionRepository;
@@ -53,10 +53,8 @@ class ResolveTrackVersionUseCase {
             ),
             (version) {
               // 4. Validate version has playable source
-              if ((version.fileLocalPath == null ||
-                   version.fileLocalPath!.isEmpty) &&
-                  (version.fileRemoteUrl == null ||
-                   version.fileRemoteUrl!.isEmpty)) {
+              if ((version.fileLocalPath == null || version.fileLocalPath!.isEmpty) &&
+                  (version.fileRemoteUrl == null || version.fileRemoteUrl!.isEmpty)) {
                 return Left(
                   AudioSourceFailure(
                     'Version ${version.id.value} has no audio source',

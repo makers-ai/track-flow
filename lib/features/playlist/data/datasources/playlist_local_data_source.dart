@@ -44,8 +44,7 @@ class PlaylistLocalDataSourceImpl implements PlaylistLocalDataSource {
   @override
   Future<Either<Failure, PlaylistDto?>> getPlaylistById(String uuid) async {
     try {
-      final doc =
-          await isar.playlistDocuments.filter().uuidEqualTo(uuid).findFirst();
+      final doc = await isar.playlistDocuments.filter().uuidEqualTo(uuid).findFirst();
       return Right(doc?.toDTO());
     } catch (e) {
       return Left(CacheFailure('Failed to get playlist by id: $e'));
@@ -68,8 +67,7 @@ class PlaylistLocalDataSourceImpl implements PlaylistLocalDataSource {
   Future<Either<Failure, Unit>> deletePlaylist(String uuid) async {
     try {
       await isar.writeTxn(() async {
-        final doc =
-            await isar.playlistDocuments.filter().uuidEqualTo(uuid).findFirst();
+        final doc = await isar.playlistDocuments.filter().uuidEqualTo(uuid).findFirst();
         if (doc != null) {
           await isar.playlistDocuments.delete(doc.id);
         }

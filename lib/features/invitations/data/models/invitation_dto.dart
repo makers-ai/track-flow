@@ -69,16 +69,12 @@ class InvitationDto {
       id: InvitationId.fromUniqueString(id),
       projectId: ProjectId.fromUniqueString(projectId),
       invitedByUserId: UserId.fromUniqueString(invitedByUserId),
-      invitedUserId:
-          invitedUserId != null
-              ? UserId.fromUniqueString(invitedUserId!)
-              : null,
+      invitedUserId: invitedUserId != null ? UserId.fromUniqueString(invitedUserId!) : null,
       invitedEmail: invitedEmail,
       proposedRole: ProjectRole.fromString(proposedRole),
       message: message,
       createdAt: createdAt,
-      expiresAt:
-          expiresAt ?? createdAt.add(const Duration(days: 7)), // Default 7 days
+      expiresAt: expiresAt ?? createdAt.add(const Duration(days: 7)), // Default 7 days
       status: InvitationStatus.values.firstWhere(
         (s) => s.name == status,
         orElse: () => InvitationStatus.pending,

@@ -69,10 +69,12 @@ class AudioFileRepositoryImpl implements AudioFileRepository {
 
       // Notify completion
       if (onProgress != null) {
-        onProgress(DownloadProgress.completed(
-          metadata?['trackId'] ?? 'unknown',
-          snapshot.totalBytes,
-        ));
+        onProgress(
+          DownloadProgress.completed(
+            metadata?['trackId'] ?? 'unknown',
+            snapshot.totalBytes,
+          ),
+        );
       }
 
       return Right(downloadUrl);
@@ -134,9 +136,11 @@ class AudioFileRepositoryImpl implements AudioFileRepository {
 
       // Validate response
       if (response.statusCode != 200) {
-        return Left(NetworkFailure(
-          'Download failed with status ${response.statusCode}',
-        ));
+        return Left(
+          NetworkFailure(
+            'Download failed with status ${response.statusCode}',
+          ),
+        );
       }
 
       // Get total bytes
@@ -145,12 +149,14 @@ class AudioFileRepositoryImpl implements AudioFileRepository {
 
       // Notify download started
       if (onProgress != null) {
-        onProgress(DownloadProgress(
-          trackId: downloadId,
-          state: DownloadState.downloading,
-          downloadedBytes: 0,
-          totalBytes: totalBytes,
-        ));
+        onProgress(
+          DownloadProgress(
+            trackId: downloadId,
+            state: DownloadState.downloading,
+            downloadedBytes: 0,
+            totalBytes: totalBytes,
+          ),
+        );
       }
 
       // Stream to file
@@ -161,12 +167,14 @@ class AudioFileRepositoryImpl implements AudioFileRepository {
 
         // Report progress
         if (onProgress != null) {
-          onProgress(DownloadProgress(
-            trackId: downloadId,
-            state: DownloadState.downloading,
-            downloadedBytes: downloadedBytes,
-            totalBytes: totalBytes,
-          ));
+          onProgress(
+            DownloadProgress(
+              trackId: downloadId,
+              state: DownloadState.downloading,
+              downloadedBytes: downloadedBytes,
+              totalBytes: totalBytes,
+            ),
+          );
         }
       }
 
@@ -196,18 +204,22 @@ class AudioFileRepositoryImpl implements AudioFileRepository {
       return Right(localPath);
     } on FirebaseException catch (e) {
       if (onProgress != null) {
-        onProgress(DownloadProgress.failed(
-          trackId ?? 'unknown',
-          e.message ?? 'Download failed',
-        ));
+        onProgress(
+          DownloadProgress.failed(
+            trackId ?? 'unknown',
+            e.message ?? 'Download failed',
+          ),
+        );
       }
       return Left(ServerFailure(e.message ?? 'Download failed'));
     } catch (e) {
       if (onProgress != null) {
-        onProgress(DownloadProgress.failed(
-          trackId ?? 'unknown',
-          e.toString(),
-        ));
+        onProgress(
+          DownloadProgress.failed(
+            trackId ?? 'unknown',
+            e.toString(),
+          ),
+        );
       }
       return Left(ServerFailure('Download failed: $e'));
     }
@@ -350,18 +362,20 @@ class AudioFileRepositoryImpl implements AudioFileRepository {
       );
 
       // Create document
-      final document = CachedAudioDocumentUnified()
-        ..trackId = trackId
-        ..versionId = versionId
-        ..relativePath = relativePath
-        ..fileSizeBytes = fileSize
-        ..cachedAt = DateTime.now()
-        ..lastAccessed = DateTime.now()
-        ..checksum = '' // Will be calculated async
-        ..quality = AudioQuality.medium
-        ..status = CacheStatus.cached
-        ..downloadAttempts = 0
-        ..originalUrl = originalUrl;
+      final document =
+          CachedAudioDocumentUnified()
+            ..trackId = trackId
+            ..versionId = versionId
+            ..relativePath = relativePath
+            ..fileSizeBytes = fileSize
+            ..cachedAt = DateTime.now()
+            ..lastAccessed = DateTime.now()
+            ..checksum =
+                '' // Will be calculated async
+            ..quality = AudioQuality.medium
+            ..status = CacheStatus.cached
+            ..downloadAttempts = 0
+            ..originalUrl = originalUrl;
 
       // Store in database
       await _localDataSource.storeUnifiedCachedAudio(document);

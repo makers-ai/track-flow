@@ -150,17 +150,17 @@ class _TrackDetailScreenState extends State<TrackDetailScreen> {
 
               // Derive current user id from CurrentUserBloc
               final userState = context.watch<CurrentUserBloc>().state;
-              final String? currentUserId =
-                  userState is CurrentUserLoaded ? userState.profile.id.value : null;
+              final String? currentUserId = userState is CurrentUserLoaded ? userState.profile.id.value : null;
 
               bool canAddComment = false;
               if (currentUserId != null) {
                 final me = projectUi.project.collaborators.firstWhere(
                   (c) => c.userId.value == currentUserId,
-                  orElse: () => ProjectCollaborator.create(
-                    userId: UserId.fromUniqueString(currentUserId),
-                    role: ProjectRole.viewer,
-                  ),
+                  orElse:
+                      () => ProjectCollaborator.create(
+                        userId: UserId.fromUniqueString(currentUserId),
+                        role: ProjectRole.viewer,
+                      ),
                 );
                 canAddComment = me.hasPermission(ProjectPermission.addComment);
               }

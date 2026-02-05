@@ -55,8 +55,7 @@ class PlayPlaylistRequested extends AudioPlayerEvent {
   List<Object?> get props => [playlistId, tracks, startIndex];
 
   @override
-  String toString() =>
-      'PlayPlaylistRequested(playlistId: $playlistId, tracks: $tracks, startIndex: $startIndex)';
+  String toString() => 'PlayPlaylistRequested(playlistId: $playlistId, tracks: $tracks, startIndex: $startIndex)';
 }
 
 /// Pause current audio playback
@@ -108,8 +107,7 @@ class PlayAndSeekRequested extends AudioPlayerEvent {
   List<Object?> get props => [trackId, position];
 
   @override
-  String toString() =>
-      'PlayAndSeekRequested(trackId: $trackId, position: $position)';
+  String toString() => 'PlayAndSeekRequested(trackId: $trackId, position: $position)';
 }
 
 /// Play audio comment (local file or remote URL)
@@ -133,8 +131,7 @@ class PlayAudioCommentRequested extends AudioPlayerEvent {
   List<Object?> get props => [localPath, remoteUrl, commentId];
 
   @override
-  String toString() =>
-      'PlayAudioCommentRequested(localPath: $localPath, remoteUrl: $remoteUrl, commentId: $commentId)';
+  String toString() => 'PlayAudioCommentRequested(localPath: $localPath, remoteUrl: $remoteUrl, commentId: $commentId)';
 }
 
 /// Toggle shuffle mode on/off

@@ -27,19 +27,14 @@ class VoiceMemoPlaybackControls extends StatelessWidget {
     }
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AudioPlayerBloc, AudioPlayerState>(
       builder: (context, audioState) {
-        final isCurrentMemo = audioState is AudioPlayerSessionState &&
-            audioState.session.currentTrack?.id.value == memo.id.value;
+        final isCurrentMemo =
+            audioState is AudioPlayerSessionState && audioState.session.currentTrack?.id.value == memo.id.value;
 
-        final isPlaying = isCurrentMemo &&
-            audioState is AudioPlayerPlaying;
-
-      
+        final isPlaying = isCurrentMemo && audioState is AudioPlayerPlaying;
 
         return Column(
           children: [
@@ -47,15 +42,16 @@ class VoiceMemoPlaybackControls extends StatelessWidget {
             AudioPlayPauseButton(
               isPlaying: isPlaying,
               isBuffering: false,
-              onPressed: _fileExists
-                  ? () {
-                      if (isPlaying) {
-                        onPausePressed();
-                      } else {
-                        onPlayPressed();
+              onPressed:
+                  _fileExists
+                      ? () {
+                        if (isPlaying) {
+                          onPausePressed();
+                        } else {
+                          onPlayPressed();
+                        }
                       }
-                    }
-                  : null,
+                      : null,
               size: Dimensions.iconLarge,
               iconSize: Dimensions.iconMedium,
               backgroundColor: Colors.white.withValues(alpha: 0.2),
@@ -63,7 +59,7 @@ class VoiceMemoPlaybackControls extends StatelessWidget {
             ),
           ],
         );
-      }, 
+      },
     );
   }
 }

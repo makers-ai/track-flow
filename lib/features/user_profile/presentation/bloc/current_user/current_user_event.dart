@@ -44,4 +44,3 @@ class GetCurrentUserProfileCreationData extends CurrentUserEvent {}
 
 /// Clear current user profile state
 class ClearCurrentUserProfile extends CurrentUserEvent {}
-

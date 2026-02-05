@@ -21,10 +21,7 @@ class PlaylistRemoteDataSourceImpl implements PlaylistRemoteDataSource {
   @override
   Future<Either<Failure, Unit>> addPlaylist(PlaylistDto playlist) async {
     try {
-      await firestore
-          .collection('playlists')
-          .doc(playlist.id)
-          .set(playlist.toJson());
+      await firestore.collection('playlists').doc(playlist.id).set(playlist.toJson());
       return const Right(unit);
     } catch (e) {
       return Left(ServerFailure('Failed to add playlist: $e'));
@@ -35,9 +32,7 @@ class PlaylistRemoteDataSourceImpl implements PlaylistRemoteDataSource {
   Future<Either<Failure, List<PlaylistDto>>> getAllPlaylists() async {
     try {
       final querySnapshot = await firestore.collection('playlists').get();
-      final playlists = querySnapshot.docs
-          .map((doc) => PlaylistDto.fromJson(doc.data()))
-          .toList();
+      final playlists = querySnapshot.docs.map((doc) => PlaylistDto.fromJson(doc.data())).toList();
       return Right(playlists);
     } catch (e) {
       return Left(ServerFailure('Failed to get all playlists: $e'));
@@ -60,10 +55,7 @@ class PlaylistRemoteDataSourceImpl implements PlaylistRemoteDataSource {
   @override
   Future<Either<Failure, Unit>> updatePlaylist(PlaylistDto playlist) async {
     try {
-      await firestore
-          .collection('playlists')
-          .doc(playlist.id)
-          .update(playlist.toJson());
+      await firestore.collection('playlists').doc(playlist.id).update(playlist.toJson());
       return const Right(unit);
     } catch (e) {
       return Left(ServerFailure('Failed to update playlist: $e'));

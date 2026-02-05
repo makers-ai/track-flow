@@ -39,10 +39,7 @@ class PlaylistDto {
       playlistSource: json['playlistSource'] as String,
       // ⭐ NEW: Parse sync metadata from JSON
       version: json['version'] as int? ?? 1,
-      lastModified:
-          json['lastModified'] != null
-              ? DateTime.tryParse(json['lastModified'] as String)
-              : null,
+      lastModified: json['lastModified'] != null ? DateTime.tryParse(json['lastModified'] as String) : null,
     );
   }
 

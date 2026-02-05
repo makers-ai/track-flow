@@ -140,9 +140,10 @@ class ProfilePreviewContent extends StatelessWidget {
             Wrap(
               spacing: Dimensions.space8,
               runSpacing: Dimensions.space8,
-              children: profile.roles!.map((role) {
-                return _buildChip(role);
-              }).toList(),
+              children:
+                  profile.roles!.map((role) {
+                    return _buildChip(role);
+                  }).toList(),
             ),
             SizedBox(height: Dimensions.space24),
           ],
@@ -159,9 +160,10 @@ class ProfilePreviewContent extends StatelessWidget {
             Wrap(
               spacing: Dimensions.space8,
               runSpacing: Dimensions.space8,
-              children: profile.genres!.map((genre) {
-                return _buildChip(genre);
-              }).toList(),
+              children:
+                  profile.genres!.map((genre) {
+                    return _buildChip(genre);
+                  }).toList(),
             ),
             SizedBox(height: Dimensions.space24),
           ],
@@ -178,9 +180,10 @@ class ProfilePreviewContent extends StatelessWidget {
             Wrap(
               spacing: Dimensions.space8,
               runSpacing: Dimensions.space8,
-              children: profile.skills!.map((skill) {
-                return _buildChip(skill);
-              }).toList(),
+              children:
+                  profile.skills!.map((skill) {
+                    return _buildChip(skill);
+                  }).toList(),
             ),
             SizedBox(height: Dimensions.space24),
           ],

@@ -23,8 +23,7 @@ class SyncStatusProvider {
   final PendingOperationsManager _pendingOperationsManager;
 
   // Stream controller for sync state
-  final BehaviorSubject<SyncState> _syncStateController =
-      BehaviorSubject<SyncState>.seeded(SyncState.initial);
+  final BehaviorSubject<SyncState> _syncStateController = BehaviorSubject<SyncState>.seeded(SyncState.initial);
 
   SyncStatusProvider({
     required SyncCoordinator syncCoordinator,

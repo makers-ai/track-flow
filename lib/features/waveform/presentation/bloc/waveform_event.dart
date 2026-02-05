@@ -8,8 +8,7 @@ abstract class WaveformEvent extends Equatable {
 }
 
 class LoadWaveform extends WaveformEvent {
-  final TrackVersionId
-  versionId; // Required: waveforms are now purely version-based
+  final TrackVersionId versionId; // Required: waveforms are now purely version-based
   final String? audioFilePath; // unused now
   final String? audioSourceHash; // unused now
   final int? targetSampleCount; // unused now

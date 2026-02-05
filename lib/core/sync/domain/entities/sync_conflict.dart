@@ -5,37 +5,37 @@ import 'package:trackflow/core/sync/domain/entities/sync_metadata.dart';
 class SyncConflict<T> extends Equatable {
   /// Unique identifier for this conflict
   final String conflictId;
-  
+
   /// Type of entity in conflict (e.g., 'project', 'audio_track')
   final String entityType;
-  
+
   /// ID of the conflicted entity
   final String entityId;
-  
+
   /// Local version of the entity
   final T localVersion;
-  
+
   /// Remote version of the entity
   final T remoteVersion;
-  
+
   /// Sync metadata for local version
   final SyncMetadata localMetadata;
-  
+
   /// Sync metadata for remote version
   final SyncMetadata remoteMetadata;
-  
+
   /// When this conflict was detected
   final DateTime detectedAt;
-  
+
   /// Type of conflict detected
   final ConflictType conflictType;
-  
+
   /// Whether this conflict has been resolved
   final bool isResolved;
-  
+
   /// Resolution strategy used (if resolved)
   final ConflictResolutionStrategy? resolutionStrategy;
-  
+
   /// Final resolved version (if resolved)
   final T? resolvedVersion;
 
@@ -64,7 +64,7 @@ class SyncConflict<T> extends Equatable {
     required SyncMetadata remoteMetadata,
   }) {
     final conflictType = _determineConflictType(localMetadata, remoteMetadata);
-    
+
     return SyncConflict<T>(
       conflictId: '${entityType}_${entityId}_${DateTime.now().millisecondsSinceEpoch}',
       entityType: entityType,
@@ -119,35 +119,35 @@ class SyncConflict<T> extends Equatable {
 
   @override
   List<Object?> get props => [
-        conflictId,
-        entityType,
-        entityId,
-        localVersion,
-        remoteVersion,
-        localMetadata,
-        remoteMetadata,
-        detectedAt,
-        conflictType,
-        isResolved,
-        resolutionStrategy,
-        resolvedVersion,
-      ];
+    conflictId,
+    entityType,
+    entityId,
+    localVersion,
+    remoteVersion,
+    localMetadata,
+    remoteMetadata,
+    detectedAt,
+    conflictType,
+    isResolved,
+    resolutionStrategy,
+    resolvedVersion,
+  ];
 }
 
 /// Types of conflicts that can occur
 enum ConflictType {
   /// Both local and remote were modified concurrently
   concurrentModification,
-  
+
   /// Local version is newer than remote
   localNewer,
-  
+
   /// Remote version is newer than local
   remoteNewer,
-  
+
   /// Entity was deleted locally but modified remotely
   deletedLocally,
-  
+
   /// Entity was deleted remotely but modified locally
   deletedRemotely,
 }
@@ -156,19 +156,19 @@ enum ConflictType {
 enum ConflictResolutionStrategy {
   /// Use local version
   useLocal,
-  
+
   /// Use remote version
   useRemote,
-  
+
   /// Merge changes from both versions
   merge,
-  
+
   /// Use the version with latest timestamp
   useLatest,
-  
+
   /// Use the version with higher version number
   useHighestVersion,
-  
+
   /// Let user manually resolve
   manual,
 }
@@ -189,6 +189,6 @@ extension ConflictTypeExtension on ConflictType {
         return 'Deleted Remotely';
     }
   }
-  
+
   bool get requiresUserInput => this == ConflictType.concurrentModification;
 }

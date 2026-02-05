@@ -6,16 +6,21 @@ import 'package:trackflow/features/audio_player/domain/entities/playback_state.d
 import '../../domain/services/comment_audio_playback_service.dart';
 
 sealed class CommentAudioState {}
+
 class CommentAudioIdle extends CommentAudioState {}
+
 class CommentAudioBuffering extends CommentAudioState {}
+
 class CommentAudioPlaying extends CommentAudioState {
   final PlaybackSession session;
   CommentAudioPlaying(this.session);
 }
+
 class CommentAudioPaused extends CommentAudioState {
   final PlaybackSession session;
   CommentAudioPaused(this.session);
 }
+
 class CommentAudioError extends CommentAudioState {
   final String message;
   CommentAudioError(this.message);
@@ -64,5 +69,3 @@ class CommentAudioCubit extends Cubit<CommentAudioState> {
     return super.close();
   }
 }
-
-

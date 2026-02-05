@@ -39,7 +39,6 @@ class AudioCommentInputBar extends StatefulWidget {
 }
 
 class _AudioCommentInputBarState extends State<AudioCommentInputBar> {
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -47,8 +46,7 @@ class _AudioCommentInputBarState extends State<AudioCommentInputBar> {
 
     return BlocBuilder<RecordingBloc, RecordingState>(
       builder: (context, recordingState) {
-        final bool isRecording = recordingState is RecordingInProgress ||
-            recordingState is RecordingPaused;
+        final bool isRecording = recordingState is RecordingInProgress || recordingState is RecordingPaused;
 
         if (isRecording) {
           return _buildRecordingBar(context, recordingState);
@@ -134,9 +132,10 @@ class _AudioCommentInputBarState extends State<AudioCommentInputBar> {
 
   Widget _buildRecordingBar(BuildContext context, RecordingState state) {
     final theme = Theme.of(context);
-    final elapsed = (state is RecordingInProgress || state is RecordingPaused)
-        ? (state as dynamic).session.elapsed as Duration
-        : Duration.zero;
+    final elapsed =
+        (state is RecordingInProgress || state is RecordingPaused)
+            ? (state as dynamic).session.elapsed as Duration
+            : Duration.zero;
 
     return Container(
       padding: EdgeInsets.symmetric(
@@ -206,5 +205,3 @@ class _AudioCommentInputBarState extends State<AudioCommentInputBar> {
     audioPlayerBloc.add(const ResumeAudioRequested());
   }
 }
-
-

@@ -32,10 +32,7 @@ class WaveformOverlay extends StatelessWidget {
         final double height = constraints.maxHeight;
         final double baselineY = height - paddingBottom;
         final double progressX = _xFor(playbackPosition, duration, width);
-        final double? previewX =
-            previewPosition == null
-                ? null
-                : _xFor(previewPosition!, duration, width);
+        final double? previewX = previewPosition == null ? null : _xFor(previewPosition!, duration, width);
 
         return CustomPaint(
           size: Size(width, height),

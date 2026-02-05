@@ -86,8 +86,7 @@ class SessionCleanupService {
 
       // Step 2: Clear UserProfile cache SYNCHRONOUSLY before BLoC reset
       // This prevents widgets from finding cached profiles during rebuild
-      final profileClearResult =
-          await _userProfileRepository.clearProfileCache();
+      final profileClearResult = await _userProfileRepository.clearProfileCache();
       profileClearResult.fold(
         (failure) => AppLogger.warning(
           'UserProfile cache clear failed: ${failure.message}, but continuing cleanup',

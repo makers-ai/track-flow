@@ -43,15 +43,9 @@ class CachedTrackBundleUiModel extends Equatable {
       bundle: bundle,
       trackId: bundle.trackId,
       versionId: bundle.versionId,
-      track: bundle.track != null 
-        ? AudioTrackUiModel.fromDomain(bundle.track!)
-        : null,
-      version: bundle.version != null
-        ? TrackVersionUiModel.fromDomain(bundle.version!)
-        : null,
-      uploader: bundle.uploader != null
-        ? UserProfileUiModel.fromDomain(bundle.uploader!)
-        : null,
+      track: bundle.track != null ? AudioTrackUiModel.fromDomain(bundle.track!) : null,
+      version: bundle.version != null ? TrackVersionUiModel.fromDomain(bundle.version!) : null,
+      uploader: bundle.uploader != null ? UserProfileUiModel.fromDomain(bundle.uploader!) : null,
       projectName: bundle.projectName,
       fileSizeBytes: bundle.cached.fileSizeBytes,
       cachedAt: bundle.cached.cachedAt,
@@ -98,4 +92,3 @@ class CachedTrackBundleUiModel extends Equatable {
     isDownloading,
   ];
 }
-

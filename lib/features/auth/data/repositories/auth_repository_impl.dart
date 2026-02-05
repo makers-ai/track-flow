@@ -238,8 +238,7 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final isConnected = await _networkStateManager.isConnected;
       if (!isConnected) {
-        final hasCredentials =
-            await _sessionStorage.getBool('has_credentials') ?? false;
+        final hasCredentials = await _sessionStorage.getBool('has_credentials') ?? false;
         return Right(hasCredentials);
       }
 

@@ -13,20 +13,17 @@ abstract class AudioFailure extends Equatable {
 
 /// Track not found or inaccessible
 class TrackNotFoundFailure extends AudioFailure {
-  const TrackNotFoundFailure(String trackId)
-    : super('Track not found: $trackId');
+  const TrackNotFoundFailure(String trackId) : super('Track not found: $trackId');
 }
 
 /// Version not found or inaccessible
 class VersionNotFoundFailure extends AudioFailure {
-  const VersionNotFoundFailure(String versionId)
-    : super('Version not found: $versionId');
+  const VersionNotFoundFailure(String versionId) : super('Version not found: $versionId');
 }
 
 /// Audio source URL could not be resolved
 class AudioSourceFailure extends AudioFailure {
-  const AudioSourceFailure(String trackId)
-    : super('Could not resolve audio source for track: $trackId');
+  const AudioSourceFailure(String trackId) : super('Could not resolve audio source for track: $trackId');
 }
 
 /// Network error when trying to load remote audio
@@ -41,14 +38,12 @@ class PlaybackFailure extends AudioFailure {
 
 /// Playlist not found or empty
 class PlaylistFailure extends AudioFailure {
-  const PlaylistFailure(String playlistId)
-    : super('Playlist error: $playlistId');
+  const PlaylistFailure(String playlistId) : super('Playlist error: $playlistId');
 }
 
 /// Invalid queue operation
 class QueueFailure extends AudioFailure {
-  const QueueFailure(String operation)
-    : super('Queue operation failed: $operation');
+  const QueueFailure(String operation) : super('Queue operation failed: $operation');
 }
 
 /// Audio cache/storage failure
@@ -58,6 +53,5 @@ class StorageFailure extends AudioFailure {
 
 /// Generic audio player failure
 class AudioPlayerFailure extends AudioFailure {
-  const AudioPlayerFailure(String details)
-    : super('Audio player error: $details');
+  const AudioPlayerFailure(String details) : super('Audio player error: $details');
 }

@@ -80,10 +80,11 @@ class _LiveWaveformPainter extends CustomPainter {
     final maxHeight = size.height;
     final baselineY = size.height / 2;
 
-    final paint = Paint()
-      ..color = color
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = barWidth;
+    final paint =
+        Paint()
+          ..color = color
+          ..strokeCap = StrokeCap.round
+          ..strokeWidth = barWidth;
 
     for (int i = 0; i < barCount; i++) {
       final x = i * (barWidth + gap);
@@ -100,10 +101,6 @@ class _LiveWaveformPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _LiveWaveformPainter oldDelegate) {
-    return !identical(oldDelegate.amplitudes, amplitudes) ||
-        oldDelegate.color != color;
+    return !identical(oldDelegate.amplitudes, amplitudes) || oldDelegate.color != color;
   }
 }
-
-
-

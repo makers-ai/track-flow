@@ -61,10 +61,11 @@ class WatchDashboardBundleUseCase {
 
     // Combine all three streams
     await for (final bundle in Rx.combineLatest3<
-        Either<Failure, List<Project>>,
-        Either<Failure, List<AudioTrack>>,
-        Either<Failure, List<AudioComment>>,
-        Either<Failure, DashboardBundle>>(
+      Either<Failure, List<Project>>,
+      Either<Failure, List<AudioTrack>>,
+      Either<Failure, List<AudioComment>>,
+      Either<Failure, DashboardBundle>
+    >(
       projects$,
       tracks$,
       comments$,
@@ -126,5 +127,3 @@ class WatchDashboardBundleUseCase {
     return comments.take(maxComments).toList();
   }
 }
-
-

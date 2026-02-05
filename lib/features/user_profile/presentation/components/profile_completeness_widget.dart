@@ -31,8 +31,7 @@ class ProfileCompletenessWidget extends StatelessWidget {
     int percentage = 30; // Base: Name, Email, Avatar
 
     // +30% for Bio or Location
-    if ((description != null && description!.trim().isNotEmpty) ||
-        (location != null && location!.trim().isNotEmpty)) {
+    if ((description != null && description!.trim().isNotEmpty) || (location != null && location!.trim().isNotEmpty)) {
       percentage += 30;
     }
 
@@ -78,12 +77,12 @@ class ProfileCompletenessWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final completeness = _calculateCompleteness();
-    
+
     // Hide widget if profile is 100% complete
     if (completeness >= 100) {
       return const SizedBox.shrink();
     }
-    
+
     final progressColor = _getProgressColor(completeness);
     final message = _getCompletionMessage(completeness);
 
@@ -210,8 +209,7 @@ class ProfileCompletenessWidget extends StatelessWidget {
             label,
             style: AppTextStyle.bodySmall.copyWith(
               color: isComplete ? AppColors.success : AppColors.textSecondary,
-              decoration:
-                  isComplete ? TextDecoration.lineThrough : TextDecoration.none,
+              decoration: isComplete ? TextDecoration.lineThrough : TextDecoration.none,
             ),
           ),
         ],
@@ -219,4 +217,3 @@ class ProfileCompletenessWidget extends StatelessWidget {
     );
   }
 }
-

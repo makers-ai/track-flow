@@ -45,8 +45,7 @@ class InvitationList extends StatelessWidget {
     return ListView.separated(
       padding: EdgeInsets.all(Dimensions.space16),
       itemCount: invitations.length,
-      separatorBuilder:
-          (context, index) => SizedBox(height: Dimensions.space12),
+      separatorBuilder: (context, index) => SizedBox(height: Dimensions.space12),
       itemBuilder: (context, index) {
         final invitation = invitations[index];
 

@@ -28,16 +28,13 @@ abstract class ProjectRemoteDataSource {
 class ProjectsRemoteDatasSourceImpl implements ProjectRemoteDataSource {
   final FirebaseFirestore _firestore;
 
-  ProjectsRemoteDatasSourceImpl({required FirebaseFirestore firestore})
-    : _firestore = firestore;
+  ProjectsRemoteDatasSourceImpl({required FirebaseFirestore firestore}) : _firestore = firestore;
 
   @override
   Future<Either<Failure, ProjectDTO>> createProject(ProjectDTO project) async {
     try {
       // Use the existing project ID to maintain consistency with offline storage
-      final docRef = _firestore
-          .collection(ProjectDTO.collection)
-          .doc(project.id);
+      final docRef = _firestore.collection(ProjectDTO.collection).doc(project.id);
 
       // Write the DTO to Firestore with the original ID
       // Ensure server timestamps for sync detection
@@ -76,10 +73,7 @@ class ProjectsRemoteDatasSourceImpl implements ProjectRemoteDataSource {
       data['updatedAt'] = FieldValue.serverTimestamp();
       data['lastModified'] = FieldValue.serverTimestamp();
 
-      await _firestore
-          .collection(ProjectDTO.collection)
-          .doc(project.id)
-          .update(data);
+      await _firestore.collection(ProjectDTO.collection).doc(project.id).update(data);
       return Right(unit);
     } on FirebaseException catch (e) {
       if (e.code == 'permission-denied') {
@@ -133,11 +127,7 @@ class ProjectsRemoteDatasSourceImpl implements ProjectRemoteDataSource {
   @override
   Future<Either<Failure, ProjectDTO>> getProjectById(String projectId) async {
     try {
-      final docSnapshot =
-          await _firestore
-              .collection(ProjectDTO.collection)
-              .doc(projectId)
-              .get();
+      final docSnapshot = await _firestore.collection(ProjectDTO.collection).doc(projectId).get();
 
       if (docSnapshot.exists) {
         final project = ProjectDTO.fromFirestore(docSnapshot);
@@ -179,17 +169,11 @@ class ProjectsRemoteDatasSourceImpl implements ProjectRemoteDataSource {
 
       // Query for projects owned by the user
       final ownedProjectsFuture =
-          _firestore
-              .collection(ProjectDTO.collection)
-              .where('ownerId', isEqualTo: userId)
-              .get();
+          _firestore.collection(ProjectDTO.collection).where('ownerId', isEqualTo: userId).get();
 
       // Query for projects where the user is a collaborator
       final collaboratorProjectsFuture =
-          _firestore
-              .collection(ProjectDTO.collection)
-              .where('collaboratorIds', arrayContains: userId)
-              .get();
+          _firestore.collection(ProjectDTO.collection).where('collaboratorIds', arrayContains: userId).get();
 
       AppLogger.network('Executing Firestore queries for user projects');
 

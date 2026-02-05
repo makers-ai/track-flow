@@ -65,9 +65,7 @@ class _MainScaffoldState extends State<MainScaffold> {
               BlocBuilder<AudioPlayerBloc, AudioPlayerState>(
                 builder: (context, state) {
                   // Only show mini player when there's active playback
-                  if (state is AudioPlayerPlaying ||
-                      state is AudioPlayerPaused ||
-                      state is AudioPlayerBuffering) {
+                  if (state is AudioPlayerPlaying || state is AudioPlayerPaused || state is AudioPlayerBuffering) {
                     return const MiniAudioPlayer(
                       config: MiniAudioPlayerConfig(
                         backgroundColor: AppColors.grey400,

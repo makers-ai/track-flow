@@ -44,8 +44,7 @@ abstract class NotificationRemoteDataSource {
 }
 
 @LazySingleton(as: NotificationRemoteDataSource)
-class FirestoreNotificationRemoteDataSource
-    implements NotificationRemoteDataSource {
+class FirestoreNotificationRemoteDataSource implements NotificationRemoteDataSource {
   final FirebaseFirestore _firestore;
 
   FirestoreNotificationRemoteDataSource(this._firestore);
@@ -55,10 +54,7 @@ class FirestoreNotificationRemoteDataSource
     NotificationDto notification,
   ) async {
     try {
-      await _firestore
-          .collection(NotificationDto.collection)
-          .doc(notification.id)
-          .set(notification.toJson());
+      await _firestore.collection(NotificationDto.collection).doc(notification.id).set(notification.toJson());
       return Right(notification);
     } on FirebaseException catch (e) {
       return Left(ServerFailure(e.message ?? 'Failed to create notification'));
@@ -72,11 +68,7 @@ class FirestoreNotificationRemoteDataSource
     String notificationId,
   ) async {
     try {
-      final doc =
-          await _firestore
-              .collection(NotificationDto.collection)
-              .doc(notificationId)
-              .get();
+      final doc = await _firestore.collection(NotificationDto.collection).doc(notificationId).get();
 
       if (!doc.exists) {
         return Left(DatabaseFailure('Notification not found'));
@@ -95,10 +87,7 @@ class FirestoreNotificationRemoteDataSource
     NotificationDto notification,
   ) async {
     try {
-      await _firestore
-          .collection(NotificationDto.collection)
-          .doc(notification.id)
-          .update(notification.toJson());
+      await _firestore.collection(NotificationDto.collection).doc(notification.id).update(notification.toJson());
       return Right(notification);
     } on FirebaseException catch (e) {
       return Left(ServerFailure(e.message ?? 'Failed to update notification'));
@@ -112,10 +101,7 @@ class FirestoreNotificationRemoteDataSource
     String notificationId,
   ) async {
     try {
-      await _firestore
-          .collection(NotificationDto.collection)
-          .doc(notificationId)
-          .delete();
+      await _firestore.collection(NotificationDto.collection).doc(notificationId).delete();
       return Right(unit);
     } on FirebaseException catch (e) {
       return Left(ServerFailure(e.message ?? 'Failed to delete notification'));
@@ -136,10 +122,7 @@ class FirestoreNotificationRemoteDataSource
               .orderBy('timestamp', descending: true)
               .get();
 
-      final notifications =
-          query.docs
-              .map((doc) => NotificationDto.fromJson(doc.data()))
-              .toList();
+      final notifications = query.docs.map((doc) => NotificationDto.fromJson(doc.data())).toList();
 
       return Right(notifications);
     } on FirebaseException catch (e) {
@@ -162,10 +145,7 @@ class FirestoreNotificationRemoteDataSource
               .orderBy('timestamp', descending: true)
               .get();
 
-      final notifications =
-          query.docs
-              .map((doc) => NotificationDto.fromJson(doc.data()))
-              .toList();
+      final notifications = query.docs.map((doc) => NotificationDto.fromJson(doc.data())).toList();
 
       return Right(notifications);
     } on FirebaseException catch (e) {
@@ -182,13 +162,10 @@ class FirestoreNotificationRemoteDataSource
     String notificationId,
   ) async {
     try {
-      await _firestore
-          .collection(NotificationDto.collection)
-          .doc(notificationId)
-          .update({
-            'isRead': true,
-            'lastModified': DateTime.now().toIso8601String(),
-          });
+      await _firestore.collection(NotificationDto.collection).doc(notificationId).update({
+        'isRead': true,
+        'lastModified': DateTime.now().toIso8601String(),
+      });
       return Right(unit);
     } on FirebaseException catch (e) {
       return Left(

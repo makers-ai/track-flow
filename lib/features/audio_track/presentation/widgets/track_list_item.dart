@@ -30,14 +30,16 @@ class TrackListItem extends StatelessWidget {
           TrackCoverArt(track: track.track, size: Dimensions.avatarLarge),
           SizedBox(width: Dimensions.space12),
           // Track info
-          Expanded(child: Text(
-                  track.name,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                )),
+          Expanded(
+            child: Text(
+              track.name,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
           Icon(
             Icons.chevron_right,
             color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -47,4 +49,3 @@ class TrackListItem extends StatelessWidget {
     );
   }
 }
-

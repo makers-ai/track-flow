@@ -99,9 +99,7 @@ class CompactProfileCompleteness extends StatelessWidget {
                   child: Row(
                     children: [
                       Icon(
-                        completeness >= 80
-                            ? Icons.check_circle_outline
-                            : Icons.info_outline,
+                        completeness >= 80 ? Icons.check_circle_outline : Icons.info_outline,
                         size: Dimensions.iconSmall,
                         color: progressColor,
                       ),
@@ -157,4 +155,3 @@ class CompactProfileCompleteness extends StatelessWidget {
     );
   }
 }
-

@@ -4,18 +4,18 @@ abstract class AppFlowState {}
 /// Loading state (combines initial, loading, syncing)
 class AppFlowLoading extends AppFlowState {
   final double progress;
-  
+
   AppFlowLoading({this.progress = 0.0});
-  
+
   @override
   String toString() => 'AppFlowLoading(progress: $progress)';
-  
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     return other is AppFlowLoading && other.progress == progress;
   }
-  
+
   @override
   int get hashCode => progress.hashCode;
 }
@@ -27,23 +27,23 @@ class AppFlowUnauthenticated extends AppFlowState {}
 class AppFlowAuthenticated extends AppFlowState {
   final bool needsOnboarding;
   final bool needsProfileSetup;
-  
+
   AppFlowAuthenticated({
     this.needsOnboarding = false,
     this.needsProfileSetup = false,
   });
-  
+
   @override
   String toString() => 'AppFlowAuthenticated(needsOnboarding: $needsOnboarding, needsProfileSetup: $needsProfileSetup)';
-  
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is AppFlowAuthenticated && 
-           other.needsOnboarding == needsOnboarding &&
-           other.needsProfileSetup == needsProfileSetup;
+    return other is AppFlowAuthenticated &&
+        other.needsOnboarding == needsOnboarding &&
+        other.needsProfileSetup == needsProfileSetup;
   }
-  
+
   @override
   int get hashCode => Object.hash(needsOnboarding, needsProfileSetup);
 }
@@ -64,9 +64,7 @@ class AppFlowReady extends AppFlowState {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is AppFlowReady &&
-           other.isSyncing == isSyncing &&
-           other.syncCompleted == syncCompleted;
+    return other is AppFlowReady && other.isSyncing == isSyncing && other.syncCompleted == syncCompleted;
   }
 
   @override
@@ -77,16 +75,16 @@ class AppFlowReady extends AppFlowState {
 class AppFlowError extends AppFlowState {
   final String message;
   AppFlowError(this.message);
-  
+
   @override
   String toString() => 'AppFlowError(message: $message)';
-  
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     return other is AppFlowError && other.message == message;
   }
-  
+
   @override
   int get hashCode => message.hashCode;
 }

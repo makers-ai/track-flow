@@ -26,12 +26,10 @@ class RadioToUpdateCollaboratorRole extends StatefulWidget {
   });
 
   @override
-  State<RadioToUpdateCollaboratorRole> createState() =>
-      _RadioToUpdateCollaboratorRoleState();
+  State<RadioToUpdateCollaboratorRole> createState() => _RadioToUpdateCollaboratorRoleState();
 }
 
-class _RadioToUpdateCollaboratorRoleState
-    extends State<RadioToUpdateCollaboratorRole> {
+class _RadioToUpdateCollaboratorRoleState extends State<RadioToUpdateCollaboratorRole> {
   late ProjectRoleType selectedRole;
 
   @override

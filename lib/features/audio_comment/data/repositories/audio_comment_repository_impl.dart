@@ -20,7 +20,8 @@ class AudioCommentRepositoryImpl implements AudioCommentRepository {
   final AudioCommentLocalDataSource _localDataSource;
   final BackgroundSyncCoordinator _backgroundSyncCoordinator;
   final PendingOperationsManager _pendingOperationsManager;
-  final TrackVersionRepository _trackVersionRepository; // need to get all versions of the track and delete comments per version
+  final TrackVersionRepository
+  _trackVersionRepository; // need to get all versions of the track and delete comments per version
   final AudioStorageRepository _audioStorageRepository;
 
   AudioCommentRepositoryImpl({
@@ -153,14 +154,15 @@ class AudioCommentRepositoryImpl implements AudioCommentRepository {
       return _localDataSource
           .watchRecentComments(userId: userId.value, limit: limit)
           .map<Either<Failure, List<AudioComment>>>((dtos) {
-        return Right<Failure, List<AudioComment>>(
-          dtos.map((dto) => dto.toDomain()).toList(),
-        );
-      }).handleError((error) {
-        return Left<Failure, List<AudioComment>>(
-          DatabaseFailure('Failed to watch recent comments: $error'),
-        );
-      });
+            return Right<Failure, List<AudioComment>>(
+              dtos.map((dto) => dto.toDomain()).toList(),
+            );
+          })
+          .handleError((error) {
+            return Left<Failure, List<AudioComment>>(
+              DatabaseFailure('Failed to watch recent comments: $error'),
+            );
+          });
     } catch (e) {
       return Stream.value(
         Left<Failure, List<AudioComment>>(
@@ -180,9 +182,9 @@ class AudioCommentRepositoryImpl implements AudioCommentRepository {
 
       // 2. If audio comment, store recording in permanent cache
       String? cachedAudioPath;
-      if (comment.commentType != CommentType.text && comment.commentType != CommentType.hybrid &&
+      if (comment.commentType != CommentType.text &&
+          comment.commentType != CommentType.hybrid &&
           comment.localAudioPath != null) {
-
         // Use projectId as trackId, commentId as versionId for cache hierarchy
         final trackId = AudioTrackId.fromUniqueString(comment.projectId.value);
         final versionId = TrackVersionId.fromUniqueString(comment.id.value);

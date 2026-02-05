@@ -53,11 +53,7 @@ class WaveformOperationExecutor implements OperationExecutor {
       id: AudioWaveformId.fromUniqueString(data['id'] as String),
       versionId: TrackVersionId.fromUniqueString(data['versionId'] as String),
       data: WaveformData(
-        amplitudes:
-            (data['amplitudes'] as List)
-                .cast<num>()
-                .map((e) => e.toDouble())
-                .toList(),
+        amplitudes: (data['amplitudes'] as List).cast<num>().map((e) => e.toDouble()).toList(),
         sampleRate: data['sampleRate'] as int,
         duration: Duration(milliseconds: data['durationMs'] as int),
         targetSampleCount: data['targetSampleCount'] as int,

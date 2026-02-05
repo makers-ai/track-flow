@@ -17,9 +17,8 @@ class RecordingUI extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final session = state is RecordingInProgress
-        ? (state as RecordingInProgress).session
-        : (state as RecordingPaused).session;
+    final session =
+        state is RecordingInProgress ? (state as RecordingInProgress).session : (state as RecordingPaused).session;
 
     final amplitude = session.currentAmplitude ?? 0.0;
     final elapsed = session.elapsed;

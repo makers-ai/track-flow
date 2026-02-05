@@ -8,7 +8,7 @@ import 'package:trackflow/core/theme/app_colors.dart';
 import 'package:trackflow/core/utils/app_logger.dart';
 
 /// Screen that displays the current user's profile
-/// 
+///
 /// This wrapper component automatically handles loading the current user's
 /// profile without requiring a userId parameter. It uses the CurrentUserBloc
 /// to load the current user's data from session storage.
@@ -48,7 +48,7 @@ class _CurrentUserProfileScreenState extends State<CurrentUserProfileScreen> {
             ),
           );
         }
-        
+
         if (state is CurrentUserLoaded) {
           // Display the current user's profile using ProfileInformation component
           return Scaffold(
@@ -62,7 +62,7 @@ class _CurrentUserProfileScreenState extends State<CurrentUserProfileScreen> {
             ),
           );
         }
-        
+
         if (state is CurrentUserError) {
           return Scaffold(
             backgroundColor: AppColors.background,
@@ -103,14 +103,14 @@ class _CurrentUserProfileScreenState extends State<CurrentUserProfileScreen> {
             ),
           );
         }
-        
+
         // Initial state - trigger loading
         if (state is CurrentUserInitial) {
           // This should not happen due to initState, but handle it
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _loadCurrentUserProfile();
           });
-          
+
           return const Scaffold(
             backgroundColor: AppColors.background,
             body: Center(
@@ -118,7 +118,7 @@ class _CurrentUserProfileScreenState extends State<CurrentUserProfileScreen> {
             ),
           );
         }
-        
+
         // Fallback
         return const Scaffold(
           backgroundColor: AppColors.background,

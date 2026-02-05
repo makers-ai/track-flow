@@ -5,7 +5,6 @@ import 'package:trackflow/core/sync/domain/services/pending_operations_manager.d
 import 'package:trackflow/core/sync/domain/services/sync_coordinator.dart';
 import 'package:trackflow/core/sync/domain/services/background_sync_coordinator.dart';
 
-
 @LazySingleton(as: BackgroundSyncCoordinator)
 class BackgroundSyncCoordinatorImpl implements BackgroundSyncCoordinator {
   final NetworkStateManager _networkStateManager;
@@ -148,7 +147,6 @@ class BackgroundSyncCoordinatorImpl implements BackgroundSyncCoordinator {
       }
     });
   }
-
 
   /// Clean up resources
   void dispose() {

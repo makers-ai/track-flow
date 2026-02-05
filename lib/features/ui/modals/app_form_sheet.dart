@@ -26,10 +26,7 @@ Future<T?> showAppFormSheet<T>({
       Widget wrapWithProviders(Widget child) {
         if (reprovideBlocs.isEmpty) return child;
         return MultiBlocProvider(
-          providers:
-              reprovideBlocs
-                  .map((bloc) => BlocProvider.value(value: bloc))
-                  .toList(),
+          providers: reprovideBlocs.map((bloc) => BlocProvider.value(value: bloc)).toList(),
           child: child,
         );
       }
@@ -78,8 +75,7 @@ class _AppFormSheetContent extends StatelessWidget {
           Stack(
             alignment: Alignment.topCenter,
             children: [
-              if (title != null)
-                Text(title!, style: theme.textTheme.titleLarge),
+              if (title != null) Text(title!, style: theme.textTheme.titleLarge),
               Align(
                 alignment: Alignment.centerRight,
                 child: IconButton(

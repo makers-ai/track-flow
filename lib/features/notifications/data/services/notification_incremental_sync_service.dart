@@ -6,8 +6,7 @@ import 'package:trackflow/core/notifications/domain/entities/notification.dart';
 import 'package:trackflow/core/sync/domain/value_objects/Incremental_sync_result.dart';
 
 @LazySingleton(as: IncrementalSyncService<Notification>)
-class NotificationIncrementalSyncService
-    implements IncrementalSyncService<Notification> {
+class NotificationIncrementalSyncService implements IncrementalSyncService<Notification> {
   @override
   Future<Either<Failure, List<Notification>>> getModifiedSince(
     DateTime lastSyncTime,
@@ -22,8 +21,10 @@ class NotificationIncrementalSyncService
   }
 
   @override
-  Future<Either<Failure, IncrementalSyncResult<Notification>>>
-  performIncrementalSync(DateTime lastSyncTime, String userId) async {
+  Future<Either<Failure, IncrementalSyncResult<Notification>>> performIncrementalSync(
+    DateTime lastSyncTime,
+    String userId,
+  ) async {
     return Right(
       IncrementalSyncResult(
         modifiedItems: [],

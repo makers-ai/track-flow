@@ -20,8 +20,7 @@ class ManageCollaboratorsScreen extends StatefulWidget {
   const ManageCollaboratorsScreen({super.key, required this.project});
 
   @override
-  State<ManageCollaboratorsScreen> createState() =>
-      _ManageCollaboratorsScreenState();
+  State<ManageCollaboratorsScreen> createState() => _ManageCollaboratorsScreenState();
 }
 
 class _ManageCollaboratorsScreenState extends State<ManageCollaboratorsScreen> {
@@ -80,10 +79,7 @@ class _ManageCollaboratorsScreenState extends State<ManageCollaboratorsScreen> {
         actions: [
           BlocBuilder<ManageCollaboratorsBloc, ManageCollaboratorsState>(
             builder: (context, state) {
-              final project =
-                  state is ManageCollaboratorsLoaded
-                      ? state.project.project
-                      : widget.project;
+              final project = state is ManageCollaboratorsLoaded ? state.project.project : widget.project;
               return IconButton(
                 onPressed: () => _openAddCollaboratorSheet(project),
                 icon: const Icon(Icons.add),
@@ -153,15 +149,14 @@ class _ManageCollaboratorsScreenState extends State<ManageCollaboratorsScreen> {
                 itemBuilder: (context, index) {
                   final collaborator = currentCollaborators[index];
                   // Find the collaborator's role from the project
-                  final projectCollaborator = currentProject.collaborators
-                      .firstWhere(
-                        (c) => c.userId == collaborator.id,
-                        orElse:
-                            () =>
-                                throw Exception(
-                                  'Collaborator not found in project',
-                                ),
-                      );
+                  final projectCollaborator = currentProject.collaborators.firstWhere(
+                    (c) => c.userId == collaborator.id,
+                    orElse:
+                        () =>
+                            throw Exception(
+                              'Collaborator not found in project',
+                            ),
+                  );
 
                   return CollaboratorComponent(
                     name: collaborator.name,

@@ -3,13 +3,13 @@
 enum ConflictPolicy {
   /// Last cache request wins, overwrites existing
   lastWins,
-  
+
   /// First cache request wins, ignore subsequent requests
   firstWins,
-  
+
   /// Higher quality version wins
   higherQuality,
-  
+
   /// Let user decide (future enhancement)
   userDecision,
 }

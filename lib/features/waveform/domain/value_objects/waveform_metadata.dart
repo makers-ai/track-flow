@@ -19,13 +19,9 @@ class WaveformMetadata extends Equatable {
     int compressionLevel = 1,
     String generationMethod = 'fft_analysis',
   }) {
-    final maxAmplitude = amplitudes.isEmpty 
-        ? 0.0 
-        : amplitudes.reduce((a, b) => a.abs() > b.abs() ? a : b).abs();
-    
-    final rmsLevel = amplitudes.isEmpty
-        ? 0.0
-        : _calculateRMS(amplitudes);
+    final maxAmplitude = amplitudes.isEmpty ? 0.0 : amplitudes.reduce((a, b) => a.abs() > b.abs() ? a : b).abs();
+
+    final rmsLevel = amplitudes.isEmpty ? 0.0 : _calculateRMS(amplitudes);
 
     return WaveformMetadata(
       maxAmplitude: maxAmplitude,
@@ -37,11 +33,9 @@ class WaveformMetadata extends Equatable {
 
   static double _calculateRMS(List<double> amplitudes) {
     if (amplitudes.isEmpty) return 0.0;
-    
-    final sumOfSquares = amplitudes
-        .map((amp) => amp * amp)
-        .reduce((a, b) => a + b);
-    
+
+    final sumOfSquares = amplitudes.map((amp) => amp * amp).reduce((a, b) => a + b);
+
     return math.sqrt(sumOfSquares / amplitudes.length);
   }
 

@@ -78,7 +78,7 @@ class AudioPlayerError extends AudioPlayerState {
 
   /// Audio-specific failure information
   final AudioFailure failure;
-  
+
   /// Optional session state when error occurred
   final PlaybackSession? session;
 

@@ -35,17 +35,20 @@ class ProjectDetailSliverHeader extends StatelessWidget {
 
   bool _userHasEditPermission(String? currentUserId) {
     if (currentUserId == null) return false;
-    
+
     final userId = UserId.fromUniqueString(currentUserId);
-    
+
     // Find the current user in the collaborators list
-    final userCollaborator = project.collaborators.where(
-      (collaborator) => collaborator.userId == userId,
-    ).firstOrNull;
-    
+    final userCollaborator =
+        project.collaborators
+            .where(
+              (collaborator) => collaborator.userId == userId,
+            )
+            .firstOrNull;
+
     // If user is not a collaborator, they don't have permission
     if (userCollaborator == null) return false;
-    
+
     // Check if user has edit permission
     return userCollaborator.hasPermission(ProjectPermission.editProject);
   }
@@ -66,9 +69,10 @@ class ProjectDetailSliverHeader extends StatelessWidget {
       automaticallyImplyLeading: true,
       flexibleSpace: LayoutBuilder(
         builder: (context, constraints) {
-          final percent = ((constraints.maxHeight - kToolbarHeight) /
-                  (expandedHeight - kToolbarHeight))
-              .clamp(0.0, 1.0);
+          final percent = ((constraints.maxHeight - kToolbarHeight) / (expandedHeight - kToolbarHeight)).clamp(
+            0.0,
+            1.0,
+          );
           return Stack(
             fit: StackFit.expand,
             children: [
@@ -134,11 +138,10 @@ class ProjectDetailSliverHeader extends StatelessWidget {
                       const SizedBox(height: 16),
                       BlocBuilder<CurrentUserBloc, CurrentUserState>(
                         builder: (context, profileState) {
-                          final currentUserId = profileState is CurrentUserLoaded
-                              ? profileState.profile.id.value
-                              : null;
+                          final currentUserId =
+                              profileState is CurrentUserLoaded ? profileState.profile.id.value : null;
                           final hasEditPermission = _userHasEditPermission(currentUserId);
-                          
+
                           return Row(
                             children: [
                               Icon(
@@ -160,8 +163,7 @@ class ProjectDetailSliverHeader extends StatelessWidget {
                                     Icons.more_horiz_outlined,
                                     color: Colors.white,
                                   ),
-                                  onPressed:
-                                      () => _openProjectDetailActionsSheet(context),
+                                  onPressed: () => _openProjectDetailActionsSheet(context),
                                 ),
                             ],
                           );

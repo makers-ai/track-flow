@@ -68,8 +68,7 @@ class ProjectCommentService {
         return Left(ProjectPermissionException());
       }
       // Only allow users to delete their own comments unless they have admin rights
-      if (comment.createdBy != requester &&
-          !collaborator.hasPermission(ProjectPermission.deleteComment)) {
+      if (comment.createdBy != requester && !collaborator.hasPermission(ProjectPermission.deleteComment)) {
         return Left(ProjectPermissionException());
       }
 

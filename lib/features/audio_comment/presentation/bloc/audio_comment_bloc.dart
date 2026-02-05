@@ -91,8 +91,7 @@ class AudioCommentBloc extends Bloc<AudioCommentEvent, AudioCommentState> {
         either.fold((failure) => emit(AudioCommentError(failure.message)), (
           bundle,
         ) {
-          final sorted = [...bundle.comments]
-            ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+          final sorted = [...bundle.comments]..sort((a, b) => a.createdAt.compareTo(b.createdAt));
           emit(
             AudioCommentsLoaded(
               comments: sorted.map(AudioCommentUiModel.fromDomain).toList(),
@@ -116,8 +115,7 @@ class AudioCommentBloc extends Bloc<AudioCommentEvent, AudioCommentState> {
   }
 
   // Restartable transformer using RxDart's switchMap semantics
-  EventTransformer<WatchAudioCommentsBundleEvent>
-   _restartable<WatchAudioCommentsBundleEvent>() {
+  EventTransformer<WatchAudioCommentsBundleEvent> _restartable<WatchAudioCommentsBundleEvent>() {
     return (events, mapper) => events.switchMap(mapper);
   }
 }

@@ -22,9 +22,9 @@ class MagicLinkRepositoryImp extends MagicLinkRepository {
       projectId: projectId.value,
       userId: userId.value,
     );
-    
+
     final result = await _magicLinkRemoteDataSource.generateMagicLink(request);
-    
+
     return result.fold(
       (failure) => Left(failure),
       (dto) => Right(dto.toDomain()),
@@ -37,7 +37,7 @@ class MagicLinkRepositoryImp extends MagicLinkRepository {
   }) async {
     final validation = MagicLinkValidationDto(linkId: linkId.value);
     final result = await _magicLinkRemoteDataSource.validateMagicLink(validation);
-    
+
     return result.fold(
       (failure) => Left(failure),
       (dto) => Right(dto.toDomain()),
@@ -66,13 +66,15 @@ class MagicLinkRepositoryImp extends MagicLinkRepository {
   }) async {
     final status = MagicLinkStatusDto(linkId: linkId.value);
     final result = await _magicLinkRemoteDataSource.getMagicLinkStatus(status);
-    
+
     return result.fold(
       (failure) => Left(failure),
-      (statusString) => Right(MagicLinkStatus.values.firstWhere(
-        (status) => status.toString().split('.').last == statusString,
-        orElse: () => MagicLinkStatus.valid,
-      )),
+      (statusString) => Right(
+        MagicLinkStatus.values.firstWhere(
+          (status) => status.toString().split('.').last == statusString,
+          orElse: () => MagicLinkStatus.valid,
+        ),
+      ),
     );
   }
 }

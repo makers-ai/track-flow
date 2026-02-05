@@ -17,8 +17,7 @@ class SoundbarAnimation extends StatefulWidget {
   State<SoundbarAnimation> createState() => _SoundbarAnimationState();
 }
 
-class _SoundbarAnimationState extends State<SoundbarAnimation>
-    with TickerProviderStateMixin {
+class _SoundbarAnimationState extends State<SoundbarAnimation> with TickerProviderStateMixin {
   late List<AnimationController> _controllers;
   late List<Animation<double>> _animations;
 
@@ -37,15 +36,18 @@ class _SoundbarAnimationState extends State<SoundbarAnimation>
       ),
     );
 
-    _animations = _controllers.map((controller) {
-      return Tween<double>(
-        begin: 0.3,
-        end: 1.0,
-      ).animate(CurvedAnimation(
-        parent: controller,
-        curve: Curves.easeInOut,
-      ));
-    }).toList();
+    _animations =
+        _controllers.map((controller) {
+          return Tween<double>(
+            begin: 0.3,
+            end: 1.0,
+          ).animate(
+            CurvedAnimation(
+              parent: controller,
+              curve: Curves.easeInOut,
+            ),
+          );
+        }).toList();
 
     if (widget.isPlaying) {
       _startAnimation();
@@ -105,10 +107,8 @@ class _SoundbarAnimationState extends State<SoundbarAnimation>
           return AnimatedBuilder(
             animation: _animations[index],
             builder: (context, child) {
-              final animationValue = widget.isPlaying 
-                  ? _animations[index].value 
-                  : 0.3;
-              
+              final animationValue = widget.isPlaying ? _animations[index].value : 0.3;
+
               return Container(
                 width: barWidth,
                 height: barHeight * animationValue,

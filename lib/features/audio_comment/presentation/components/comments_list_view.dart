@@ -41,8 +41,7 @@ class CommentsListView extends StatelessWidget {
     return BlocBuilder<CurrentUserBloc, CurrentUserState>(
       buildWhen: (previous, current) => previous.runtimeType != current.runtimeType,
       builder: (context, userState) {
-        final String? currentUserId =
-            userState is CurrentUserLoaded ? userState.profile.id.value : null;
+        final String? currentUserId = userState is CurrentUserLoaded ? userState.profile.id.value : null;
         return ListView.builder(
           reverse: false,
           itemCount: comments.length,
@@ -50,22 +49,23 @@ class CommentsListView extends StatelessWidget {
             final comment = comments[index];
             final collaborator = collaborators.firstWhere(
               (u) => u.id == comment.createdBy,
-              orElse: () => UserProfileUiModel(
-                profile: UserProfile(
-                  id: comment.comment.createdBy,
-                  name: '',
-                  email: '',
-                  avatarUrl: '',
-                  createdAt: DateTime.now(),
-                ),
-                id: comment.createdBy,
-                name: '',
-                email: '',
-                avatarUrl: '',
-                createdAt: DateTime.now(),
-                displayName: comment.createdBy,
-                initials: '?',
-              ),
+              orElse:
+                  () => UserProfileUiModel(
+                    profile: UserProfile(
+                      id: comment.comment.createdBy,
+                      name: '',
+                      email: '',
+                      avatarUrl: '',
+                      createdAt: DateTime.now(),
+                    ),
+                    id: comment.createdBy,
+                    name: '',
+                    email: '',
+                    avatarUrl: '',
+                    createdAt: DateTime.now(),
+                    displayName: comment.createdBy,
+                    initials: '?',
+                  ),
             );
             final bool isMine = currentUserId != null && comment.createdBy == currentUserId;
             return AudioCommentComponent(

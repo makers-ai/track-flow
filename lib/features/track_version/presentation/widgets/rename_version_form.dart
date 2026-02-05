@@ -38,8 +38,7 @@ class _RenameVersionFormState extends State<RenameVersionForm> {
   }
 
   Future<void> _submit() async {
-    final newLabel =
-        controller.text.trim().isEmpty ? null : controller.text.trim();
+    final newLabel = controller.text.trim().isEmpty ? null : controller.text.trim();
     context.read<TrackVersionsBloc>().add(
       RenameTrackVersionRequested(
         versionId: widget.versionId,

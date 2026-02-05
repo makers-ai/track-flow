@@ -17,8 +17,7 @@ class VoiceMemoRecordingScreen extends StatefulWidget {
   const VoiceMemoRecordingScreen({super.key});
 
   @override
-  State<VoiceMemoRecordingScreen> createState() =>
-      _VoiceMemoRecordingScreenState();
+  State<VoiceMemoRecordingScreen> createState() => _VoiceMemoRecordingScreenState();
 }
 
 class _VoiceMemoRecordingScreenState extends State<VoiceMemoRecordingScreen> {
@@ -46,8 +45,7 @@ class _VoiceMemoRecordingScreenState extends State<VoiceMemoRecordingScreen> {
           context.pop();
         } else if (state is RecordingError) {
           // Check if permission error
-          if (state.message.contains('Permission') ||
-              state.message.contains('permission')) {
+          if (state.message.contains('Permission') || state.message.contains('permission')) {
             _showPermissionDialog(context);
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -85,28 +83,28 @@ class _VoiceMemoRecordingScreenState extends State<VoiceMemoRecordingScreen> {
     );
   }
 
-
   void _showPermissionDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.surface,
-        title: Text('Microphone Permission Required', style: AppTextStyle.titleLarge),
-        content: Text(
-          'TrackFlow needs microphone access to record voice memos. '
-          'Please enable microphone permission in your device settings.',
-          style: AppTextStyle.bodyMedium,
-        ),
-        actions: [
-          PrimaryButton(
-            text: 'OK',
-            onPressed: () {
-              Navigator.of(ctx).pop();
-              context.pop();
-            },
+      builder:
+          (ctx) => AlertDialog(
+            backgroundColor: AppColors.surface,
+            title: Text('Microphone Permission Required', style: AppTextStyle.titleLarge),
+            content: Text(
+              'TrackFlow needs microphone access to record voice memos. '
+              'Please enable microphone permission in your device settings.',
+              style: AppTextStyle.bodyMedium,
+            ),
+            actions: [
+              PrimaryButton(
+                text: 'OK',
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                  context.pop();
+                },
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 }

@@ -28,7 +28,7 @@ class AudioTrack extends AggregateRoot<AudioTrackId> {
   factory AudioTrack.create({
     required String name,
     String? coverUrl, // Renamed parameter
-    String? coverLocalPath,   // New parameter
+    String? coverLocalPath, // New parameter
     required Duration duration,
     required ProjectId projectId,
     required UserId uploadedBy,
@@ -52,8 +52,8 @@ class AudioTrack extends AggregateRoot<AudioTrackId> {
   AudioTrack copyWith({
     AudioTrackId? id,
     String? name,
-    String? coverUrl,        // Renamed parameter
-    String? coverLocalPath,  // New parameter
+    String? coverUrl, // Renamed parameter
+    String? coverLocalPath, // New parameter
     Duration? duration,
     ProjectId? projectId,
     UserId? uploadedBy,
@@ -76,7 +76,6 @@ class AudioTrack extends AggregateRoot<AudioTrackId> {
   }
 
   bool belongsToProject(ProjectId projectId) {
-    return this.projectId == projectId; 
+    return this.projectId == projectId;
   }
-
 }

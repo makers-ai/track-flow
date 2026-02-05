@@ -89,9 +89,7 @@ class NotificationService {
       type: NotificationType.audioCommentAdded,
       title: 'New Comment',
       body:
-          commentText != null
-              ? '$commenterName commented: "$commentText"'
-              : '$commenterName commented on "$trackName"',
+          commentText != null ? '$commenterName commented: "$commentText"' : '$commenterName commented on "$trackName"',
       recipientId: recipientId,
       payload: {
         'trackId': trackId,
@@ -172,8 +170,7 @@ class NotificationService {
           'Unable to create notification. Please try again later.',
         );
       },
-      (notification) =>
-          AppLogger.info('Notification created: ${notification.id}'),
+      (notification) => AppLogger.info('Notification created: ${notification.id}'),
     );
   }
 
@@ -182,10 +179,8 @@ class NotificationService {
     final result = await _repository.markAsRead(notificationId);
 
     result.fold(
-      (failure) =>
-          throw Exception('Failed to mark notification as read: $failure'),
-      (notification) =>
-          AppLogger.info('Notification marked as read: ${notification.id}'),
+      (failure) => throw Exception('Failed to mark notification as read: $failure'),
+      (notification) => AppLogger.info('Notification marked as read: ${notification.id}'),
     );
   }
 
@@ -194,10 +189,8 @@ class NotificationService {
     final result = await _repository.markAllAsRead(userId);
 
     result.fold(
-      (failure) =>
-          throw Exception('Failed to mark all notifications as read: $failure'),
-      (_) =>
-          AppLogger.info('All notifications marked as read for user: $userId'),
+      (failure) => throw Exception('Failed to mark all notifications as read: $failure'),
+      (_) => AppLogger.info('All notifications marked as read for user: $userId'),
     );
   }
 

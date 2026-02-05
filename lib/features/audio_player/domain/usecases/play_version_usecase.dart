@@ -47,14 +47,12 @@ class PlayVersionUseCase {
           );
 
           return await trackResult.fold(
-            (failure) async =>
-                Left(TrackNotFoundFailure(version.trackId.value)),
+            (failure) async => Left(TrackNotFoundFailure(version.trackId.value)),
             (audioTrack) async {
               String? sourceUrl;
 
               // 3. Try version-aware cache first
-              final cacheResult = await _audioStorageRepository
-                  .getCachedAudioPath(audioTrack.id, versionId: versionId);
+              final cacheResult = await _audioStorageRepository.getCachedAudioPath(audioTrack.id, versionId: versionId);
 
               cacheResult.fold(
                 (cacheFailure) {
@@ -71,11 +69,11 @@ class PlayVersionUseCase {
               // 4. If no cache, try version's local file first, then remote
               if (sourceUrl == null || sourceUrl!.isEmpty) {
                 // Try fileLocalPath if available
-                if (version.fileLocalPath != null &&
-                    version.fileLocalPath!.isNotEmpty) {
-                  final filePath = version.fileLocalPath!.startsWith('file://')
-                      ? version.fileLocalPath!.replaceFirst('file://', '')
-                      : version.fileLocalPath!;
+                if (version.fileLocalPath != null && version.fileLocalPath!.isNotEmpty) {
+                  final filePath =
+                      version.fileLocalPath!.startsWith('file://')
+                          ? version.fileLocalPath!.replaceFirst('file://', '')
+                          : version.fileLocalPath!;
 
                   // Validate local file exists
                   if (File(filePath).existsSync()) {
@@ -108,9 +106,7 @@ class PlayVersionUseCase {
                 title: audioTrack.name,
                 artist: audioTrack.uploadedBy.value,
                 duration:
-                    version.durationMs != null
-                        ? Duration(milliseconds: version.durationMs!)
-                        : audioTrack.duration,
+                    version.durationMs != null ? Duration(milliseconds: version.durationMs!) : audioTrack.duration,
                 coverUrl: audioTrack.coverUrl, // Use track URL as cover art
               );
 

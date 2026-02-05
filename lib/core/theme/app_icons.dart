@@ -232,9 +232,7 @@ class IconUsageTracker {
   }
 
   static Map<String, int> getMostUsedIcons() {
-    final sorted =
-        _usageCount.entries.toList()
-          ..sort((a, b) => b.value.compareTo(a.value));
+    final sorted = _usageCount.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
     return Map.fromEntries(sorted);
   }
 }

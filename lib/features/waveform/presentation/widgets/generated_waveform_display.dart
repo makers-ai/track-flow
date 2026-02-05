@@ -46,9 +46,7 @@ class GeneratedWaveformDisplay extends StatelessWidget {
               amplitudes: waveform.data.normalizedAmplitudes,
               duration: duration,
               progress:
-                  state.isScrubbing && state.previewPosition != null
-                      ? state.previewPosition!
-                      : state.currentPosition,
+                  state.isScrubbing && state.previewPosition != null ? state.previewPosition! : state.currentPosition,
               progressColor: AppColors.primary.withValues(alpha: 0.6),
             ),
           ),

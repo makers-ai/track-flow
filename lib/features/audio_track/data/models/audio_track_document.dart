@@ -105,10 +105,7 @@ class AudioTrackDocument {
       uploadedBy: UserId.fromUniqueString(_cleanId(uploadedBy)),
       createdAt: createdAt,
       extension: extension.isNotEmpty ? extension : '',
-      activeVersionId:
-          activeVersionId != null
-              ? TrackVersionId.fromUniqueString(_cleanId(activeVersionId!))
-              : null,
+      activeVersionId: activeVersionId != null ? TrackVersionId.fromUniqueString(_cleanId(activeVersionId!)) : null,
       // ⭐ NEW: Include sync metadata from document (CRITICAL FIX!)
       version: syncMetadata?.version ?? 1,
       lastModified: syncMetadata?.lastModified ?? createdAt,

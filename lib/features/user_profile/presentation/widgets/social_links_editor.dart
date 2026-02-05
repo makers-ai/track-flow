@@ -36,13 +36,16 @@ class _SocialLinksEditorState extends State<SocialLinksEditor> {
   @override
   void initState() {
     super.initState();
-    _entries = widget.initialLinks
-        .map((link) => _SocialLinkEntry(
-              platform: link.platform,
-              url: link.url,
-              controller: TextEditingController(text: link.url),
-            ))
-        .toList();
+    _entries =
+        widget.initialLinks
+            .map(
+              (link) => _SocialLinkEntry(
+                platform: link.platform,
+                url: link.url,
+                controller: TextEditingController(text: link.url),
+              ),
+            )
+            .toList();
   }
 
   @override
@@ -55,11 +58,13 @@ class _SocialLinksEditorState extends State<SocialLinksEditor> {
 
   void _addLink() {
     setState(() {
-      _entries.add(_SocialLinkEntry(
-        platform: _platforms.first,
-        url: '',
-        controller: TextEditingController(),
-      ));
+      _entries.add(
+        _SocialLinkEntry(
+          platform: _platforms.first,
+          url: '',
+          controller: TextEditingController(),
+        ),
+      );
     });
   }
 
@@ -84,13 +89,16 @@ class _SocialLinksEditorState extends State<SocialLinksEditor> {
   }
 
   void _notifyChange() {
-    final links = _entries
-        .where((e) => e.url.trim().isNotEmpty)
-        .map((e) => SocialLink(
-              platform: e.platform,
-              url: e.url.trim(),
-            ))
-        .toList();
+    final links =
+        _entries
+            .where((e) => e.url.trim().isNotEmpty)
+            .map(
+              (e) => SocialLink(
+                platform: e.platform,
+                url: e.url.trim(),
+              ),
+            )
+            .toList();
     widget.onChanged(links);
   }
 
@@ -153,16 +161,17 @@ class _SocialLinksEditorState extends State<SocialLinksEditor> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      items: _platforms.map((platform) {
-                        return DropdownMenuItem(
-                          value: platform,
-                          child: Text(
-                            platform,
-                            style: AppTextStyle.bodySmall,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        );
-                      }).toList(),
+                      items:
+                          _platforms.map((platform) {
+                            return DropdownMenuItem(
+                              value: platform,
+                              child: Text(
+                                platform,
+                                style: AppTextStyle.bodySmall,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            );
+                          }).toList(),
                       onChanged: (value) {
                         if (value != null) {
                           _updatePlatform(index, value);
@@ -170,9 +179,9 @@ class _SocialLinksEditorState extends State<SocialLinksEditor> {
                       },
                     ),
                   ),
-              
+
                   SizedBox(width: Dimensions.space8),
-              
+
                   // URL Field
                   Expanded(
                     flex: 3,
@@ -197,9 +206,9 @@ class _SocialLinksEditorState extends State<SocialLinksEditor> {
                       onChanged: (value) => _updateUrl(index, value),
                     ),
                   ),
-              
+
                   SizedBox(width: Dimensions.space8),
-              
+
                   // Remove Button
                   IconButton(
                     icon: const Icon(Icons.remove_circle_outline),

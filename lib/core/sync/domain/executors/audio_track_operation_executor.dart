@@ -61,10 +61,7 @@ class AudioTrackOperationExecutor implements OperationExecutor {
       duration: operationData['duration'] ?? 0,
       projectId: ProjectId.fromUniqueString(operationData['projectId'] ?? ''),
       uploadedBy: UserId.fromUniqueString(operationData['uploadedBy'] ?? ''),
-      createdAt:
-          operationData['createdAt'] != null
-              ? DateTime.parse(operationData['createdAt'])
-              : DateTime.now(),
+      createdAt: operationData['createdAt'] != null ? DateTime.parse(operationData['createdAt']) : DateTime.now(),
       extension: operationData['extension'] ?? 'mp3',
     );
 
@@ -128,9 +125,10 @@ class AudioTrackOperationExecutor implements OperationExecutor {
         );
 
         result.fold(
-          (failure) => throw Exception(
-            'Update cover art failed: ${failure.message}',
-          ),
+          (failure) =>
+              throw Exception(
+                'Update cover art failed: ${failure.message}',
+              ),
           (_) {
             // Successfully updated cover art
             AppLogger.info(
@@ -159,10 +157,7 @@ class AudioTrackOperationExecutor implements OperationExecutor {
       duration: operationData['duration'] ?? 0,
       projectId: ProjectId.fromUniqueString(operationData['projectId'] ?? ''),
       uploadedBy: UserId.fromUniqueString(operationData['uploadedBy'] ?? ''),
-      createdAt:
-          operationData['createdAt'] != null
-              ? DateTime.parse(operationData['createdAt'])
-              : DateTime.now(),
+      createdAt: operationData['createdAt'] != null ? DateTime.parse(operationData['createdAt']) : DateTime.now(),
       extension: operationData['extension'] ?? 'mp3',
       isDeleted: true, // Soft delete
       lastModified: DateTime.now().toUtc(),

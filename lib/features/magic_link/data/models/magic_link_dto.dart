@@ -93,10 +93,7 @@ class MagicLinkDto {
       userId: magicLink.userId.value,
       projectId: magicLink.projectId,
       createdAt: Timestamp.fromDate(magicLink.createdAt),
-      expiresAt:
-          magicLink.expiresAt != null
-              ? Timestamp.fromDate(magicLink.expiresAt!)
-              : null,
+      expiresAt: magicLink.expiresAt != null ? Timestamp.fromDate(magicLink.expiresAt!) : null,
       isUsed: magicLink.isUsed,
       status: statusToString(magicLink.status),
     );

@@ -14,6 +14,5 @@ class UserNotCollaboratorException extends ManageCollaboratorException {
 }
 
 class CollaboratorAlreadyExistsException extends ManageCollaboratorException {
-  const CollaboratorAlreadyExistsException()
-    : super('Collaborator already exists');
+  const CollaboratorAlreadyExistsException() : super('Collaborator already exists');
 }

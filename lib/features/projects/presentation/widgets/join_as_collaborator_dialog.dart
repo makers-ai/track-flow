@@ -15,8 +15,7 @@ class JoinAsCollaboratorDialog extends StatefulWidget {
   const JoinAsCollaboratorDialog({super.key});
 
   @override
-  State<JoinAsCollaboratorDialog> createState() =>
-      _JoinAsCollaboratorDialogState();
+  State<JoinAsCollaboratorDialog> createState() => _JoinAsCollaboratorDialogState();
 }
 
 class _JoinAsCollaboratorDialogState extends State<JoinAsCollaboratorDialog> {
@@ -92,10 +91,7 @@ class _JoinAsCollaboratorDialogState extends State<JoinAsCollaboratorDialog> {
                 Expanded(
                   child: SecondaryButton(
                     text: 'Cancel',
-                    onPressed:
-                        _isSubmitting
-                            ? null
-                            : () => Navigator.of(context).pop(),
+                    onPressed: _isSubmitting ? null : () => Navigator.of(context).pop(),
                     isDisabled: _isSubmitting,
                   ),
                 ),

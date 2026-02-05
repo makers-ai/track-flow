@@ -26,11 +26,11 @@ class DownloadTrackUseCase {
     required TrackVersionRepository trackVersionRepository,
     required ProjectsRepository projectsRepository,
     required SessionService sessionService,
-  })  : _audioStorageRepository = audioStorageRepository,
-        _audioTrackRepository = audioTrackRepository,
-        _trackVersionRepository = trackVersionRepository,
-        _projectsRepository = projectsRepository,
-        _sessionService = sessionService;
+  }) : _audioStorageRepository = audioStorageRepository,
+       _audioTrackRepository = audioTrackRepository,
+       _trackVersionRepository = trackVersionRepository,
+       _projectsRepository = projectsRepository,
+       _sessionService = sessionService;
 
   /// Downloads track version and returns path to temporary file with friendly name
   ///
@@ -48,7 +48,7 @@ class DownloadTrackUseCase {
         (failure) => null,
         (id) => id,
       );
-      
+
       if (userId == null) {
         return left(const AuthenticationFailure('User not authenticated'));
       }
@@ -158,4 +158,3 @@ class DownloadTrackUseCase {
     return sanitized;
   }
 }
-

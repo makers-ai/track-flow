@@ -59,10 +59,7 @@ class UserCreativeRole {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is UserCreativeRole &&
-          runtimeType == other.runtimeType &&
-          value == other.value;
+      identical(this, other) || other is UserCreativeRole && runtimeType == other.runtimeType && value == other.value;
 
   @override
   int get hashCode => value.hashCode;

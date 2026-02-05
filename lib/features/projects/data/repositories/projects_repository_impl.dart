@@ -191,8 +191,7 @@ class ProjectsRepositoryImpl implements ProjectsRepository {
         .map((either) {
           // Always return local data immediately (even if empty)
           return either.map(
-            (projects) =>
-                projects.map((project) => project.toDomain()).toList(),
+            (projects) => projects.map((project) => project.toDomain()).toList(),
           );
         })
         .handleError((error) {
@@ -226,5 +225,4 @@ class ProjectsRepositoryImpl implements ProjectsRepository {
       return Left(DatabaseFailure('Failed to clear projects cache: $e'));
     }
   }
-
 }

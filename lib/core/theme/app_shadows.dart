@@ -5,7 +5,7 @@ class AppShadows {
   static const Color shadowColor = Color(0x1A000000);
   static const Color shadowColorDark = Color(0x33000000);
   static const Color shadowColorLight = Color(0x0D000000);
-  
+
   // Elevation levels
   static const double elevation0 = 0;
   static const double elevation1 = 1;
@@ -17,10 +17,10 @@ class AppShadows {
   static const double elevation12 = 12;
   static const double elevation16 = 16;
   static const double elevation24 = 24;
-  
+
   // Predefined shadow styles
   static const List<BoxShadow> none = [];
-  
+
   static const List<BoxShadow> small = [
     BoxShadow(
       color: shadowColor,
@@ -29,7 +29,7 @@ class AppShadows {
       spreadRadius: 0,
     ),
   ];
-  
+
   static const List<BoxShadow> medium = [
     BoxShadow(
       color: shadowColor,
@@ -38,7 +38,7 @@ class AppShadows {
       spreadRadius: 0,
     ),
   ];
-  
+
   static const List<BoxShadow> large = [
     BoxShadow(
       color: shadowColor,
@@ -47,7 +47,7 @@ class AppShadows {
       spreadRadius: 0,
     ),
   ];
-  
+
   static const List<BoxShadow> extraLarge = [
     BoxShadow(
       color: shadowColor,
@@ -56,7 +56,7 @@ class AppShadows {
       spreadRadius: 0,
     ),
   ];
-  
+
   // Card shadows
   static const List<BoxShadow> card = [
     BoxShadow(
@@ -66,7 +66,7 @@ class AppShadows {
       spreadRadius: 0,
     ),
   ];
-  
+
   static const List<BoxShadow> cardHover = [
     BoxShadow(
       color: shadowColor,
@@ -75,7 +75,7 @@ class AppShadows {
       spreadRadius: 0,
     ),
   ];
-  
+
   // Button shadows
   static const List<BoxShadow> button = [
     BoxShadow(
@@ -85,7 +85,7 @@ class AppShadows {
       spreadRadius: 0,
     ),
   ];
-  
+
   static const List<BoxShadow> buttonPressed = [
     BoxShadow(
       color: shadowColorLight,
@@ -94,7 +94,7 @@ class AppShadows {
       spreadRadius: 0,
     ),
   ];
-  
+
   // Modal shadows
   static const List<BoxShadow> modal = [
     BoxShadow(
@@ -104,7 +104,7 @@ class AppShadows {
       spreadRadius: 0,
     ),
   ];
-  
+
   // Bottom sheet shadows
   static const List<BoxShadow> bottomSheet = [
     BoxShadow(
@@ -114,7 +114,7 @@ class AppShadows {
       spreadRadius: 0,
     ),
   ];
-  
+
   // App bar shadows
   static const List<BoxShadow> appBar = [
     BoxShadow(
@@ -124,7 +124,7 @@ class AppShadows {
       spreadRadius: 0,
     ),
   ];
-  
+
   // Floating action button shadows
   static const List<BoxShadow> fab = [
     BoxShadow(
@@ -134,7 +134,7 @@ class AppShadows {
       spreadRadius: 0,
     ),
   ];
-  
+
   // Custom shadow builder
   static List<BoxShadow> custom({
     required double blurRadius,

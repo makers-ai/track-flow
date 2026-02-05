@@ -73,8 +73,7 @@ class AudioContextError extends AudioContextState {
   List<Object?> get props => [message, trackId];
 
   @override
-  String toString() =>
-      'AudioContextError(message: $message, trackId: $trackId)';
+  String toString() => 'AudioContextError(message: $message, trackId: $trackId)';
 }
 
 /// Context not found for track

@@ -9,8 +9,7 @@ import 'package:trackflow/core/notifications/presentation/blocs/events/notificat
 import 'package:trackflow/core/notifications/presentation/blocs/states/notification_states.dart';
 
 @injectable
-class NotificationActorBloc
-    extends Bloc<NotificationActorEvent, NotificationActorState> {
+class NotificationActorBloc extends Bloc<NotificationActorEvent, NotificationActorState> {
   final CreateNotificationUseCase _createNotificationUseCase;
   final MarkNotificationAsReadUseCase _markAsReadUseCase;
   final MarkAsUnreadUseCase _markAsUnreadUseCase;

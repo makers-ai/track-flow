@@ -38,7 +38,10 @@ class CommentAudioPlaybackServiceImpl implements CommentAudioPlaybackService {
     _listenersSetup = true;
   }
 
-  void _emit(PlaybackSession next) { _session = next; _controller.add(next); }
+  void _emit(PlaybackSession next) {
+    _session = next;
+    _controller.add(next);
+  }
 
   @override
   Stream<PlaybackSession> get sessionStream => _controller.stream;
@@ -62,9 +65,10 @@ class CommentAudioPlaybackServiceImpl implements CommentAudioPlaybackService {
       duration: Duration.zero,
     );
 
-    final uri = url.startsWith('/') || url.startsWith('file://')
-        ? Uri.file(url.startsWith('file://') ? url.replaceFirst('file://', '') : url)
-        : Uri.parse(url);
+    final uri =
+        url.startsWith('/') || url.startsWith('file://')
+            ? Uri.file(url.startsWith('file://') ? url.replaceFirst('file://', '') : url)
+            : Uri.parse(url);
 
     if (uri.isScheme('file')) {
       final path = uri.toFilePath();
@@ -99,5 +103,3 @@ class CommentAudioPlaybackServiceImpl implements CommentAudioPlaybackService {
     await _controller.close();
   }
 }
-
-

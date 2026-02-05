@@ -64,10 +64,7 @@ class _UploadVersionFormState extends State<UploadVersionForm> {
     }
 
     final tempDir = await getTemporaryDirectory();
-    final safeName =
-        pf.name.isNotEmpty
-            ? pf.name
-            : 'audio_${DateTime.now().millisecondsSinceEpoch}';
+    final safeName = pf.name.isNotEmpty ? pf.name : 'audio_${DateTime.now().millisecondsSinceEpoch}';
     final ext = p.extension(safeName);
     final base = ext.isEmpty ? safeName : p.basenameWithoutExtension(safeName);
     final outPath = p.join(
@@ -144,8 +141,7 @@ class _UploadVersionFormState extends State<UploadVersionForm> {
           ),
           const SizedBox(height: Dimensions.space24),
           SecondaryButton(
-            text:
-                _pickedFile == null ? 'Select Audio File' : 'Change Audio File',
+            text: _pickedFile == null ? 'Select Audio File' : 'Change Audio File',
             icon: Icons.music_note,
             onPressed: _isSubmitting ? null : _pickFile,
             isDisabled: _isSubmitting,

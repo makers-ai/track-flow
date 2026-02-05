@@ -68,16 +68,9 @@ class IsarTrackVersionLocalDataSource implements TrackVersionLocalDataSource {
     try {
       // Get existing versions for this track to calculate version number
       final existingVersions =
-          await _isar.trackVersionDocuments
-              .filter()
-              .trackIdEqualTo(trackId.value)
-              .sortByVersionNumberDesc()
-              .findAll();
+          await _isar.trackVersionDocuments.filter().trackIdEqualTo(trackId.value).sortByVersionNumberDesc().findAll();
 
-      final nextVersionNumber =
-          existingVersions.isNotEmpty
-              ? existingVersions.first.versionNumber + 1
-              : 1;
+      final nextVersionNumber = existingVersions.isNotEmpty ? existingVersions.first.versionNumber + 1 : 1;
 
       final dto = TrackVersionDTO(
         id: TrackVersionId().value,
@@ -115,10 +108,7 @@ class IsarTrackVersionLocalDataSource implements TrackVersionLocalDataSource {
           .watch(fireImmediately: true)
           .map<Either<Failure, List<TrackVersionDTO>>>(
             (documents) => Right(
-              documents
-                  .map((doc) => doc.toDTO())
-                  .where((dto) => dto.trackId == trackId.value)
-                  .toList(),
+              documents.map((doc) => doc.toDTO()).where((dto) => dto.trackId == trackId.value).toList(),
             ),
           )
           .handleError(
@@ -135,17 +125,9 @@ class IsarTrackVersionLocalDataSource implements TrackVersionLocalDataSource {
   ) async {
     try {
       // Read all then filter after DTO conversion to handle legacy wrapped IDs
-      final documents =
-          await _isar.trackVersionDocuments
-              .where()
-              .sortByVersionNumberDesc()
-              .findAll();
+      final documents = await _isar.trackVersionDocuments.where().sortByVersionNumberDesc().findAll();
 
-      final dtos =
-          documents
-              .map((doc) => doc.toDTO())
-              .where((dto) => dto.trackId == trackId.value)
-              .toList();
+      final dtos = documents.map((doc) => doc.toDTO()).where((dto) => dto.trackId == trackId.value).toList();
       return Right(dtos);
     } catch (e) {
       return Left(CacheFailure('Failed to get versions by track: $e'));
@@ -171,17 +153,9 @@ class IsarTrackVersionLocalDataSource implements TrackVersionLocalDataSource {
   ) async {
     try {
       // Get the most recent version (highest version number) for this track
-      final documents =
-          await _isar.trackVersionDocuments
-              .where()
-              .sortByVersionNumberDesc()
-              .findAll();
+      final documents = await _isar.trackVersionDocuments.where().sortByVersionNumberDesc().findAll();
 
-      final filtered =
-          documents
-              .map((doc) => doc.toDTO())
-              .where((d) => d.trackId == trackId.value)
-              .toList();
+      final filtered = documents.map((doc) => doc.toDTO()).where((d) => d.trackId == trackId.value).toList();
 
       if (filtered.isNotEmpty) {
         return Right(filtered.first);

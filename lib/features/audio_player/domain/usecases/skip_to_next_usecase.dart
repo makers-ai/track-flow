@@ -8,8 +8,7 @@ import '../services/audio_playback_service.dart';
 /// NO: UserProfile fetching, collaborator logic, project context
 @injectable
 class SkipToNextUseCase {
-  const SkipToNextUseCase({required AudioPlaybackService playbackService})
-    : _playbackService = playbackService;
+  const SkipToNextUseCase({required AudioPlaybackService playbackService}) : _playbackService = playbackService;
 
   final AudioPlaybackService _playbackService;
 

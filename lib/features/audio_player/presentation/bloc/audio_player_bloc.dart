@@ -264,8 +264,9 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
 
       // For PlayAndSeek, we need to resolve the track to its active version
       try {
-        final versionResult = await _audioPlayerService
-            .resolveTrackVersion(event.trackId);
+        final versionResult = await _audioPlayerService.resolveTrackVersion(
+          event.trackId,
+        );
         versionResult.fold(
           (failure) {
             emit(AudioPlayerError(failure, currentSession));
@@ -312,8 +313,8 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
     final currentId = currentSession.currentTrack?.id.value;
     if (currentId == event.commentId &&
         (currentSession.state == PlaybackState.playing ||
-         currentSession.state == PlaybackState.loading ||
-         currentSession.state == PlaybackState.paused)) {
+            currentSession.state == PlaybackState.loading ||
+            currentSession.state == PlaybackState.paused)) {
       return;
     }
 
@@ -322,7 +323,9 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
 
     // Create metadata for the comment
     final metadata = AudioTrackMetadata(
-      id: AudioTrackId.fromUniqueString(event.commentId), // Use comment ID as track ID
+      id: AudioTrackId.fromUniqueString(
+        event.commentId,
+      ), // Use comment ID as track ID
       title: 'Audio Comment',
       artist: 'Comment',
       duration: Duration.zero, // Will be updated when loaded

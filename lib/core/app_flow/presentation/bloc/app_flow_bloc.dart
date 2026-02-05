@@ -109,21 +109,24 @@ class AppFlowBloc extends Bloc<AppFlowEvent, AppFlowState> {
   /// Clear all user-related state when logging out
   void _clearAllUserState() {
     try {
-      _sessionCleanupService.clearAllUserData().then((result) {
-        result.fold(
-          (failure) {
-            AppLogger.warning(
-              'Session cleanup failed: ${failure.message}',
-              tag: 'APP_FLOW_BLOC',
+      _sessionCleanupService
+          .clearAllUserData()
+          .then((result) {
+            result.fold(
+              (failure) {
+                AppLogger.warning(
+                  'Session cleanup failed: ${failure.message}',
+                  tag: 'APP_FLOW_BLOC',
+                );
+              },
+              (_) {
+                // Cleanup successful - no logging needed in production
+              },
             );
-          },
-          (_) {
-            // Cleanup successful - no logging needed in production
-          },
-        );
-      }).whenComplete(() {
-        _isSessionCleanupInProgress = false;
-      });
+          })
+          .whenComplete(() {
+            _isSessionCleanupInProgress = false;
+          });
     } catch (e) {
       _isSessionCleanupInProgress = false;
       AppLogger.warning(

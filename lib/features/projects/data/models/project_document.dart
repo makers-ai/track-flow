@@ -39,8 +39,7 @@ class ProjectDocument {
       ..createdAt = dto.createdAt
       ..updatedAt = dto.updatedAt
       ..collaboratorIds = dto.collaboratorIds
-      ..collaborators =
-          dto.collaborators.map((c) => CollaboratorDocument.fromMap(c)).toList()
+      ..collaborators = dto.collaborators.map((c) => CollaboratorDocument.fromMap(c)).toList()
       ..isDeleted = dto.isDeleted
       ..coverUrl = dto.coverUrl
       ..coverLocalPath = dto.coverLocalPath
@@ -67,8 +66,7 @@ class ProjectDocument {
       ..createdAt = dto.createdAt
       ..updatedAt = dto.updatedAt
       ..collaboratorIds = dto.collaboratorIds
-      ..collaborators =
-          dto.collaborators.map((c) => CollaboratorDocument.fromMap(c)).toList()
+      ..collaborators = dto.collaborators.map((c) => CollaboratorDocument.fromMap(c)).toList()
       ..isDeleted = dto.isDeleted
       ..coverUrl = dto.coverUrl
       ..coverLocalPath = dto.coverLocalPath
@@ -112,10 +110,7 @@ class CollaboratorDocument {
       ..id = map['id'] as String
       ..userId = map['userId'] as String
       ..role = map['role'] as String
-      ..specificPermissions =
-          (map['specificPermissions'] as List<dynamic>)
-              .map((e) => e as String)
-              .toList();
+      ..specificPermissions = (map['specificPermissions'] as List<dynamic>).map((e) => e as String).toList();
   }
 
   Map<String, dynamic> toMap() {

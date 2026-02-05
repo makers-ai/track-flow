@@ -59,9 +59,7 @@ class ProjectDetailCollaboratorsComponent extends StatelessWidget {
               style: const TextStyle(color: Colors.red),
             ),
           ],
-          if (state.collaborators.isEmpty &&
-              !state.isLoadingCollaborators &&
-              state.collaboratorsError == null) ...[
+          if (state.collaborators.isEmpty && !state.isLoadingCollaborators && state.collaboratorsError == null) ...[
             const SizedBox(height: 16),
             const Text('No collaborators found'),
           ],
@@ -76,13 +74,10 @@ class ProjectDetailCollaboratorsComponent extends StatelessWidget {
                   // Existing collaborators
                   ...state.collaborators.map((collaborator) {
                     // Find the role from project collaborators
-                    final projectCollaborator = state.project?.project.collaborators
-                        .firstWhere(
-                          (pc) => pc.userId.value == collaborator.id,
-                          orElse:
-                              () =>
-                                  throw StateError('Collaborator not found'),
-                        );
+                    final projectCollaborator = state.project?.project.collaborators.firstWhere(
+                      (pc) => pc.userId.value == collaborator.id,
+                      orElse: () => throw StateError('Collaborator not found'),
+                    );
 
                     return CollaboratorCard(
                       name: collaborator.name,
@@ -105,16 +100,16 @@ class ProjectDetailCollaboratorsComponent extends StatelessWidget {
                   Builder(
                     builder: (context) {
                       final userState = context.watch<CurrentUserBloc>().state;
-                      final String? currentUserId =
-                          userState is CurrentUserLoaded ? userState.profile.id.value : null;
+                      final String? currentUserId = userState is CurrentUserLoaded ? userState.profile.id.value : null;
                       bool canInvite = false;
                       if (state.project != null && currentUserId != null) {
                         final me = state.project!.project.collaborators.firstWhere(
                           (c) => c.userId.value == currentUserId,
-                          orElse: () => ProjectCollaborator.create(
-                            userId: UserId.fromUniqueString(currentUserId),
-                            role: ProjectRole.viewer,
-                          ),
+                          orElse:
+                              () => ProjectCollaborator.create(
+                                userId: UserId.fromUniqueString(currentUserId),
+                                role: ProjectRole.viewer,
+                              ),
                         );
                         canInvite = me.hasPermission(ProjectPermission.addCollaborator);
                       }

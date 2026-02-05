@@ -23,9 +23,7 @@ class WatchTrackUploadStatusUseCase {
       }
       // If any related op has error message and can't retry, mark failed
       final hasFailed = related.any(
-        (op) =>
-            (op.errorMessage != null && op.errorMessage!.isNotEmpty) &&
-            !op.canRetry(),
+        (op) => (op.errorMessage != null && op.errorMessage!.isNotEmpty) && !op.canRetry(),
       );
       if (hasFailed) {
         return TrackUploadStatus.failed;

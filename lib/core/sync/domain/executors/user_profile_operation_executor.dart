@@ -7,7 +7,7 @@ import 'package:trackflow/features/user_profile/data/models/user_profile_dto.dar
 import 'package:trackflow/features/user_profile/domain/entities/user_profile.dart';
 
 /// Handles sync operations for UserProfile entities
-/// 
+///
 /// This executor is responsible for translating sync operations
 /// into appropriate calls to the UserProfileRemoteDataSource.
 @injectable
@@ -21,15 +21,16 @@ class UserProfileOperationExecutor implements OperationExecutor {
 
   @override
   Future<void> execute(SyncOperationDocument operation) async {
-    final operationData = operation.operationData != null 
-        ? jsonDecode(operation.operationData!) as Map<String, dynamic>
-        : <String, dynamic>{};
+    final operationData =
+        operation.operationData != null
+            ? jsonDecode(operation.operationData!) as Map<String, dynamic>
+            : <String, dynamic>{};
 
     switch (operation.operationType) {
       case 'update':
         await _executeUpdate(operation, operationData);
         break;
-        
+
       default:
         throw UnsupportedError('Unknown user profile operation: ${operation.operationType}');
     }
@@ -38,7 +39,7 @@ class UserProfileOperationExecutor implements OperationExecutor {
   /// Execute user profile update
   /// Note: User profiles are typically only updated, not created or deleted
   Future<void> _executeUpdate(
-    SyncOperationDocument operation, 
+    SyncOperationDocument operation,
     Map<String, dynamic> operationData,
   ) async {
     final userProfileDto = UserProfileDTO(
@@ -46,15 +47,11 @@ class UserProfileOperationExecutor implements OperationExecutor {
       name: operationData['name'] ?? '',
       email: operationData['email'] ?? '',
       avatarUrl: operationData['avatarUrl'] ?? '',
-      createdAt: operationData['createdAt'] != null 
-          ? DateTime.parse(operationData['createdAt'])
-          : DateTime.now(),
-      updatedAt: operationData['updatedAt'] != null 
-          ? DateTime.parse(operationData['updatedAt'])
-          : DateTime.now(),
+      createdAt: operationData['createdAt'] != null ? DateTime.parse(operationData['createdAt']) : DateTime.now(),
+      updatedAt: operationData['updatedAt'] != null ? DateTime.parse(operationData['updatedAt']) : DateTime.now(),
       creativeRole: _parseCreativeRole(operationData['creativeRole']),
     );
-    
+
     final result = await _remoteDataSource.updateProfile(userProfileDto);
     result.fold(
       (failure) => throw Exception('Profile update failed: ${failure.message}'),

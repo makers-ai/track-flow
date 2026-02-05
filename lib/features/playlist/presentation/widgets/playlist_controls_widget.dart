@@ -86,7 +86,6 @@ class _PlaylistControlsWidgetState extends State<PlaylistControlsWidget> {
               },
             ),
             const SizedBox(width: 8),
-            
           ],
         );
       },

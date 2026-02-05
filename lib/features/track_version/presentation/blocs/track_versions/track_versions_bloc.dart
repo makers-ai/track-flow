@@ -52,8 +52,7 @@ class TrackVersionsBloc extends Bloc<TrackVersionsEvent, TrackVersionsState> {
                   ? (event.activeVersionId ??
                       bundle.track.activeVersionId ??
                       (versions.isEmpty ? null : versions.first.id))
-                  : (bundle.track.activeVersionId ??
-                      (versions.isEmpty ? null : versions.first.id));
+                  : (bundle.track.activeVersionId ?? (versions.isEmpty ? null : versions.first.id));
           emit(
             TrackVersionsLoaded(
               versions: versions.map(TrackVersionUiModel.fromDomain).toList(),

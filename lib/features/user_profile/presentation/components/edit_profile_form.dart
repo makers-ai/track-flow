@@ -128,25 +128,15 @@ class EditProfileFormState extends State<EditProfileForm> {
       name: _nameController.text.trim(),
       avatarUrl: _avatarUrl,
       creativeRole: _selectedRole,
-      description: _descriptionController.text.trim().isEmpty
-          ? null
-          : _descriptionController.text.trim(),
-      location: _locationController.text.trim().isEmpty
-          ? null
-          : _locationController.text.trim(),
+      description: _descriptionController.text.trim().isEmpty ? null : _descriptionController.text.trim(),
+      location: _locationController.text.trim().isEmpty ? null : _locationController.text.trim(),
       roles: _selectedRoles.isEmpty ? null : _selectedRoles,
       genres: _selectedGenres.isEmpty ? null : _selectedGenres,
       skills: _selectedSkills.isEmpty ? null : _selectedSkills,
       socialLinks: _socialLinks.isEmpty ? null : _socialLinks,
-      websiteUrl: _websiteController.text.trim().isEmpty
-          ? null
-          : _websiteController.text.trim(),
-      linktreeUrl: _linktreeController.text.trim().isEmpty
-          ? null
-          : _linktreeController.text.trim(),
-      contactInfo: _phoneController.text.trim().isEmpty
-          ? null
-          : ContactInfo(phone: _phoneController.text.trim()),
+      websiteUrl: _websiteController.text.trim().isEmpty ? null : _websiteController.text.trim(),
+      linktreeUrl: _linktreeController.text.trim().isEmpty ? null : _linktreeController.text.trim(),
+      contactInfo: _phoneController.text.trim().isEmpty ? null : ContactInfo(phone: _phoneController.text.trim()),
       updatedAt: DateTime.now(),
     );
   }
@@ -346,10 +336,10 @@ class EditProfileFormState extends State<EditProfileForm> {
         children: [
           Center(
             child: Text(
-            title,
-            style: AppTextStyle.titleLarge.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+              title,
+              style: AppTextStyle.titleLarge.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
           SizedBox(height: Dimensions.space16),

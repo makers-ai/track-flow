@@ -83,17 +83,12 @@ class _VoiceMemoWaveformDisplayState extends State<VoiceMemoWaveformDisplay> {
     return BlocBuilder<AudioPlayerBloc, AudioPlayerState>(
       builder: (context, audioState) {
         // Determine if this memo is currently playing
-        final isCurrentMemo = audioState is AudioPlayerSessionState &&
-            audioState.session.currentTrack?.id.value == widget.memo.id.value;
+        final isCurrentMemo =
+            audioState is AudioPlayerSessionState && audioState.session.currentTrack?.id.value == widget.memo.id.value;
 
-        final currentPosition = isCurrentMemo
-            ? audioState.session.position
-            : Duration.zero;
+        final currentPosition = isCurrentMemo ? audioState.session.position : Duration.zero;
 
-        final progressPosition =
-            _isScrubbing && _previewPosition != null
-                ? _previewPosition!
-                : currentPosition;
+        final progressPosition = _isScrubbing && _previewPosition != null ? _previewPosition! : currentPosition;
 
         return GestureDetector(
           onTapDown: (details) => _handleTap(context, details),
@@ -133,7 +128,7 @@ class _VoiceMemoWaveformDisplayState extends State<VoiceMemoWaveformDisplay> {
                   previewPosition: _previewPosition,
                   isScrubbing: _isScrubbing,
                   progressColor: AppColors.primary,
-                  baselineColor:  Colors.white,
+                  baselineColor: Colors.white,
                 ),
               ],
             ),

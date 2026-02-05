@@ -69,20 +69,19 @@ class VoiceMemoRepositoryImpl implements VoiceMemoRepository {
       );
 
       // Build document explicitly to ensure relative path is stored
-      final doc = VoiceMemoDocument()
-        ..id = memo.id.value
-        ..title = memo.title
-        ..fileLocalPath = relativePath
-        ..fileRemoteUrl = memo.fileRemoteUrl
-        ..durationMs = memo.duration.inMilliseconds
-        ..recordedAt = memo.recordedAt
-        ..convertedToTrackId = memo.convertedToTrackId
-        ..createdBy = memo.createdBy?.value
-        ..waveformAmplitudesJson = memo.waveformData != null
-            ? jsonEncode(memo.waveformData!.amplitudes)
-            : null
-        ..waveformSampleRate = memo.waveformData?.sampleRate
-        ..waveformTargetSampleCount = memo.waveformData?.targetSampleCount;
+      final doc =
+          VoiceMemoDocument()
+            ..id = memo.id.value
+            ..title = memo.title
+            ..fileLocalPath = relativePath
+            ..fileRemoteUrl = memo.fileRemoteUrl
+            ..durationMs = memo.duration.inMilliseconds
+            ..recordedAt = memo.recordedAt
+            ..convertedToTrackId = memo.convertedToTrackId
+            ..createdBy = memo.createdBy?.value
+            ..waveformAmplitudesJson = memo.waveformData != null ? jsonEncode(memo.waveformData!.amplitudes) : null
+            ..waveformSampleRate = memo.waveformData?.sampleRate
+            ..waveformTargetSampleCount = memo.waveformData?.targetSampleCount;
 
       return await _localDataSource.saveMemo(doc);
     } catch (e) {
@@ -93,27 +92,27 @@ class VoiceMemoRepositoryImpl implements VoiceMemoRepository {
   @override
   Future<Either<Failure, Unit>> updateMemo(VoiceMemo memo) async {
     // Ensure we persist relative path, even if caller passed absolute
-    final relativePath = memo.fileLocalPath.startsWith('/')
-        ? _directoryService.getRelativePath(
-            memo.fileLocalPath,
-            DirectoryType.voiceMemos,
-          )
-        : memo.fileLocalPath;
+    final relativePath =
+        memo.fileLocalPath.startsWith('/')
+            ? _directoryService.getRelativePath(
+              memo.fileLocalPath,
+              DirectoryType.voiceMemos,
+            )
+            : memo.fileLocalPath;
 
-    final doc = VoiceMemoDocument()
-      ..id = memo.id.value
-      ..title = memo.title
-      ..fileLocalPath = relativePath
-      ..fileRemoteUrl = memo.fileRemoteUrl
-      ..durationMs = memo.duration.inMilliseconds
-      ..recordedAt = memo.recordedAt
-      ..convertedToTrackId = memo.convertedToTrackId
-      ..createdBy = memo.createdBy?.value
-      ..waveformAmplitudesJson = memo.waveformData != null
-          ? jsonEncode(memo.waveformData!.amplitudes)
-          : null
-      ..waveformSampleRate = memo.waveformData?.sampleRate
-      ..waveformTargetSampleCount = memo.waveformData?.targetSampleCount;
+    final doc =
+        VoiceMemoDocument()
+          ..id = memo.id.value
+          ..title = memo.title
+          ..fileLocalPath = relativePath
+          ..fileRemoteUrl = memo.fileRemoteUrl
+          ..durationMs = memo.duration.inMilliseconds
+          ..recordedAt = memo.recordedAt
+          ..convertedToTrackId = memo.convertedToTrackId
+          ..createdBy = memo.createdBy?.value
+          ..waveformAmplitudesJson = memo.waveformData != null ? jsonEncode(memo.waveformData!.amplitudes) : null
+          ..waveformSampleRate = memo.waveformData?.sampleRate
+          ..waveformTargetSampleCount = memo.waveformData?.targetSampleCount;
 
     return await _localDataSource.updateMemo(doc);
   }

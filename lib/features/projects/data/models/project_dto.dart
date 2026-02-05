@@ -57,8 +57,7 @@ class ProjectDTO {
                 'id': c.id.value,
                 'userId': c.userId.value,
                 'role': c.role.toShortString(),
-                'specificPermissions':
-                    c.specificPermissions.map((p) => p.name).toList(),
+                'specificPermissions': c.specificPermissions.map((p) => p.name).toList(),
               },
             )
             .toList(),
@@ -125,22 +124,14 @@ class ProjectDTO {
     createdAt:
         json['createdAt'] is Timestamp
             ? (json['createdAt'] as Timestamp).toDate()
-            : DateTime.tryParse(json['createdAt'] as String? ?? '') ??
-                DateTime.now(),
+            : DateTime.tryParse(json['createdAt'] as String? ?? '') ?? DateTime.now(),
     updatedAt:
         json['updatedAt'] is Timestamp
             ? (json['updatedAt'] as Timestamp).toDate()
             : DateTime.tryParse(json['updatedAt'] as String? ?? ''),
     collaborators:
-        (json['collaborators'] as List<dynamic>?)
-            ?.map((e) => (e as Map).cast<String, dynamic>())
-            .toList() ??
-        [],
-    collaboratorIds:
-        (json['collaboratorIds'] as List<dynamic>?)
-            ?.map((e) => e as String)
-            .toList() ??
-        [],
+        (json['collaborators'] as List<dynamic>?)?.map((e) => (e as Map).cast<String, dynamic>()).toList() ?? [],
+    collaboratorIds: (json['collaboratorIds'] as List<dynamic>?)?.map((e) => e as String).toList() ?? [],
     isDeleted: json['isDeleted'] as bool? ?? false,
     // ⭐ NEW: Parse sync metadata from JSON
     version: json['version'] as int? ?? 1,
@@ -183,15 +174,8 @@ class ProjectDTO {
       createdAt: createdAt,
       updatedAt: updatedAt,
       collaborators:
-          (data['collaborators'] as List<dynamic>?)
-              ?.map((e) => (e as Map).cast<String, dynamic>())
-              .toList() ??
-          [],
-      collaboratorIds:
-          (data['collaboratorIds'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          [],
+          (data['collaborators'] as List<dynamic>?)?.map((e) => (e as Map).cast<String, dynamic>()).toList() ?? [],
+      collaboratorIds: (data['collaboratorIds'] as List<dynamic>?)?.map((e) => e as String).toList() ?? [],
       isDeleted: data['isDeleted'] as bool? ?? false,
       // ⭐ NEW: Parse sync metadata from Firestore
       version: data['version'] as int? ?? 1,
@@ -214,8 +198,7 @@ class ProjectDTO {
       'isDeleted': isDeleted,
       // ⭐ NEW: Include sync metadata in Firestore (CRITICAL for offline-first)
       'version': version,
-      'lastModified':
-          lastModified != null ? Timestamp.fromDate(lastModified!) : null,
+      'lastModified': lastModified != null ? Timestamp.fromDate(lastModified!) : null,
       'coverUrl': coverUrl,
     };
   }
@@ -285,15 +268,8 @@ class ProjectDTO {
       createdAt: createdAt,
       updatedAt: updatedAt,
       collaborators:
-          (data['collaborators'] as List<dynamic>?)
-              ?.map((e) => (e as Map).cast<String, dynamic>())
-              .toList() ??
-          [],
-      collaboratorIds:
-          (data['collaboratorIds'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          [],
+          (data['collaborators'] as List<dynamic>?)?.map((e) => (e as Map).cast<String, dynamic>()).toList() ?? [],
+      collaboratorIds: (data['collaboratorIds'] as List<dynamic>?)?.map((e) => e as String).toList() ?? [],
       isDeleted: data['isDeleted'] as bool? ?? false,
       // ⭐ NEW: Parse sync metadata from map
       version: data['version'] as int? ?? 1,

@@ -37,10 +37,12 @@ class AudioStorageRepositoryImpl implements AudioStorageRepository {
       );
 
       if (cacheDirResult.isLeft()) {
-        return Left(StorageCacheFailure(
-          message: 'Failed to get cache directory',
-          type: StorageFailureType.diskError,
-        ));
+        return Left(
+          StorageCacheFailure(
+            message: 'Failed to get cache directory',
+            type: StorageFailureType.diskError,
+          ),
+        );
       }
 
       final trackDir = cacheDirResult.getOrElse(() => throw Exception('Unreachable'));
@@ -134,7 +136,6 @@ class AudioStorageRepositoryImpl implements AudioStorageRepository {
     return ext;
   }
 
-
   // Removed unused helper; relative path conversion occurs at store time directly
 
   /// Validate and clean corrupted cache entries
@@ -200,25 +201,28 @@ class AudioStorageRepositoryImpl implements AudioStorageRepository {
         versionId: versionId?.value,
       );
 
-      return result.fold((failure) {
-        // Fallback to file system search for legacy compatibility
-        return _getCachedAudioPathFromFileSystem(trackId, versionId, directoryType);
-      }, (relativePath) async {
-        // Resolve relative path to absolute via DirectoryService
-        final absPathResult = await _directoryService.getAbsolutePath(
-          relativePath,
-          directoryType,
-        );
-        return absPathResult.fold(
-          (f) => Left(
-            StorageCacheFailure(
-              message: f.message,
-              type: StorageFailureType.diskError,
+      return result.fold(
+        (failure) {
+          // Fallback to file system search for legacy compatibility
+          return _getCachedAudioPathFromFileSystem(trackId, versionId, directoryType);
+        },
+        (relativePath) async {
+          // Resolve relative path to absolute via DirectoryService
+          final absPathResult = await _directoryService.getAbsolutePath(
+            relativePath,
+            directoryType,
+          );
+          return absPathResult.fold(
+            (f) => Left(
+              StorageCacheFailure(
+                message: f.message,
+                type: StorageFailureType.diskError,
+              ),
             ),
-          ),
-          (absolutePath) => Right(absolutePath),
-        );
-      });
+            (absolutePath) => Right(absolutePath),
+          );
+        },
+      );
     } catch (e) {
       return Left(
         StorageCacheFailure(
@@ -297,9 +301,7 @@ class AudioStorageRepositoryImpl implements AudioStorageRepository {
           }
 
           // File not found
-          final versionMsg = versionId != null
-              ? 'version ${versionId.value}'
-              : 'track ${trackId.value}';
+          final versionMsg = versionId != null ? 'version ${versionId.value}' : 'track ${trackId.value}';
           return Left(
             StorageCacheFailure(
               message: 'Cached audio file not found for $versionMsg',

@@ -16,8 +16,8 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
   DashboardBloc({
     required WatchDashboardBundleUseCase watchDashboardBundleUseCase,
-  })  : _watchDashboardBundleUseCase = watchDashboardBundleUseCase,
-        super(const DashboardInitial()) {
+  }) : _watchDashboardBundleUseCase = watchDashboardBundleUseCase,
+       super(const DashboardInitial()) {
     on<WatchDashboard>(_onWatchDashboard);
     on<StopWatchingDashboard>(_onStopWatchingDashboard);
   }
@@ -38,15 +38,9 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
           (bundle) {
             emit(
               DashboardLoaded(
-                projectPreview: bundle.projectPreview
-                    .map(ProjectUiModel.fromDomain)
-                    .toList(),
-                trackPreview: bundle.trackPreview
-                    .map(AudioTrackUiModel.fromDomain)
-                    .toList(),
-                recentComments: bundle.recentComments
-                    .map(AudioCommentUiModel.fromDomain)
-                    .toList(),
+                projectPreview: bundle.projectPreview.map(ProjectUiModel.fromDomain).toList(),
+                trackPreview: bundle.trackPreview.map(AudioTrackUiModel.fromDomain).toList(),
+                recentComments: bundle.recentComments.map(AudioCommentUiModel.fromDomain).toList(),
                 isLoading: false,
                 failureOption: none(), // No failure
               ),
@@ -85,5 +79,3 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     return "An unknown error occurred.";
   }
 }
-
-

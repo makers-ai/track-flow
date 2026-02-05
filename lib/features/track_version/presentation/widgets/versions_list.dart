@@ -24,8 +24,7 @@ class VersionsList extends StatelessWidget {
       builder: (context, selectorState) {
         return BlocBuilder<TrackVersionsBloc, TrackVersionsState>(
           builder: (context, state) {
-            if (state is TrackVersionsInitial ||
-                state is TrackVersionsLoading) {
+            if (state is TrackVersionsInitial || state is TrackVersionsLoading) {
               return const SizedBox(
                 height: 56,
                 child: Center(child: CircularProgressIndicator()),
@@ -54,16 +53,15 @@ class VersionsList extends StatelessWidget {
               height: 56,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal:Dimensions.space8),
+                padding: const EdgeInsets.symmetric(horizontal: Dimensions.space8),
                 itemBuilder: (context, index) {
                   final v = loaded.versions[index];
-                  final selectedId =
-                      selectorState.selectedVersionId ?? loaded.activeVersionId;
+                  final selectedId = selectorState.selectedVersionId ?? loaded.activeVersionId;
                   final isSelected = selectedId == v.version.id;
                   final isGloballyActive = loaded.activeVersionId == v.version.id;
                   return ChoiceChip(
                     visualDensity: VisualDensity.compact,
-                    padding: EdgeInsets.symmetric(horizontal: Dimensions.space8,vertical: Dimensions.space2),
+                    padding: EdgeInsets.symmetric(horizontal: Dimensions.space8, vertical: Dimensions.space2),
                     label: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [

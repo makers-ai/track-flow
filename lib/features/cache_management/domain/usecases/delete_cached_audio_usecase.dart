@@ -2,8 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:trackflow/core/entities/unique_id.dart';
 import 'package:trackflow/core/error/failures.dart';
-import 'package:trackflow/features/audio_cache/domain/failures/cache_failure.dart'
-    as cache;
+import 'package:trackflow/features/audio_cache/domain/failures/cache_failure.dart' as cache;
 import 'package:trackflow/features/audio_cache/domain/repositories/audio_storage_repository.dart';
 
 @injectable
@@ -24,6 +23,5 @@ class DeleteCachedAudioUseCase {
     }
   }
 
-  Failure _toFailure(cache.CacheFailure failure) =>
-      ServerFailure(failure.message);
+  Failure _toFailure(cache.CacheFailure failure) => ServerFailure(failure.message);
 }

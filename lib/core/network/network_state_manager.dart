@@ -14,8 +14,7 @@ class NetworkStateManager {
   final Connectivity _connectivity;
 
   // Stream controller for connectivity changes
-  final StreamController<bool> _connectivityController =
-      StreamController<bool>.broadcast();
+  final StreamController<bool> _connectivityController = StreamController<bool>.broadcast();
 
   // Cache the last known state to avoid redundant checks
   bool? _lastKnownState;

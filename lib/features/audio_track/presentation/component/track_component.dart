@@ -43,15 +43,17 @@ class _TrackComponentState extends State<TrackComponent> {
   Widget build(BuildContext context) {
     final track = widget.vm.track;
     return BaseCard(
-      onTap: widget.onTap ?? () {
-        if (widget.onPlay != null) {
-          widget.onPlay!();
-        } else {
-          context.read<AudioPlayerBloc>().add(
-            PlayPlaylistRequested(tracks: [track], startIndex: 0),
-          );
-        }
-      },
+      onTap:
+          widget.onTap ??
+          () {
+            if (widget.onPlay != null) {
+              widget.onPlay!();
+            } else {
+              context.read<AudioPlayerBloc>().add(
+                PlayPlaylistRequested(tracks: [track], startIndex: 0),
+              );
+            }
+          },
       backgroundColor: AppColors.background,
       margin: EdgeInsets.zero,
       borderRadius: BorderRadius.zero,

@@ -70,10 +70,7 @@ class WatchCachedTrackBundlesUseCase {
               track: track,
               version: version,
               uploader: uploader,
-              projectName:
-                  (projectName != null && projectName!.isNotEmpty)
-                      ? projectName
-                      : null,
+              projectName: (projectName != null && projectName!.isNotEmpty) ? projectName : null,
               activeDownload: null,
             );
           }),

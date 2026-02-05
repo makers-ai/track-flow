@@ -17,5 +17,4 @@ abstract class ProjectsRepository {
 
   /// Stream a single project by id from local cache.
   Stream<Either<Failure, Project?>> watchProjectById(ProjectId projectId);
-
 }

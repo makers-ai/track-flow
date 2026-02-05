@@ -61,8 +61,7 @@ class VersionHeaderComponent extends StatelessWidget {
             if (blocState is! TrackVersionsLoaded) {
               return const SizedBox.shrink();
             }
-            final activeId =
-                selectorState.selectedVersionId ?? blocState.activeVersionId;
+            final activeId = selectorState.selectedVersionId ?? blocState.activeVersionId;
             if (blocState.versions.isEmpty) {
               return const SizedBox.shrink();
             }
@@ -121,8 +120,7 @@ class VersionHeaderComponent extends StatelessWidget {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (active.version.status == TrackVersionStatus.ready &&
-                          active.fileRemoteUrl != null)
+                      if (active.version.status == TrackVersionStatus.ready && active.fileRemoteUrl != null)
                         KeyedSubtree(
                           key: ValueKey(active.id),
                           child: BlocProvider(

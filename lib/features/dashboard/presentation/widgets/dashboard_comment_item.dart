@@ -47,8 +47,8 @@ class DashboardCommentItem extends StatelessWidget {
                   Text(
                     '${comment.formattedCreatedAt} • at ${comment.formattedTimestamp}',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ],
               ),
@@ -85,4 +85,3 @@ class DashboardCommentItem extends StatelessWidget {
     }
   }
 }
-

@@ -67,8 +67,7 @@ class _SmartTrackCacheIconState extends State<SmartTrackCacheIcon> {
   @override
   void didUpdateWidget(covariant SmartTrackCacheIcon oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.trackId != widget.trackId ||
-        oldWidget.versionId != widget.versionId) {
+    if (oldWidget.trackId != widget.trackId || oldWidget.versionId != widget.versionId) {
       context.read<TrackCacheBloc>().add(
         WatchTrackCacheStatusRequested(
           AudioTrackId.fromUniqueString(widget.trackId),
@@ -129,10 +128,8 @@ class _SmartTrackCacheIconState extends State<SmartTrackCacheIcon> {
         return InkWell(
           onTap: () => _handleTap(state),
           borderRadius: BorderRadius.circular(widget.size / 2),
-          splashColor: (widget.color ?? Theme.of(context).primaryColor)
-              .withValues(alpha: 0.2),
-          highlightColor: (widget.color ?? Theme.of(context).primaryColor)
-              .withValues(alpha: 0.1),
+          splashColor: (widget.color ?? Theme.of(context).primaryColor).withValues(alpha: 0.2),
+          highlightColor: (widget.color ?? Theme.of(context).primaryColor).withValues(alpha: 0.1),
           child: Container(
             width: widget.size + 8,
             height: widget.size + 8,

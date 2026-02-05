@@ -162,25 +162,26 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                         shape: BoxShape.circle,
                         border: Border.all(color: AppColors.primary, width: 2),
                       ),
-                      child: (chosenLocal != null && chosenLocal.isNotEmpty)
-                          ? UserAvatar(
-                            imageUrl: chosenLocal,
-                            size: 80,
-                            fallback: Icon(
-                              Icons.person,
-                              size: 40,
-                              color: AppColors.textSecondary,
-                            ),
-                          )
-                          : UserAvatar(
-                            imageUrl: remoteUrl ?? _avatarUrl,
-                            size: 80,
-                            fallback: Icon(
-                              Icons.person,
-                              size: 40,
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
+                      child:
+                          (chosenLocal != null && chosenLocal.isNotEmpty)
+                              ? UserAvatar(
+                                imageUrl: chosenLocal,
+                                size: 80,
+                                fallback: Icon(
+                                  Icons.person,
+                                  size: 40,
+                                  color: AppColors.textSecondary,
+                                ),
+                              )
+                              : UserAvatar(
+                                imageUrl: remoteUrl ?? _avatarUrl,
+                                size: 80,
+                                fallback: Icon(
+                                  Icons.person,
+                                  size: 40,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
                     ),
                   );
                 },
@@ -259,10 +260,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                   Expanded(
                     child: SecondaryButton(
                       text: 'Cancel',
-                      onPressed:
-                          _isSubmitting
-                              ? null
-                              : () => Navigator.of(context).pop(),
+                      onPressed: _isSubmitting ? null : () => Navigator.of(context).pop(),
                       isDisabled: _isSubmitting,
                     ),
                   ),

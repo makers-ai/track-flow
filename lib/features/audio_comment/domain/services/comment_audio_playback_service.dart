@@ -18,5 +18,3 @@ abstract class CommentAudioPlaybackService {
   Future<void> seek(Duration position);
   Future<void> dispose();
 }
-
-

@@ -11,8 +11,7 @@ class UserFoundIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (state is UserSearchSuccess &&
-        (state as UserSearchSuccess).user != null) {
+    if (state is UserSearchSuccess && (state as UserSearchSuccess).user != null) {
       final user = (state as UserSearchSuccess).user!;
       return Column(
         children: [

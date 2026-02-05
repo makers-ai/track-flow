@@ -63,8 +63,7 @@ class ProjectDetailState extends Equatable {
       sort: sort ?? this.sort,
       isLoadingProject: isLoadingProject ?? this.isLoadingProject,
       isLoadingTracks: isLoadingTracks ?? this.isLoadingTracks,
-      isLoadingCollaborators:
-          isLoadingCollaborators ?? this.isLoadingCollaborators,
+      isLoadingCollaborators: isLoadingCollaborators ?? this.isLoadingCollaborators,
       projectError: projectError,
       tracksError: tracksError,
       collaboratorsError: collaboratorsError,

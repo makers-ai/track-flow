@@ -16,8 +16,7 @@ abstract class PendingOperationsLocalDataSource {
 }
 
 @LazySingleton(as: PendingOperationsLocalDataSource)
-class IsarPendingOperationsLocalDataSource
-    implements PendingOperationsLocalDataSource {
+class IsarPendingOperationsLocalDataSource implements PendingOperationsLocalDataSource {
   final Isar _isar;
 
   IsarPendingOperationsLocalDataSource(this._isar);
@@ -31,11 +30,7 @@ class IsarPendingOperationsLocalDataSource
 
   @override
   Future<List<SyncOperationDocument>> getPendingOperations() async {
-    return await _isar.syncOperationDocuments
-        .where()
-        .isCompletedEqualTo(false)
-        .sortByTimestamp()
-        .findAll();
+    return await _isar.syncOperationDocuments.where().isCompletedEqualTo(false).sortByTimestamp().findAll();
   }
 
   @override
@@ -68,11 +63,7 @@ class IsarPendingOperationsLocalDataSource
   @override
   Future<void> deleteCompletedOperations() async {
     await _isar.writeTxn(() async {
-      final completedOperations =
-          await _isar.syncOperationDocuments
-              .where()
-              .isCompletedEqualTo(true)
-              .findAll();
+      final completedOperations = await _isar.syncOperationDocuments.where().isCompletedEqualTo(true).findAll();
 
       final ids = completedOperations.map((op) => op.id).toList();
       await _isar.syncOperationDocuments.deleteAll(ids);
@@ -88,10 +79,7 @@ class IsarPendingOperationsLocalDataSource
 
   @override
   Future<int> getPendingOperationsCount() async {
-    return await _isar.syncOperationDocuments
-        .where()
-        .isCompletedEqualTo(false)
-        .count();
+    return await _isar.syncOperationDocuments.where().isCompletedEqualTo(false).count();
   }
 
   @override

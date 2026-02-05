@@ -19,8 +19,7 @@ import 'package:trackflow/features/projects/presentation/models/project_ui_model
 import 'package:trackflow/features/user_profile/presentation/models/user_profile_ui_model.dart';
 
 @injectable
-class ManageCollaboratorsBloc
-    extends Bloc<ManageCollaboratorsEvent, ManageCollaboratorsState> {
+class ManageCollaboratorsBloc extends Bloc<ManageCollaboratorsEvent, ManageCollaboratorsState> {
   final RemoveCollaboratorUseCase removeCollaboratorUseCase;
   final UpdateCollaboratorRoleUseCase updateCollaboratorRoleUseCase;
   final LeaveProjectUseCase leaveProjectUseCase;
@@ -97,8 +96,7 @@ class ManageCollaboratorsBloc
       (failure) {
         String errorMessage;
         if (failure is ProjectPermissionException) {
-          errorMessage =
-              'you do not have permission to remove this collaborator.';
+          errorMessage = 'you do not have permission to remove this collaborator.';
         } else {
           errorMessage = failure.toString();
         }
@@ -129,8 +127,7 @@ class ManageCollaboratorsBloc
       (failure) {
         String errorMessage;
         if (failure is ProjectPermissionException) {
-          errorMessage =
-              'you do not have permission to edit the role of this collaborator.';
+          errorMessage = 'you do not have permission to edit the role of this collaborator.';
         } else {
           errorMessage = failure.toString();
         }
@@ -188,9 +185,11 @@ class ManageCollaboratorsBloc
 
       result.fold(
         (failure) => emit(UserSearchError(failure.message)),
-        (user) => emit(UserSearchSuccess(
-          user != null ? UserProfileUiModel.fromDomain(user) : null,
-        )),
+        (user) => emit(
+          UserSearchSuccess(
+            user != null ? UserProfileUiModel.fromDomain(user) : null,
+          ),
+        ),
       );
     } catch (e) {
       emit(UserSearchError('Unexpected error: $e'));

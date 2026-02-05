@@ -20,8 +20,7 @@ class EnhancedWaveformDisplay extends StatefulWidget {
   });
 
   @override
-  State<EnhancedWaveformDisplay> createState() =>
-      _EnhancedWaveformDisplayState();
+  State<EnhancedWaveformDisplay> createState() => _EnhancedWaveformDisplayState();
 }
 
 class _EnhancedWaveformDisplayState extends State<EnhancedWaveformDisplay> {
@@ -56,7 +55,6 @@ class _EnhancedWaveformDisplayState extends State<EnhancedWaveformDisplay> {
           case WaveformStatus.ready:
             if (state.waveform != null) {
               return _buildGeneratedWaveform(context, state);
-                
             } else {
               return _buildFallbackWaveform();
             }
@@ -66,7 +64,7 @@ class _EnhancedWaveformDisplayState extends State<EnhancedWaveformDisplay> {
       },
     );
   }
-  
+
   Widget _buildGeneratedWaveform(BuildContext context, WaveformState state) {
     return GeneratedWaveformDisplay(
       waveform: state.waveform!,

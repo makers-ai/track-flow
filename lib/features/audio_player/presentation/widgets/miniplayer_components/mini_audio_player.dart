@@ -73,8 +73,7 @@ class MiniAudioPlayer extends StatelessWidget {
                     child: Row(
                       children: [
                         // Cover art for AudioTrackMetadata
-                        if (state is AudioPlayerSessionState &&
-                            state.session.currentTrack != null)
+                        if (state is AudioPlayerSessionState && state.session.currentTrack != null)
                           Padding(
                             padding: const EdgeInsets.only(
                               right: Dimensions.space12,
@@ -88,9 +87,7 @@ class MiniAudioPlayer extends StatelessWidget {
                         if (config.showTrackInfo)
                           Expanded(
                             child: TrackInfoWidget(
-                              onTap:
-                                  () => modalPresentationService
-                                      .showFullPlayerModal(context),
+                              onTap: () => modalPresentationService.showFullPlayerModal(context),
                             ),
                           ),
                         // audio controls

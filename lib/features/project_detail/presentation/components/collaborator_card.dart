@@ -42,8 +42,7 @@ class CollaboratorCard extends StatelessWidget {
     final cardHeight = height ?? 240.0;
 
     return GestureDetector(
-      onTap:
-          () => context.push(AppRoutes.artistProfile.replaceFirst(':id', id)),
+      onTap: () => context.push(AppRoutes.artistProfile.replaceFirst(':id', id)),
       child: Container(
         width: cardWidth,
         height: cardHeight,
@@ -125,33 +124,35 @@ class CollaboratorCard extends StatelessWidget {
           width: double.infinity,
           height: double.infinity,
           fit: BoxFit.cover,
-          placeholder: (context, url) => Container(
-            color: AppColors.grey700,
-            child: const Center(
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
-          ),
-          errorWidget: (context, url, error) => Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  AppColors.primary.withValues(alpha: 0.8),
-                  AppColors.primary.withValues(alpha: 0.6),
-                ],
-              ),
-            ),
-            child: Center(
-              child: Text(
-                name.isNotEmpty ? name[0].toUpperCase() : '?',
-                style: AppTextStyle.displayLarge.copyWith(
-                  color: AppColors.onPrimary,
-                  fontWeight: FontWeight.bold,
+          placeholder:
+              (context, url) => Container(
+                color: AppColors.grey700,
+                child: const Center(
+                  child: CircularProgressIndicator(strokeWidth: 2),
                 ),
               ),
-            ),
-          ),
+          errorWidget:
+              (context, url, error) => Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.primary.withValues(alpha: 0.8),
+                      AppColors.primary.withValues(alpha: 0.6),
+                    ],
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    name.isNotEmpty ? name[0].toUpperCase() : '?',
+                    style: AppTextStyle.displayLarge.copyWith(
+                      color: AppColors.onPrimary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
         ),
       );
     }
@@ -164,27 +165,28 @@ class CollaboratorCard extends StatelessWidget {
         width: double.infinity,
         height: double.infinity,
         fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) => Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                AppColors.primary.withValues(alpha: 0.8),
-                AppColors.primary.withValues(alpha: 0.6),
-              ],
-            ),
-          ),
-          child: Center(
-            child: Text(
-              name.isNotEmpty ? name[0].toUpperCase() : '?',
-              style: AppTextStyle.displayLarge.copyWith(
-                color: AppColors.onPrimary,
-                fontWeight: FontWeight.bold,
+        errorBuilder:
+            (context, error, stackTrace) => Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    AppColors.primary.withValues(alpha: 0.8),
+                    AppColors.primary.withValues(alpha: 0.6),
+                  ],
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  name.isNotEmpty ? name[0].toUpperCase() : '?',
+                  style: AppTextStyle.displayLarge.copyWith(
+                    color: AppColors.onPrimary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
       ),
     );
   }

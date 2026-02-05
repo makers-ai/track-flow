@@ -11,8 +11,7 @@ import '../../domain/repositories/playback_persistence_repository.dart';
 /// Implementation of PlaybackPersistenceRepository using SharedPreferences
 /// Provides basic persistence for playback state and queue
 @LazySingleton(as: PlaybackPersistenceRepository)
-class PlaybackPersistenceRepositoryImpl
-    implements PlaybackPersistenceRepository {
+class PlaybackPersistenceRepositoryImpl implements PlaybackPersistenceRepository {
   static const String _playbackStateKey = 'playback_state';
   static const String _queueKey = 'playback_queue';
   static const String _trackPositionsKey = 'track_positions';

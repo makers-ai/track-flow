@@ -3,8 +3,7 @@ import 'package:trackflow/core/theme/app_colors.dart';
 import 'package:trackflow/core/theme/app_dimensions.dart';
 import 'package:trackflow/core/theme/app_text_style.dart';
 import 'package:trackflow/features/ui/loading/app_loading.dart';
-import 'package:trackflow/core/notifications/domain/entities/notification.dart'
-    as app_notification;
+import 'package:trackflow/core/notifications/domain/entities/notification.dart' as app_notification;
 import 'package:trackflow/core/notifications/presentation/components/notification_card.dart';
 
 /// List component to display notifications
@@ -45,8 +44,7 @@ class NotificationList extends StatelessWidget {
     return ListView.separated(
       padding: EdgeInsets.all(Dimensions.space16),
       itemCount: notifications.length,
-      separatorBuilder:
-          (context, index) => SizedBox(height: Dimensions.space12),
+      separatorBuilder: (context, index) => SizedBox(height: Dimensions.space12),
       itemBuilder: (context, index) {
         final notification = notifications[index];
         final isLoading = loadingStates[notification.id.value] ?? false;
@@ -54,8 +52,7 @@ class NotificationList extends StatelessWidget {
         return NotificationCard(
           notification: notification,
           onTap: onNotificationTap != null ? () => onNotificationTap!() : null,
-          onMarkAsRead:
-              onMarkAsRead != null ? () => onMarkAsRead!(notification) : null,
+          onMarkAsRead: onMarkAsRead != null ? () => onMarkAsRead!(notification) : null,
           onDelete: onDelete != null ? () => onDelete!(notification) : null,
           isLoading: isLoading,
         );
@@ -116,8 +113,7 @@ class UnreadNotificationList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final unreadNotifications =
-        notifications.where((notification) => notification.isUnread).toList();
+    final unreadNotifications = notifications.where((notification) => notification.isUnread).toList();
 
     return NotificationList(
       notifications: unreadNotifications,

@@ -16,7 +16,8 @@ class RecordingTimer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       _formatDuration(elapsed),
-      style: style ??
+      style:
+          style ??
           AppTextStyle.titleLarge.copyWith(
             fontWeight: FontWeight.bold,
             fontFeatures: const [FontFeature.tabularFigures()],

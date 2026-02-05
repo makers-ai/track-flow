@@ -27,8 +27,7 @@ class TrackDetailActions {
   ) {
     // Check download permission
     final userState = context.read<CurrentUserBloc>().state;
-    final String? currentUserId =
-        userState is CurrentUserLoaded ? userState.profile.id.value : null;
+    final String? currentUserId = userState is CurrentUserLoaded ? userState.profile.id.value : null;
     bool canDownload = false;
     if (currentUserId != null && project != null) {
       try {
@@ -42,109 +41,109 @@ class TrackDetailActions {
     }
 
     return [
-    AppBottomSheetAction(
-      icon: Icons.check_circle,
-      title: 'Set as Active',
-      subtitle: 'Make this version the active one',
-      onTap: () {
-        context.read<TrackVersionsBloc>().add(
-          SetActiveTrackVersionRequested(trackId, versionId),
-        );
-      },
-    ),
-    if (canDownload)
       AppBottomSheetAction(
-        icon: Icons.download,
-        title: 'Download Version',
-        subtitle: 'Save this version to your device',
-        onTap: () async {
-          final bloc = context.read<TrackCacheBloc>();
-          final messenger = ScaffoldMessenger.of(context);
-          final navigator = Navigator.of(context);
-
-          // Close bottom sheet first
-          navigator.pop();
-
-          // Request download for specific version
-          bloc.add(DownloadTrackRequested(
-            trackId: trackId.value,
-            versionId: versionId.value, // ← Specific version
-          ));
-
-          // Listen for download result
-          final subscription = bloc.stream.listen((state) {
-            if (state is TrackDownloadReady && state.trackId == trackId.value) {
-              // Download ready - open share sheet
-              Share.shareXFiles([
-                XFile(state.filePath),
-              ], text: 'Download ${track.name}');
-            } else if (state is TrackDownloadFailure && state.trackId == trackId.value) {
-              // Download failed
-              final message = state.isPermissionError
-                  ? 'You do not have permission to download this version'
-                  : state.error;
-
-              messenger.showSnackBar(
-                SnackBar(
-                  content: Text(message),
-                  backgroundColor: state.isPermissionError ? Colors.red : Colors.orange,
-                  duration: const Duration(seconds: 3),
-                ),
-              );
-            } else if (state is TrackCacheOperationInProgress &&
-                       state.trackId == trackId.value) {
-              // Show preparing message
-              messenger.showSnackBar(
-                SnackBar(
-                  content: Text('Preparing version for download...'),
-                  backgroundColor: Colors.blue,
-                  duration: const Duration(seconds: 2),
-                ),
-              );
-            }
-          });
-
-          // Auto-cancel subscription after 10 seconds
-          Future.delayed(const Duration(seconds: 10), () {
-            subscription.cancel();
-          });
+        icon: Icons.check_circle,
+        title: 'Set as Active',
+        subtitle: 'Make this version the active one',
+        onTap: () {
+          context.read<TrackVersionsBloc>().add(
+            SetActiveTrackVersionRequested(trackId, versionId),
+          );
         },
       ),
-    AppBottomSheetAction(
-      icon: Icons.edit,
-      title: 'Rename Label',
-      subtitle: 'Change the version label',
-      onTap: () {
-        showAppFormSheet(
-          minChildSize: 0.7,
-          initialChildSize: 0.7,
-          maxChildSize: 0.7,
-          useRootNavigator: true,
-          context: context,
-          title: 'Rename Version',
-          child: BlocProvider.value(
-            value: context.read<TrackVersionsBloc>(),
-            child: RenameVersionForm(versionId: versionId),
-          ),
-        );
-      },
-    ),
-    AppBottomSheetAction(
-      icon: Icons.delete,
-      title: 'Delete Version',
-      subtitle: 'Remove this version permanently',
-      onTap: () {
-        showDialog(
-          context: context,
-          useRootNavigator: false,
-          builder:
-              (dialogContext) => BlocProvider.value(
-                value: context.read<TrackVersionsBloc>(),
-                child: DeleteVersionDialog(versionId: versionId),
+      if (canDownload)
+        AppBottomSheetAction(
+          icon: Icons.download,
+          title: 'Download Version',
+          subtitle: 'Save this version to your device',
+          onTap: () async {
+            final bloc = context.read<TrackCacheBloc>();
+            final messenger = ScaffoldMessenger.of(context);
+            final navigator = Navigator.of(context);
+
+            // Close bottom sheet first
+            navigator.pop();
+
+            // Request download for specific version
+            bloc.add(
+              DownloadTrackRequested(
+                trackId: trackId.value,
+                versionId: versionId.value, // ← Specific version
               ),
-        );
-      },
-    ),
+            );
+
+            // Listen for download result
+            final subscription = bloc.stream.listen((state) {
+              if (state is TrackDownloadReady && state.trackId == trackId.value) {
+                // Download ready - open share sheet
+                Share.shareXFiles([
+                  XFile(state.filePath),
+                ], text: 'Download ${track.name}');
+              } else if (state is TrackDownloadFailure && state.trackId == trackId.value) {
+                // Download failed
+                final message =
+                    state.isPermissionError ? 'You do not have permission to download this version' : state.error;
+
+                messenger.showSnackBar(
+                  SnackBar(
+                    content: Text(message),
+                    backgroundColor: state.isPermissionError ? Colors.red : Colors.orange,
+                    duration: const Duration(seconds: 3),
+                  ),
+                );
+              } else if (state is TrackCacheOperationInProgress && state.trackId == trackId.value) {
+                // Show preparing message
+                messenger.showSnackBar(
+                  SnackBar(
+                    content: Text('Preparing version for download...'),
+                    backgroundColor: Colors.blue,
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              }
+            });
+
+            // Auto-cancel subscription after 10 seconds
+            Future.delayed(const Duration(seconds: 10), () {
+              subscription.cancel();
+            });
+          },
+        ),
+      AppBottomSheetAction(
+        icon: Icons.edit,
+        title: 'Rename Label',
+        subtitle: 'Change the version label',
+        onTap: () {
+          showAppFormSheet(
+            minChildSize: 0.7,
+            initialChildSize: 0.7,
+            maxChildSize: 0.7,
+            useRootNavigator: true,
+            context: context,
+            title: 'Rename Version',
+            child: BlocProvider.value(
+              value: context.read<TrackVersionsBloc>(),
+              child: RenameVersionForm(versionId: versionId),
+            ),
+          );
+        },
+      ),
+      AppBottomSheetAction(
+        icon: Icons.delete,
+        title: 'Delete Version',
+        subtitle: 'Remove this version permanently',
+        onTap: () {
+          showDialog(
+            context: context,
+            useRootNavigator: false,
+            builder:
+                (dialogContext) => BlocProvider.value(
+                  value: context.read<TrackVersionsBloc>(),
+                  child: DeleteVersionDialog(versionId: versionId),
+                ),
+          );
+        },
+      ),
     ];
   }
 }

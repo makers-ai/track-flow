@@ -17,7 +17,6 @@ class AppBorders {
     Radius.circular(radiusTiny),
   );
 
-
   static const BorderRadius small = BorderRadius.all(
     Radius.circular(radiusSmall),
   );
@@ -108,14 +107,11 @@ class AppBorders {
     width: widthMedium,
   );
 
-  static BorderSide get error =>
-      BorderSide(color: AppColors.error, width: widthThin);
+  static BorderSide get error => BorderSide(color: AppColors.error, width: widthThin);
 
-  static BorderSide get success =>
-      BorderSide(color: AppColors.success, width: widthThin);
+  static BorderSide get success => BorderSide(color: AppColors.success, width: widthThin);
 
-  static BorderSide get warning =>
-      BorderSide(color: AppColors.warning, width: widthThin);
+  static BorderSide get warning => BorderSide(color: AppColors.warning, width: widthThin);
 
   // Complete border styles
   static const Border thinBorder = Border(

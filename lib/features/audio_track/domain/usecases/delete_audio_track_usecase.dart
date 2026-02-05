@@ -72,16 +72,15 @@ class DeleteAudioTrack {
         await audioCommentRepository.deleteByTrackId(params.trackId);
       } catch (e) {
         // No es crítico si falla; continuar con la eliminación del resto
-      AppLogger.warning(
-        'Failed to delete comments for track ${params.trackId}: $e',
-        tag: 'DELETE_AUDIO_TRACK_USECASE',
+        AppLogger.warning(
+          'Failed to delete comments for track ${params.trackId}: $e',
+          tag: 'DELETE_AUDIO_TRACK_USECASE',
         );
       }
       for (final version in versions) {
         // 3.1. Eliminar la versión primero (maneja eliminación remota en Firebase)
         try {
-          final deleteVersionResult = await trackVersionRepository
-              .deleteVersion(version.id);
+          final deleteVersionResult = await trackVersionRepository.deleteVersion(version.id);
           if (deleteVersionResult.isLeft()) {
             AppLogger.warning(
               'Failed to delete version ${version.id}: ${deleteVersionResult.fold((l) => l.message, (r) => 'Unknown error')}',

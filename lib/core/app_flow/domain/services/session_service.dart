@@ -96,7 +96,6 @@ class SessionService {
     }
   }
 
-
   /// Check if user is authenticated
   Future<Either<Failure, bool>> isAuthenticated() async {
     final result = await _checkAuthUseCase();

@@ -62,10 +62,7 @@ Future<T?> showAppBottomSheet<T>({
             );
             if (reprovideBlocs != null && reprovideBlocs.isNotEmpty) {
               sheet = MultiBlocProvider(
-                providers:
-                    reprovideBlocs
-                        .map((b) => BlocProvider.value(value: b))
-                        .toList(),
+                providers: reprovideBlocs.map((b) => BlocProvider.value(value: b)).toList(),
                 child: sheet,
               );
             }
@@ -88,8 +85,7 @@ Future<T?> showAppBottomSheet<T>({
       );
       if (reprovideBlocs != null && reprovideBlocs.isNotEmpty) {
         sheet = MultiBlocProvider(
-          providers:
-              reprovideBlocs.map((b) => BlocProvider.value(value: b)).toList(),
+          providers: reprovideBlocs.map((b) => BlocProvider.value(value: b)).toList(),
           child: sheet,
         );
       }
@@ -151,8 +147,7 @@ Future<T?> showAppContentModal<T>({
       );
       if (reprovideBlocs != null && reprovideBlocs.isNotEmpty) {
         sheet = MultiBlocProvider(
-          providers:
-              reprovideBlocs.map((b) => BlocProvider.value(value: b)).toList(),
+          providers: reprovideBlocs.map((b) => BlocProvider.value(value: b)).toList(),
           child: sheet,
         );
       }
@@ -225,8 +220,7 @@ Future<T?> showAppActionSheet<T>({
         (scrollController) => AppBottomSheetList(
           actions: actions,
           scrollController: scrollController,
-          blocContext:
-              reprovideBlocs?.isNotEmpty == true ? reprovideBlocs!.first : null,
+          blocContext: reprovideBlocs?.isNotEmpty == true ? reprovideBlocs!.first : null,
         ),
     child: const SizedBox.shrink(),
   );

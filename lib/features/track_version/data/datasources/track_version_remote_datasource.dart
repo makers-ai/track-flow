@@ -91,10 +91,7 @@ class TrackVersionRemoteDataSourceImpl implements TrackVersionRemoteDataSource {
       // 4. Save metadata to Firestore with server timestamps
       final data = updatedVersionDTO.toJson();
       data['lastModified'] = FieldValue.serverTimestamp();
-      await _firestore
-          .collection(TrackVersionDTO.collection)
-          .doc(updatedVersionDTO.id)
-          .set(data);
+      await _firestore.collection(TrackVersionDTO.collection).doc(updatedVersionDTO.id).set(data);
 
       return Right(updatedVersionDTO);
     } catch (e) {
@@ -110,10 +107,7 @@ class TrackVersionRemoteDataSourceImpl implements TrackVersionRemoteDataSource {
       // Update only metadata in Firestore (no file re-upload)
       final data = versionData.toJson();
       data['lastModified'] = FieldValue.serverTimestamp();
-      await _firestore
-          .collection(TrackVersionDTO.collection)
-          .doc(versionData.id)
-          .update(data);
+      await _firestore.collection(TrackVersionDTO.collection).doc(versionData.id).update(data);
 
       return const Right(unit);
     } catch (e) {
@@ -126,13 +120,10 @@ class TrackVersionRemoteDataSourceImpl implements TrackVersionRemoteDataSource {
     try {
       // Soft delete: flag isDeleted and set server lastModified. Physical file
       // cleanup is handled by background tasks to preserve offline-first behavior.
-      await _firestore
-          .collection(TrackVersionDTO.collection)
-          .doc(versionId)
-          .update({
-            'isDeleted': true,
-            'lastModified': FieldValue.serverTimestamp(),
-          });
+      await _firestore.collection(TrackVersionDTO.collection).doc(versionId).update({
+        'isDeleted': true,
+        'lastModified': FieldValue.serverTimestamp(),
+      });
 
       return const Right(unit);
     } catch (e) {
@@ -153,22 +144,15 @@ class TrackVersionRemoteDataSourceImpl implements TrackVersionRemoteDataSource {
                 .orderBy('versionNumber')
                 .get();
 
-        return querySnapshot.docs
-            .map((doc) => TrackVersionDTO.fromJson(doc.data()))
-            .toList();
+        return querySnapshot.docs.map((doc) => TrackVersionDTO.fromJson(doc.data())).toList();
       } catch (e) {
         // Fallback: some Firestore projects may miss the composite index
         AppLogger.warning(
           'getVersionsByTrackId fallback without orderBy (likely missing index): $e',
           tag: 'TrackVersionRemoteDataSource',
         );
-        final qs =
-            await _firestore
-                .collection(TrackVersionDTO.collection)
-                .where('trackId', isEqualTo: trackId)
-                .get();
-        final items =
-            qs.docs.map((doc) => TrackVersionDTO.fromJson(doc.data())).toList();
+        final qs = await _firestore.collection(TrackVersionDTO.collection).where('trackId', isEqualTo: trackId).get();
+        final items = qs.docs.map((doc) => TrackVersionDTO.fromJson(doc.data())).toList();
         items.sort((a, b) => a.versionNumber.compareTo(b.versionNumber));
         return items;
       }
@@ -181,7 +165,6 @@ class TrackVersionRemoteDataSourceImpl implements TrackVersionRemoteDataSource {
       return [];
     }
   }
-
 
   @override
   Future<Either<Failure, List<TrackVersionDTO>>> getTrackVersionsModifiedSince(

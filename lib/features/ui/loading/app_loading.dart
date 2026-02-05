@@ -28,8 +28,7 @@ class AppLoading extends StatefulWidget {
   State<AppLoading> createState() => _AppLoadingState();
 }
 
-class _AppLoadingState extends State<AppLoading>
-    with SingleTickerProviderStateMixin {
+class _AppLoadingState extends State<AppLoading> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
@@ -94,10 +93,7 @@ class _AppLoadingState extends State<AppLoading>
         SizedBox(height: Dimensions.space32),
         FadeTransition(
           opacity: _fadeAnimation,
-          child:
-              widget.showProgress && widget.progress != null
-                  ? _buildProgressIndicator()
-                  : _buildLoadingIndicator(),
+          child: widget.showProgress && widget.progress != null ? _buildProgressIndicator() : _buildLoadingIndicator(),
         ),
       ],
     );
@@ -283,8 +279,7 @@ class AppShimmer extends StatefulWidget {
   State<AppShimmer> createState() => _AppShimmerState();
 }
 
-class _AppShimmerState extends State<AppShimmer>
-    with SingleTickerProviderStateMixin {
+class _AppShimmerState extends State<AppShimmer> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 

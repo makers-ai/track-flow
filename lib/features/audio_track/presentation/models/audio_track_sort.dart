@@ -46,5 +46,3 @@ int compareTracksBySort(AudioTrack a, AudioTrack b, AudioTrackSort sort) {
       return b.duration.compareTo(a.duration);
   }
 }
-
-

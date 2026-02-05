@@ -46,8 +46,7 @@ class ExampleError extends ExampleState {
 
 /// ✅ COPY THIS: Simple BLoC with ResetableBlocMixin
 @injectable
-class ExampleSimpleBloc extends Bloc<ExampleEvent, ExampleState>
-    with ResetableBlocMixin<ExampleEvent, ExampleState> {
+class ExampleSimpleBloc extends Bloc<ExampleEvent, ExampleState> with ResetableBlocMixin<ExampleEvent, ExampleState> {
   ExampleSimpleBloc() : super(ExampleInitial()) {
     on<LoadData>(_onLoadData);
     on<ClearData>(_onClearData);
@@ -82,8 +81,7 @@ class ExampleSimpleBloc extends Bloc<ExampleEvent, ExampleState>
 
 /// ✅ COPY THIS: Complex BLoC with subscription cleanup
 @injectable
-class ExampleComplexBloc extends Bloc<ExampleEvent, ExampleState>
-    with ResetableBlocMixin<ExampleEvent, ExampleState> {
+class ExampleComplexBloc extends Bloc<ExampleEvent, ExampleState> with ResetableBlocMixin<ExampleEvent, ExampleState> {
   StreamSubscription<String>? _dataSubscription;
   Timer? _periodicTimer;
 

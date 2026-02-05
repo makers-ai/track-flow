@@ -83,10 +83,8 @@ class AppBottomNavigation extends StatelessWidget {
                           item: item,
                           isSelected: isSelected,
                           onTap: () => onTap(index),
-                          selectedItemColor:
-                              selectedItemColor ?? AppColors.primary,
-                          unselectedItemColor:
-                              unselectedItemColor ?? AppColors.textSecondary,
+                          selectedItemColor: selectedItemColor ?? AppColors.primary,
+                          unselectedItemColor: unselectedItemColor ?? AppColors.textSecondary,
                           showLabel: showLabels,
                         ),
                       );
@@ -132,13 +130,10 @@ class _AppBottomNavigationItemWidget extends StatefulWidget {
   });
 
   @override
-  State<_AppBottomNavigationItemWidget> createState() =>
-      _AppBottomNavigationItemWidgetState();
+  State<_AppBottomNavigationItemWidget> createState() => _AppBottomNavigationItemWidgetState();
 }
 
-class _AppBottomNavigationItemWidgetState
-    extends State<_AppBottomNavigationItemWidget>
-    with TickerProviderStateMixin {
+class _AppBottomNavigationItemWidgetState extends State<_AppBottomNavigationItemWidget> with TickerProviderStateMixin {
   late AnimationController _tapAnimationController;
   late AnimationController _selectionAnimationController;
   late Animation<double> _scaleAnimation;
@@ -299,10 +294,7 @@ class _AppBottomNavigationItemWidgetState
                       duration: const Duration(milliseconds: 200),
                       style: AppTextStyle.caption.copyWith(
                         color: textColor,
-                        fontWeight:
-                            widget.isSelected
-                                ? FontWeight.w600
-                                : FontWeight.w400,
+                        fontWeight: widget.isSelected ? FontWeight.w600 : FontWeight.w400,
                         fontSize: 11, // Slightly smaller for iOS feel
                       ),
                       child: Text(

@@ -42,8 +42,7 @@ class PendingOperationsRepositoryImpl implements PendingOperationsRepository {
   }
 
   @override
-  Future<Either<Failure, List<SyncOperationDocument>>>
-  getPendingOperations() async {
+  Future<Either<Failure, List<SyncOperationDocument>>> getPendingOperations() async {
     try {
       final operations = await _localDataSource.getPendingOperations();
       return Right(operations);

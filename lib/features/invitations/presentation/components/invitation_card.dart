@@ -163,8 +163,7 @@ class InvitationCard extends StatelessWidget {
   }
 
   bool _shouldShowActions() {
-    return invitation.status == InvitationStatus.pending &&
-        (showReceivedActions || showSentActions);
+    return invitation.status == InvitationStatus.pending && (showReceivedActions || showSentActions);
   }
 
   String _formatDate(DateTime date) {

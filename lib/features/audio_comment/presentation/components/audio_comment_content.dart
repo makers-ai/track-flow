@@ -31,7 +31,6 @@ class AudioCommentContent extends StatelessWidget {
     return AudioCommentPlayer(comment: comment);
   }
 
-
   @override
   Widget build(BuildContext context) {
     final displayName = collaborator.displayName;

@@ -89,9 +89,7 @@ class _MultiSelectChipsState extends State<MultiSelectChips> {
             }),
 
             // Selected custom values (not in predefined list)
-            ...widget.selectedValues
-                .where((value) => !widget.predefinedOptions.contains(value))
-                .map((customValue) {
+            ...widget.selectedValues.where((value) => !widget.predefinedOptions.contains(value)).map((customValue) {
               return _CustomChip(
                 label: customValue,
                 onRemove: () => _removeCustomValue(customValue),

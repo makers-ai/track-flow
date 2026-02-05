@@ -26,8 +26,7 @@ class WatchCollaboratorsBundleUseCase {
   );
 
   Stream<Either<Failure, CollaboratorsBundle>> call(ProjectId projectId) {
-    final Stream<Either<Failure, Project?>> project$ = _projectsRepository
-        .watchProjectById(projectId);
+    final Stream<Either<Failure, Project?>> project$ = _projectsRepository.watchProjectById(projectId);
 
     return project$
         .switchMap<Either<Failure, CollaboratorsBundle>>((eitherProject) {
@@ -44,11 +43,9 @@ class WatchCollaboratorsBundleUseCase {
                 );
               }
 
-              final List<String> collaboratorIds =
-                  project.collaborators.map((c) => c.userId.value).toList();
+              final List<String> collaboratorIds = project.collaborators.map((c) => c.userId.value).toList();
 
-              final Stream<Either<Failure, List<UserProfile>>> profiles$ =
-                  _watchUserProfiles(collaboratorIds);
+              final Stream<Either<Failure, List<UserProfile>>> profiles$ = _watchUserProfiles(collaboratorIds);
 
               return profiles$.map<Either<Failure, CollaboratorsBundle>>((
                 eitherProfiles,

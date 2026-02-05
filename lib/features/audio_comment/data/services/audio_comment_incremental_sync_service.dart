@@ -14,8 +14,7 @@ import 'package:trackflow/features/track_version/data/datasources/track_version_
 /// Implements IncrementalSyncService for audio comments.
 /// Handles incremental sync of comments for track versions.
 @LazySingleton(as: IncrementalSyncService<AudioCommentDTO>)
-class AudioCommentIncrementalSyncService
-    implements IncrementalSyncService<AudioCommentDTO> {
+class AudioCommentIncrementalSyncService implements IncrementalSyncService<AudioCommentDTO> {
   final AudioCommentRemoteDataSource _remoteDataSource;
   final AudioCommentLocalDataSource _localDataSource;
   final TrackVersionLocalDataSource _versionLocalDataSource;
@@ -65,8 +64,10 @@ class AudioCommentIncrementalSyncService
   }
 
   @override
-  Future<Either<Failure, IncrementalSyncResult<AudioCommentDTO>>>
-  performIncrementalSync(DateTime lastSyncTime, String userId) async {
+  Future<Either<Failure, IncrementalSyncResult<AudioCommentDTO>>> performIncrementalSync(
+    DateTime lastSyncTime,
+    String userId,
+  ) async {
     try {
       AppLogger.sync(
         'AUDIO_COMMENTS',
@@ -95,13 +96,11 @@ class AudioCommentIncrementalSyncService
       // Compute next cursor from max lastModified, do not advance if empty
       DateTime serverTimestamp = lastSyncTime;
       for (final c in all) {
-        if (c.lastModified != null &&
-            c.lastModified!.isAfter(serverTimestamp)) {
+        if (c.lastModified != null && c.lastModified!.isAfter(serverTimestamp)) {
           serverTimestamp = c.lastModified!;
         }
       }
-      serverTimestamp =
-          all.isEmpty ? lastSyncTime.toUtc() : serverTimestamp.toUtc();
+      serverTimestamp = all.isEmpty ? lastSyncTime.toUtc() : serverTimestamp.toUtc();
 
       final result = IncrementalSyncResult(
         modifiedItems: active,
@@ -128,8 +127,7 @@ class AudioCommentIncrementalSyncService
   }
 
   @override
-  Future<Either<Failure, IncrementalSyncResult<AudioCommentDTO>>>
-  performFullSync(String userId) async {
+  Future<Either<Failure, IncrementalSyncResult<AudioCommentDTO>>> performFullSync(String userId) async {
     try {
       AppLogger.sync('AUDIO_COMMENTS', 'Starting full sync', syncKey: userId);
 

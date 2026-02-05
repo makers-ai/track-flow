@@ -22,8 +22,7 @@ class GoogleAuthService {
       }
 
       // 2. Get Google authentication
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
       // 3. Create Firebase credential
       final credential = GoogleAuthProvider.credential(
@@ -66,22 +65,16 @@ class GoogleAuthService {
       // ✅ NUEVO: Manejo específico de errores comunes
       String errorMessage = 'Google authentication failed: ${e.toString()}';
 
-      if (e.toString().contains('network_error') ||
-          e.toString().contains('NETWORK_ERROR')) {
-        errorMessage =
-            'Network error. Please check your internet connection and try again.';
-      } else if (e.toString().contains('sign_in_canceled') ||
-          e.toString().contains('SIGN_IN_CANCELED')) {
+      if (e.toString().contains('network_error') || e.toString().contains('NETWORK_ERROR')) {
+        errorMessage = 'Network error. Please check your internet connection and try again.';
+      } else if (e.toString().contains('sign_in_canceled') || e.toString().contains('SIGN_IN_CANCELED')) {
         errorMessage = 'Sign in was cancelled. Please try again.';
       } else if (e.toString().contains('play_services_not_available')) {
-        errorMessage =
-            'Google Play Services not available. Please update Google Play Services and try again.';
+        errorMessage = 'Google Play Services not available. Please update Google Play Services and try again.';
       } else if (e.toString().contains('developer_error')) {
         errorMessage = 'Configuration error. Please contact support.';
-      } else if (e.toString().contains('network') ||
-          e.toString().contains('connection')) {
-        errorMessage =
-            'Network connectivity issue. Please check your internet connection and try again.';
+      } else if (e.toString().contains('network') || e.toString().contains('connection')) {
+        errorMessage = 'Network connectivity issue. Please check your internet connection and try again.';
       }
 
       return Left(AuthenticationFailure(errorMessage));

@@ -23,13 +23,10 @@ class DashboardTracksSection extends StatelessWidget {
       children: [
         DashboardSectionHeader(
           title: 'Tracks',
-          onSeeAll:  () => context.go(AppRoutes.trackList), // New route
+          onSeeAll: () => context.go(AppRoutes.trackList), // New route
         ),
         SizedBox(height: Dimensions.space12),
-        if (tracks.isEmpty)
-          _buildEmptyState(context)
-        else
-          _buildTracksGrid(context),
+        if (tracks.isEmpty) _buildEmptyState(context) else _buildTracksGrid(context),
       ],
     );
   }
@@ -50,8 +47,8 @@ class DashboardTracksSection extends StatelessWidget {
               textAlign: TextAlign.center,
               'No tracks yet. Create a project to get started!',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: AppColors.warning,
-                  ),
+                color: AppColors.warning,
+              ),
             ),
           ],
         ),
@@ -72,19 +69,20 @@ class DashboardTracksSection extends StatelessWidget {
       itemCount: tracks.length,
       itemBuilder: (context, index) {
         final trackUi = tracks[index];
-        return DashboardTrackCard(track: trackUi, onTap: () {
-          context.push(
-            AppRoutes.trackDetail,
-            extra: TrackDetailScreenArgs(
-              projectId: trackUi.track.projectId,
-              track: trackUi.track,
-              versionId: trackUi.track.activeVersionId!,
-            ),
-          );
-        });
+        return DashboardTrackCard(
+          track: trackUi,
+          onTap: () {
+            context.push(
+              AppRoutes.trackDetail,
+              extra: TrackDetailScreenArgs(
+                projectId: trackUi.track.projectId,
+                track: trackUi.track,
+                versionId: trackUi.track.activeVersionId!,
+              ),
+            );
+          },
+        );
       },
     );
   }
 }
-
-

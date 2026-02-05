@@ -60,11 +60,7 @@ class IsarNotificationLocalDataSource implements NotificationLocalDataSource {
 
   @override
   Future<NotificationDto?> getNotificationById(String notificationId) async {
-    final doc =
-        await _isar.notificationDocuments
-            .where()
-            .idEqualTo(notificationId)
-            .findFirst();
+    final doc = await _isar.notificationDocuments.where().idEqualTo(notificationId).findFirst();
     return doc?.toDTO();
   }
 
@@ -145,11 +141,7 @@ class IsarNotificationLocalDataSource implements NotificationLocalDataSource {
   @override
   Future<void> markNotificationAsRead(String notificationId) async {
     await _isar.writeTxn(() async {
-      final doc =
-          await _isar.notificationDocuments
-              .where()
-              .idEqualTo(notificationId)
-              .findFirst();
+      final doc = await _isar.notificationDocuments.where().idEqualTo(notificationId).findFirst();
 
       if (doc != null) {
         doc.isRead = true;

@@ -14,16 +14,11 @@ class GetCacheStorageStatsUseCase {
   /// Get comprehensive storage statistics
   Future<Either<CacheFailure, StorageStats>> call() async {
     try {
-      final totalUsageResult =
-          await _cacheMaintenanceService.getTotalStorageUsage();
-      final availableSpaceResult =
-          await _cacheMaintenanceService.getAvailableStorageSpace();
-      final allAudiosResult =
-          await _cacheMaintenanceService.getAllCachedAudios();
-      final corruptedFilesResult =
-          await _cacheMaintenanceService.getCorruptedFiles();
-      final orphanedFilesResult =
-          await _cacheMaintenanceService.getOrphanedFiles();
+      final totalUsageResult = await _cacheMaintenanceService.getTotalStorageUsage();
+      final availableSpaceResult = await _cacheMaintenanceService.getAvailableStorageSpace();
+      final allAudiosResult = await _cacheMaintenanceService.getAllCachedAudios();
+      final corruptedFilesResult = await _cacheMaintenanceService.getCorruptedFiles();
+      final orphanedFilesResult = await _cacheMaintenanceService.getOrphanedFiles();
 
       return await totalUsageResult.fold((failure) => Left(failure), (
         totalUsage,
@@ -41,10 +36,7 @@ class GetCacheStorageStatsUseCase {
                 (failure) => Left(failure),
                 (orphanedFiles) {
                   final totalSize = totalUsage;
-                  final usedPercentage =
-                      totalSize > 0
-                          ? (totalSize / (totalSize + availableSpace)) * 100
-                          : 0.0;
+                  final usedPercentage = totalSize > 0 ? (totalSize / (totalSize + availableSpace)) * 100 : 0.0;
 
                   return Right(
                     StorageStats(

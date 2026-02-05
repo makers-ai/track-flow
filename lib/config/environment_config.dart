@@ -11,7 +11,7 @@ class EnvironmentConfig {
         return 'https://api.trackflow.app';
     }
   }
-  
+
   static String get webAppUrl {
     switch (FlavorConfig.currentFlavor) {
       case Flavor.development:
@@ -22,7 +22,7 @@ class EnvironmentConfig {
         return 'https://trackflow.app';
     }
   }
-  
+
   static String get dynamicLinkDomain {
     switch (FlavorConfig.currentFlavor) {
       case Flavor.development:
@@ -33,7 +33,7 @@ class EnvironmentConfig {
         return 'trackflow.page.link';
     }
   }
-  
+
   static bool get enableLogging {
     switch (FlavorConfig.currentFlavor) {
       case Flavor.development:
@@ -44,7 +44,7 @@ class EnvironmentConfig {
         return false;
     }
   }
-  
+
   static bool get enableCrashlytics {
     switch (FlavorConfig.currentFlavor) {
       case Flavor.development:
@@ -55,7 +55,7 @@ class EnvironmentConfig {
         return true;
     }
   }
-  
+
   static String get packageSuffix {
     switch (FlavorConfig.currentFlavor) {
       case Flavor.development:

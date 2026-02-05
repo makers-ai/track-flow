@@ -62,8 +62,7 @@ class CheckProfileCompletenessUseCase {
     return result.fold(
       (failure) {
         // Handle the case where profile doesn't exist (normal for new users)
-        if (failure.message.contains('not found') ||
-            failure.message.contains('Profile not found')) {
+        if (failure.message.contains('not found') || failure.message.contains('Profile not found')) {
           AppLogger.info(
             'Profile not found for user $userId - this is normal for new users',
             tag: 'PROFILE_COMPLETENESS',

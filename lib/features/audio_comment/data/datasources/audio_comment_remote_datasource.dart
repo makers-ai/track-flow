@@ -16,8 +16,7 @@ abstract class AudioCommentRemoteDataSource {
 }
 
 @LazySingleton(as: AudioCommentRemoteDataSource)
-class FirebaseAudioCommentRemoteDataSource
-    implements AudioCommentRemoteDataSource {
+class FirebaseAudioCommentRemoteDataSource implements AudioCommentRemoteDataSource {
   final FirebaseFirestore _firestore;
 
   FirebaseAudioCommentRemoteDataSource(this._firestore);
@@ -27,10 +26,7 @@ class FirebaseAudioCommentRemoteDataSource
     try {
       final data = comment.toJson();
       data['lastModified'] = FieldValue.serverTimestamp();
-      await _firestore
-          .collection(AudioCommentDTO.collection)
-          .doc(comment.id)
-          .set(data);
+      await _firestore.collection(AudioCommentDTO.collection).doc(comment.id).set(data);
       return Right(unit);
     } catch (e) {
       return Left(ServerFailure('Failed to add comment'));
@@ -41,13 +37,10 @@ class FirebaseAudioCommentRemoteDataSource
   Future<Either<Failure, Unit>> deleteComment(String commentId) async {
     try {
       // Soft delete
-      await _firestore
-          .collection(AudioCommentDTO.collection)
-          .doc(commentId)
-          .update({
-            'isDeleted': true,
-            'lastModified': FieldValue.serverTimestamp(),
-          });
+      await _firestore.collection(AudioCommentDTO.collection).doc(commentId).update({
+        'isDeleted': true,
+        'lastModified': FieldValue.serverTimestamp(),
+      });
       return Right(unit);
     } catch (e) {
       return Left(ServerFailure('Failed to delete comment'));
@@ -78,10 +71,7 @@ class FirebaseAudioCommentRemoteDataSource
     try {
       final batch = _firestore.batch();
       final query =
-          await _firestore
-              .collection(AudioCommentDTO.collection)
-              .where('trackId', isEqualTo: versionId)
-              .get();
+          await _firestore.collection(AudioCommentDTO.collection).where('trackId', isEqualTo: versionId).get();
       for (final doc in query.docs) {
         batch.update(doc.reference, {
           'isDeleted': true,

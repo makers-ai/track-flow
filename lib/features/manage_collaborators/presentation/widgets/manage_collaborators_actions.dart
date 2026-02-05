@@ -22,8 +22,7 @@ class CollaboratorActions {
     required CurrentUserBloc currentUserBloc,
   }) {
     final state = currentUserBloc.state;
-    final String? currentUserId =
-        state is CurrentUserLoaded ? state.profile.id.value : null;
+    final String? currentUserId = state is CurrentUserLoaded ? state.profile.id.value : null;
 
     ProjectCollaborator? currentUserCollaborator;
     if (currentUserId != null) {
@@ -39,13 +38,15 @@ class CollaboratorActions {
     final bool isSelf = currentUserId != null && collaborator.id.value == currentUserId;
     final bool isTargetOwner = collaborator.id == project.ownerId;
 
-    final bool canEditRole = (currentUserCollaborator?.hasPermission(ProjectPermission.updateCollaboratorRole) ?? false)
-        && !isSelf
-        && !isTargetOwner;
+    final bool canEditRole =
+        (currentUserCollaborator?.hasPermission(ProjectPermission.updateCollaboratorRole) ?? false) &&
+        !isSelf &&
+        !isTargetOwner;
 
-    final bool canRemove = (currentUserCollaborator?.hasPermission(ProjectPermission.removeCollaborator) ?? false)
-        && !isSelf
-        && !isTargetOwner;
+    final bool canRemove =
+        (currentUserCollaborator?.hasPermission(ProjectPermission.removeCollaborator) ?? false) &&
+        !isSelf &&
+        !isTargetOwner;
 
     return [
       AppBottomSheetAction(

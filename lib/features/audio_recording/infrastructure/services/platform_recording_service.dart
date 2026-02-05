@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io';
- import 'dart:math' as math;
+import 'dart:math' as math;
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:record/record.dart';
@@ -50,7 +50,7 @@ class PlatformRecordingService implements RecordingService {
       // Start recording with RecordConfig
       await _recorder.start(
         RecordConfig(
-          encoder: AudioEncoder.aacLc,  // M4A format
+          encoder: AudioEncoder.aacLc, // M4A format
           bitRate: 128000,
           sampleRate: 44100,
         ),
@@ -174,13 +174,15 @@ class PlatformRecordingService implements RecordingService {
       }
 
       _currentSession = null;
-      _sessionController.add(RecordingSession(
-        sessionId: '',
-        startedAt: DateTime.now(),
-        elapsed: Duration.zero,
-        state: RecordingState.idle,
-        outputPath: '',
-      ));
+      _sessionController.add(
+        RecordingSession(
+          sessionId: '',
+          startedAt: DateTime.now(),
+          elapsed: Duration.zero,
+          state: RecordingState.idle,
+          outputPath: '',
+        ),
+      );
 
       return const Right(unit);
     } catch (e) {

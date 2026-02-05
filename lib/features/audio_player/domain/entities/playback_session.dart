@@ -82,15 +82,15 @@ class PlaybackSession extends Equatable {
 
   @override
   List<Object?> get props => [
-        currentTrack,
-        queue,
-        state,
-        position,
-        repeatMode,
-        playbackSpeed,
-        volume,
-        error,
-      ];
+    currentTrack,
+    queue,
+    state,
+    position,
+    repeatMode,
+    playbackSpeed,
+    volume,
+    error,
+  ];
 
   PlaybackSession copyWith({
     AudioTrackMetadata? currentTrack,

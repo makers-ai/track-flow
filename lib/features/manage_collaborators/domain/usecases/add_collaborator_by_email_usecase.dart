@@ -75,8 +75,7 @@ class AddCollaboratorByEmailUseCase {
             await _notificationService.createCollaboratorJoinedNotification(
               recipientId: user.id,
               projectId: project.id,
-              projectName:
-                  project.name.toString(), // Convert ProjectName to String
+              projectName: project.name.toString(), // Convert ProjectName to String
               collaboratorName: user.name,
             );
           } catch (e) {

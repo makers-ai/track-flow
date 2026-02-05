@@ -4,8 +4,7 @@ import 'package:trackflow/core/theme/app_dimensions.dart';
 import 'package:trackflow/core/theme/app_text_style.dart';
 import 'package:trackflow/features/ui/cards/base_card.dart';
 import 'package:trackflow/features/ui/menus/app_popup_menu.dart';
-import 'package:trackflow/core/notifications/domain/entities/notification.dart'
-    as app_notification;
+import 'package:trackflow/core/notifications/domain/entities/notification.dart' as app_notification;
 
 /// Card widget to display individual notification
 class NotificationCard extends StatelessWidget {
@@ -92,8 +91,7 @@ class NotificationCard extends StatelessWidget {
                 notification.title,
                 style: AppTextStyle.bodyMedium.copyWith(
                   color: AppColors.textPrimary,
-                  fontWeight:
-                      notification.isUnread ? FontWeight.w600 : FontWeight.w400,
+                  fontWeight: notification.isUnread ? FontWeight.w600 : FontWeight.w400,
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -151,10 +149,7 @@ class NotificationCard extends StatelessWidget {
         AppPopupMenuItem<String>(
           value: 'mark_read',
           label: notification.isUnread ? 'Mark as read' : 'Mark as unread',
-          icon:
-              notification.isUnread
-                  ? Icons.mark_email_read
-                  : Icons.mark_email_unread,
+          icon: notification.isUnread ? Icons.mark_email_read : Icons.mark_email_unread,
         ),
         AppPopupMenuItem<String>(
           value: 'delete',

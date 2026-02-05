@@ -22,11 +22,16 @@ class DashboardTrackCard extends StatelessWidget {
       onTap: onTap,
       margin: EdgeInsets.zero,
       borderRadius: BorderRadius.zero,
-      padding: EdgeInsets.only(right: Dimensions.space16,left: Dimensions.space16),
+      padding: EdgeInsets.only(right: Dimensions.space16, left: Dimensions.space16),
       child: Row(
         children: [
           // Cover art on the left
-          TrackCoverArt(track: track.track, imageUrl: track.coverUrl, size: Dimensions.avatarXLarge, borderRadius: AppBorders.medium),
+          TrackCoverArt(
+            track: track.track,
+            imageUrl: track.coverUrl,
+            size: Dimensions.avatarXLarge,
+            borderRadius: AppBorders.medium,
+          ),
           SizedBox(width: Dimensions.space12),
           // Content stacked vertically on the right
           Expanded(
@@ -44,7 +49,6 @@ class DashboardTrackCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: Dimensions.space2),
-
               ],
             ),
           ),
@@ -52,6 +56,4 @@ class DashboardTrackCard extends StatelessWidget {
       ),
     );
   }
-
 }
-

@@ -6,6 +6,5 @@ class ProjectCollaboratorId extends ValueObject<String> {
 
   const ProjectCollaboratorId._(super.value);
 
-  factory ProjectCollaboratorId.fromUniqueString(String value) =>
-      ProjectCollaboratorId._(value);
+  factory ProjectCollaboratorId.fromUniqueString(String value) => ProjectCollaboratorId._(value);
 }

@@ -103,8 +103,7 @@ class Project extends AggregateRoot<ProjectId> {
     if (collaborators.any((c) => c.userId == collaborator.userId)) {
       throw const manage_collab_exc.CollaboratorAlreadyExistsException();
     }
-    final updatedCollaborators = List<ProjectCollaborator>.from(collaborators)
-      ..add(collaborator);
+    final updatedCollaborators = List<ProjectCollaborator>.from(collaborators)..add(collaborator);
     return copyWith(
       collaborators: updatedCollaborators,
       updatedAt: DateTime.now(),

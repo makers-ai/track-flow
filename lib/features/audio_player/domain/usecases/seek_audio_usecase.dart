@@ -5,8 +5,7 @@ import '../services/audio_playback_service.dart';
 /// Pure audio operation without business logic
 @injectable
 class SeekAudioUseCase {
-  const SeekAudioUseCase({required AudioPlaybackService playbackService})
-    : _playbackService = playbackService;
+  const SeekAudioUseCase({required AudioPlaybackService playbackService}) : _playbackService = playbackService;
 
   final AudioPlaybackService _playbackService;
 

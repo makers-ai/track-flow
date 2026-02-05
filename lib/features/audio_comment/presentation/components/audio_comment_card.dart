@@ -32,8 +32,7 @@ class AudioCommentComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onLongPressStart:
-          (details) => _showCommentMenu(context, details.globalPosition),
+      onLongPressStart: (details) => _showCommentMenu(context, details.globalPosition),
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: Dimensions.space0,
@@ -42,47 +41,48 @@ class AudioCommentComponent extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisAlignment: isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
-          children: isMine
-              ? [
-                  // Bubble first, avatar on the right
-                  Expanded(
-                    child: BaseCard(
-                      enableTapAnimation: false,
-                      enableHover: false,
-                      margin: EdgeInsets.zero,
-                      backgroundColor: AppColors.grey700,
-                      child: AudioCommentContent(
-                        comment: comment,
-                        collaborator: collaborator,
+          children:
+              isMine
+                  ? [
+                    // Bubble first, avatar on the right
+                    Expanded(
+                      child: BaseCard(
+                        enableTapAnimation: false,
+                        enableHover: false,
+                        margin: EdgeInsets.zero,
+                        backgroundColor: AppColors.grey700,
+                        child: AudioCommentContent(
+                          comment: comment,
+                          collaborator: collaborator,
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(width: Dimensions.space12),
-                  AudioCommentAvatar(
-                    collaborator: collaborator,
-                    createdBy: comment.createdBy,
-                  ),
-                ]
-              : [
-                  // Avatar left, bubble right
-                  AudioCommentAvatar(
-                    collaborator: collaborator,
-                    createdBy: comment.createdBy,
-                  ),
-                  SizedBox(width: Dimensions.space12),
-                  Expanded(
-                    child: BaseCard(
-                      enableTapAnimation: false,
-                      enableHover: false,
-                      margin: EdgeInsets.zero,
-                      backgroundColor: AppColors.grey700,
-                      child: AudioCommentContent(
-                        comment: comment,
-                        collaborator: collaborator,
+                    SizedBox(width: Dimensions.space12),
+                    AudioCommentAvatar(
+                      collaborator: collaborator,
+                      createdBy: comment.createdBy,
+                    ),
+                  ]
+                  : [
+                    // Avatar left, bubble right
+                    AudioCommentAvatar(
+                      collaborator: collaborator,
+                      createdBy: comment.createdBy,
+                    ),
+                    SizedBox(width: Dimensions.space12),
+                    Expanded(
+                      child: BaseCard(
+                        enableTapAnimation: false,
+                        enableHover: false,
+                        margin: EdgeInsets.zero,
+                        backgroundColor: AppColors.grey700,
+                        child: AudioCommentContent(
+                          comment: comment,
+                          collaborator: collaborator,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
         ),
       ),
     );

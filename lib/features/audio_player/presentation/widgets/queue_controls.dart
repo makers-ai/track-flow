@@ -52,15 +52,13 @@ class QueueControls extends StatelessWidget {
               onPressed:
                   state is AudioPlayerPlaying
                       ? () => context.read<AudioPlayerBloc>().add(
-                            const PauseAudioRequested(),
-                          )
-                      : (state is AudioPlayerPaused ||
-                              state is AudioPlayerStopped ||
-                              state is AudioPlayerCompleted)
-                          ? () => context.read<AudioPlayerBloc>().add(
-                                const ResumeAudioRequested(),
-                              )
-                          : null,
+                        const PauseAudioRequested(),
+                      )
+                      : (state is AudioPlayerPaused || state is AudioPlayerStopped || state is AudioPlayerCompleted)
+                      ? () => context.read<AudioPlayerBloc>().add(
+                        const ResumeAudioRequested(),
+                      )
+                      : null,
               size: size * 1.5,
               iconSize: size,
             ),
@@ -159,9 +157,7 @@ class QueueControls extends StatelessWidget {
         size: size,
         color:
             hasQueue
-                ? (isShuffleEnabled
-                    ? iconColor
-                    : iconColor.withValues(alpha: 0.5))
+                ? (isShuffleEnabled ? iconColor : iconColor.withValues(alpha: 0.5))
                 : iconColor.withValues(alpha: 0.3),
       ),
       tooltip: isShuffleEnabled ? 'Disable shuffle' : 'Enable shuffle',
@@ -189,10 +185,7 @@ class QueueControls extends StatelessWidget {
       case RepeatMode.none:
         icon = Icons.repeat;
         tooltip = 'Enable repeat';
-        buttonColor =
-            hasQueue
-                ? iconColor.withValues(alpha: 0.5)
-                : iconColor.withValues(alpha: 0.3);
+        buttonColor = hasQueue ? iconColor.withValues(alpha: 0.5) : iconColor.withValues(alpha: 0.3);
         break;
       case RepeatMode.single:
         icon = Icons.repeat_one;

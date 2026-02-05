@@ -36,8 +36,7 @@ class PrimaryButton extends StatefulWidget {
   State<PrimaryButton> createState() => _PrimaryButtonState();
 }
 
-class _PrimaryButtonState extends State<PrimaryButton>
-    with SingleTickerProviderStateMixin {
+class _PrimaryButtonState extends State<PrimaryButton> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
   bool _isPressed = false;
@@ -52,10 +51,12 @@ class _PrimaryButtonState extends State<PrimaryButton>
     _scaleAnimation = Tween<double>(
       begin: AppAnimations.scaleNormal,
       end: AppAnimations.scaleDown,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: AppAnimations.easeOut,
-    ));
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: AppAnimations.easeOut,
+      ),
+    );
   }
 
   @override
@@ -138,13 +139,9 @@ class _PrimaryButtonState extends State<PrimaryButton>
                 maxWidth: widget.width ?? double.infinity,
               ),
               decoration: BoxDecoration(
-                color: _isDisabled 
-                    ? AppColors.disabled 
-                    : (widget.isDestructive ? AppColors.error : AppColors.primary),
+                color: _isDisabled ? AppColors.disabled : (widget.isDestructive ? AppColors.error : AppColors.primary),
                 borderRadius: AppBorders.medium,
-                boxShadow: _isDisabled 
-                    ? AppShadows.none 
-                    : (_isPressed ? AppShadows.buttonPressed : AppShadows.button),
+                boxShadow: _isDisabled ? AppShadows.none : (_isPressed ? AppShadows.buttonPressed : AppShadows.button),
               ),
               child: Material(
                 color: Colors.transparent,
@@ -156,51 +153,52 @@ class _PrimaryButtonState extends State<PrimaryButton>
                       horizontal: Dimensions.space16,
                       vertical: Dimensions.space12,
                     ),
-                    child: widget.isLoading
-                        ? Center(
-                            child: SizedBox(
-                              width: _iconSize,
-                              height: _iconSize,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  AppColors.onPrimary,
+                    child:
+                        widget.isLoading
+                            ? Center(
+                              child: SizedBox(
+                                width: _iconSize,
+                                height: _iconSize,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    AppColors.onPrimary,
+                                  ),
                                 ),
                               ),
-                            ),
-                          )
-                        : Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              if (widget.icon != null && !widget.iconRight) ...[
-                                Icon(
-                                  widget.icon,
-                                  size: _iconSize,
-                                  color: AppColors.onPrimary,
-                                ),
-                                SizedBox(width: Dimensions.space8),
-                              ],
-                              Flexible(
-                                child: Text(
-                                  widget.text,
-                                  style: _textStyle.copyWith(
+                            )
+                            : Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                if (widget.icon != null && !widget.iconRight) ...[
+                                  Icon(
+                                    widget.icon,
+                                    size: _iconSize,
                                     color: AppColors.onPrimary,
                                   ),
-                                  textAlign: TextAlign.center,
-                                  overflow: TextOverflow.ellipsis,
+                                  SizedBox(width: Dimensions.space8),
+                                ],
+                                Flexible(
+                                  child: Text(
+                                    widget.text,
+                                    style: _textStyle.copyWith(
+                                      color: AppColors.onPrimary,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
-                              ),
-                              if (widget.icon != null && widget.iconRight) ...[
-                                SizedBox(width: Dimensions.space8),
-                                Icon(
-                                  widget.icon,
-                                  size: _iconSize,
-                                  color: AppColors.onPrimary,
-                                ),
+                                if (widget.icon != null && widget.iconRight) ...[
+                                  SizedBox(width: Dimensions.space8),
+                                  Icon(
+                                    widget.icon,
+                                    size: _iconSize,
+                                    color: AppColors.onPrimary,
+                                  ),
+                                ],
                               ],
-                            ],
-                          ),
+                            ),
                   ),
                 ),
               ),

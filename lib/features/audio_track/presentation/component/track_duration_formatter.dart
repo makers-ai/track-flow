@@ -15,14 +15,14 @@ class TrackDurationFormatter {
   /// Format duration with hours if needed (HH:MM:SS)
   static String formatDurationLong(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
-    
+
     if (duration.inHours > 0) {
       final hours = twoDigits(duration.inHours);
       final minutes = twoDigits(duration.inMinutes.remainder(60));
       final seconds = twoDigits(duration.inSeconds.remainder(60));
       return '$hours:$minutes:$seconds';
     }
-    
+
     return formatDuration(duration);
   }
 }
@@ -55,9 +55,10 @@ class TrackDurationText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final durationStr = config.showLongFormat
-        ? TrackDurationFormatter.formatDurationLong(duration)
-        : TrackDurationFormatter.formatDuration(duration);
+    final durationStr =
+        config.showLongFormat
+            ? TrackDurationFormatter.formatDurationLong(duration)
+            : TrackDurationFormatter.formatDuration(duration);
 
     final defaultStyle = TextStyle(
       color: Colors.grey[700],

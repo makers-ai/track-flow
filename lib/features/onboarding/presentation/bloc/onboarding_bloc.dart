@@ -47,8 +47,7 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
         return;
       }
 
-      final onboardingResult = await _onboardingUseCase
-          .checkOnboardingCompleted(user!.id.value);
+      final onboardingResult = await _onboardingUseCase.checkOnboardingCompleted(user!.id.value);
 
       final onboardingCompleted = onboardingResult.fold(
         (failure) {

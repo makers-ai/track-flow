@@ -25,8 +25,7 @@ class DeleteVersionDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppDialog(
       title: 'Delete Version',
-      content:
-          'Are you sure you want to delete this version? This action cannot be undone.',
+      content: 'Are you sure you want to delete this version? This action cannot be undone.',
       primaryButtonText: 'Delete',
       secondaryButtonText: 'Cancel',
       isDestructive: true,

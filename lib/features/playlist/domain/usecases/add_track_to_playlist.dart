@@ -10,18 +10,18 @@ class AddTrackToPlaylist {
 
   Future<Either<Failure, Unit>> call(String playlistId, String trackId) async {
     final playlistResult = await repository.getPlaylistById(PlaylistId.fromUniqueString(playlistId));
-    
+
     return await playlistResult.fold(
       (failure) async => Left(failure),
       (playlist) async {
         if (playlist == null) {
           return Left(DatabaseFailure('Playlist not found: $playlistId'));
         }
-        
+
         final updatedPlaylist = playlist.copyWith(
           trackIds: List.from(playlist.trackIds)..add(trackId),
         );
-        
+
         return await repository.updatePlaylist(updatedPlaylist);
       },
     );

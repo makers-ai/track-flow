@@ -106,37 +106,38 @@ class SocialLinksDisplay extends StatelessWidget {
     return Wrap(
       spacing: Dimensions.space12,
       runSpacing: Dimensions.space12,
-      children: socialLinks.map((link) {
-        final color = _getPlatformColor(link.platform);
-        final icon = _getPlatformIcon(link.platform);
+      children:
+          socialLinks.map((link) {
+            final color = _getPlatformColor(link.platform);
+            final icon = _getPlatformIcon(link.platform);
 
-        return InkWell(
-          onTap: () => _openLink(context, link.url),
-          borderRadius: BorderRadius.circular(Dimensions.radiusMedium),
-          child: Container(
-            padding: EdgeInsets.all(Dimensions.space12),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  icon,
-                  size: Dimensions.iconSmall,
-                  color: color,
+            return InkWell(
+              onTap: () => _openLink(context, link.url),
+              borderRadius: BorderRadius.circular(Dimensions.radiusMedium),
+              child: Container(
+                padding: EdgeInsets.all(Dimensions.space12),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      icon,
+                      size: Dimensions.iconSmall,
+                      color: color,
+                    ),
+                    SizedBox(width: Dimensions.space8),
+                    Text(
+                      link.platform,
+                      style: TextStyle(
+                        color: color,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(width: Dimensions.space8),
-                Text(
-                  link.platform,
-                  style: TextStyle(
-                    color: color,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      }).toList(),
+              ),
+            );
+          }).toList(),
     );
   }
 }

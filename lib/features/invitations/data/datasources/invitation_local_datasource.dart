@@ -54,11 +54,7 @@ class IsarInvitationLocalDataSource implements InvitationLocalDataSource {
 
   @override
   Future<InvitationDto?> getInvitationById(String invitationId) async {
-    final doc =
-        await _isar.invitationDocuments
-            .where()
-            .idEqualTo(invitationId)
-            .findFirst();
+    final doc = await _isar.invitationDocuments.where().idEqualTo(invitationId).findFirst();
     return doc?.toDTO();
   }
 
@@ -98,12 +94,7 @@ class IsarInvitationLocalDataSource implements InvitationLocalDataSource {
 
   @override
   Future<List<InvitationDto>> getSentInvitationsByUser(String userId) async {
-    final docs =
-        await _isar.invitationDocuments
-            .where()
-            .filter()
-            .invitedByUserIdEqualTo(userId)
-            .findAll();
+    final docs = await _isar.invitationDocuments.where().filter().invitedByUserIdEqualTo(userId).findAll();
     return docs.map((doc) => doc.toDTO()).toList();
   }
 

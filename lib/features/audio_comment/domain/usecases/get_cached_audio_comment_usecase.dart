@@ -52,16 +52,18 @@ class GetCachedAudioCommentUseCase {
 
     if (alreadyCached) {
       // Return cached path
-      return await _audioStorageRepository.getCachedAudioPath(
-        trackId,
-        versionId: versionId,
-        directoryType: DirectoryType.audioComments,
-      ).then(
-        (either) => either.fold(
-          (failure) => Left(StorageFailure(failure.message)),
-          (path) => Right(path),
-        ),
-      );
+      return await _audioStorageRepository
+          .getCachedAudioPath(
+            trackId,
+            versionId: versionId,
+            directoryType: DirectoryType.audioComments,
+          )
+          .then(
+            (either) => either.fold(
+              (failure) => Left(StorageFailure(failure.message)),
+              (path) => Right(path),
+            ),
+          );
     }
 
     // Download and cache

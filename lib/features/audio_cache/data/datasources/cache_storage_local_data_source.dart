@@ -34,8 +34,9 @@ abstract class CacheStorageLocalDataSource {
 
   CacheKey generateCacheKey(String trackId, String audioUrl);
 
-  Future<Either<CacheFailure, CachedAudioDocumentUnified>>
-  storeUnifiedCachedAudio(CachedAudioDocumentUnified unifiedDoc);
+  Future<Either<CacheFailure, CachedAudioDocumentUnified>> storeUnifiedCachedAudio(
+    CachedAudioDocumentUnified unifiedDoc,
+  );
 
   /// Watch cache status for a single track or specific version
   Stream<bool> watchTrackCacheStatus(String trackId, {String? versionId});
@@ -82,9 +83,7 @@ class CacheStorageLocalDataSourceImpl implements CacheStorageLocalDataSource {
 
       // If versionId is provided, filter by it too
       final unifiedDoc =
-          versionId != null
-              ? await query.versionIdEqualTo(versionId).findFirst()
-              : await query.findFirst();
+          versionId != null ? await query.versionIdEqualTo(versionId).findFirst() : await query.findFirst();
 
       if (unifiedDoc == null) {
         return const Right(null);
@@ -119,15 +118,12 @@ class CacheStorageLocalDataSourceImpl implements CacheStorageLocalDataSource {
 
       // If versionId is provided, filter by it too
       final unifiedDoc =
-          versionId != null
-              ? await query.versionIdEqualTo(versionId).findFirst()
-              : await query.findFirst();
+          versionId != null ? await query.versionIdEqualTo(versionId).findFirst() : await query.findFirst();
 
       if (unifiedDoc == null) {
         return Left(
           StorageCacheFailure(
-            message:
-                'Cached audio not found for track $trackId${versionId != null ? ' and version $versionId' : ''}',
+            message: 'Cached audio not found for track $trackId${versionId != null ? ' and version $versionId' : ''}',
             type: StorageFailureType.fileNotFound,
           ),
         );
@@ -157,9 +153,7 @@ class CacheStorageLocalDataSourceImpl implements CacheStorageLocalDataSource {
 
       // If versionId is provided, filter by it too
       final unifiedDoc =
-          versionId != null
-              ? await query.versionIdEqualTo(versionId).findFirst()
-              : await query.findFirst();
+          versionId != null ? await query.versionIdEqualTo(versionId).findFirst() : await query.findFirst();
 
       // Only check DB presence here; FS checks are handled by repository
       return Right(unifiedDoc != null);
@@ -195,10 +189,7 @@ class CacheStorageLocalDataSourceImpl implements CacheStorageLocalDataSource {
         }
       } else {
         // Delete all docs for trackId from DB; repository handles FS removal
-        final docs = await _isar.cachedAudioDocumentUnifieds
-            .filter()
-            .trackIdEqualTo(trackId)
-            .findAll();
+        final docs = await _isar.cachedAudioDocumentUnifieds.filter().trackIdEqualTo(trackId).findAll();
         if (docs.isNotEmpty) {
           await _isar.writeTxn(() async {
             for (final d in docs) {
@@ -221,10 +212,7 @@ class CacheStorageLocalDataSourceImpl implements CacheStorageLocalDataSource {
 
   @override
   Stream<List<CachedAudioDocumentUnified>> watchAllCachedAudios() {
-    return _isar.cachedAudioDocumentUnifieds
-        .where()
-        .watch(fireImmediately: true)
-        .map((docs) => docs.toList());
+    return _isar.cachedAudioDocumentUnifieds.where().watch(fireImmediately: true).map((docs) => docs.toList());
   }
 
   @override
@@ -236,8 +224,9 @@ class CacheStorageLocalDataSourceImpl implements CacheStorageLocalDataSource {
   // getFilePathFromCacheKey removed: path construction is handled by DirectoryService in repository
 
   @override
-  Future<Either<CacheFailure, CachedAudioDocumentUnified>>
-  storeUnifiedCachedAudio(CachedAudioDocumentUnified unifiedDoc) async {
+  Future<Either<CacheFailure, CachedAudioDocumentUnified>> storeUnifiedCachedAudio(
+    CachedAudioDocumentUnified unifiedDoc,
+  ) async {
     try {
       await _isar.writeTxn(() async {
         await _isar.cachedAudioDocumentUnifieds.put(unifiedDoc);

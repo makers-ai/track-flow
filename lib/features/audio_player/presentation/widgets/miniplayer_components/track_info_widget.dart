@@ -64,17 +64,13 @@ class _TrackInfoWidgetState extends State<TrackInfoWidget> {
                   builder: (context, contextState) {
                     if (contextState is AudioContextLoaded) {
                       final context = contextState.context;
-                      final artist =
-                          context.collaborator?.name ?? 'Unknown Artist';
+                      final artist = context.collaborator?.name ?? 'Unknown Artist';
                       final duration = context.activeVersionDuration;
 
                       final durationText =
-                          duration != null && duration.inMilliseconds > 0
-                              ? DurationFormatter.format(duration)
-                              : '';
+                          duration != null && duration.inMilliseconds > 0 ? DurationFormatter.format(duration) : '';
 
-                      final hasSecondLine =
-                          artist.isNotEmpty || durationText.isNotEmpty;
+                      final hasSecondLine = artist.isNotEmpty || durationText.isNotEmpty;
 
                       return hasSecondLine
                           ? Padding(
@@ -85,14 +81,9 @@ class _TrackInfoWidgetState extends State<TrackInfoWidget> {
                                   Flexible(
                                     child: Text(
                                       artist,
-                                      style: theme.textTheme.bodySmall
-                                          ?.copyWith(
-                                            color: theme
-                                                .textTheme
-                                                .bodySmall
-                                                ?.color
-                                                ?.withValues(alpha: 0.7),
-                                          ),
+                                      style: theme.textTheme.bodySmall?.copyWith(
+                                        color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
+                                      ),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -100,14 +91,9 @@ class _TrackInfoWidgetState extends State<TrackInfoWidget> {
                                   if (durationText.isNotEmpty) ...[
                                     Text(
                                       ' • ',
-                                      style: theme.textTheme.bodySmall
-                                          ?.copyWith(
-                                            color: theme
-                                                .textTheme
-                                                .bodySmall
-                                                ?.color
-                                                ?.withValues(alpha: 0.5),
-                                          ),
+                                      style: theme.textTheme.bodySmall?.copyWith(
+                                        color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5),
+                                      ),
                                     ),
                                   ],
                                 ],
@@ -115,8 +101,7 @@ class _TrackInfoWidgetState extends State<TrackInfoWidget> {
                                   Text(
                                     durationText,
                                     style: theme.textTheme.bodySmall?.copyWith(
-                                      color: theme.textTheme.bodySmall?.color
-                                          ?.withValues(alpha: 0.7),
+                                      color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
                                     ),
                                   ),
                               ],
@@ -129,8 +114,7 @@ class _TrackInfoWidgetState extends State<TrackInfoWidget> {
                         child: Text(
                           'Loading artist...',
                           style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.textTheme.bodySmall?.color
-                                ?.withValues(alpha: 0.5),
+                            color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5),
                           ),
                         ),
                       );

@@ -76,9 +76,12 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
 
     final userId = UserId.fromUniqueString(currentUserId);
 
-    final userCollaborator = project.collaborators.where(
-      (collaborator) => collaborator.userId == userId,
-    ).firstOrNull;
+    final userCollaborator =
+        project.collaborators
+            .where(
+              (collaborator) => collaborator.userId == userId,
+            )
+            .firstOrNull;
 
     if (userCollaborator == null) return false;
 
@@ -144,7 +147,6 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                   Container(
                     decoration: const BoxDecoration(
                       color: AppColors.background,
-                      
                     ),
                   ),
                 ],
@@ -189,9 +191,8 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                             padding: const EdgeInsets.symmetric(horizontal: Dimensions.space16),
                             child: BlocBuilder<CurrentUserBloc, CurrentUserState>(
                               builder: (context, profileState) {
-                                final currentUserId = profileState is CurrentUserLoaded
-                                    ? profileState.profile.id.value
-                                    : null;
+                                final currentUserId =
+                                    profileState is CurrentUserLoaded ? profileState.profile.id.value : null;
                                 final hasEditPermission = _userHasEditPermission(project.project, currentUserId);
 
                                 return Row(

@@ -48,13 +48,10 @@ class TrackInfoSection extends StatelessWidget {
     return BlocBuilder<AudioPlayerBloc, AudioPlayerState>(
       builder: (context, playerState) {
         final isCurrentTrack =
-            playerState is AudioPlayerSessionState &&
-            playerState.session.currentTrack?.id.value == track.id.value;
+            playerState is AudioPlayerSessionState && playerState.session.currentTrack?.id.value == track.id.value;
         final isPlaying = playerState is AudioPlayerPlaying && isCurrentTrack;
         final isPausedOrStopped =
-            (playerState is AudioPlayerPaused ||
-                playerState is AudioPlayerStopped) &&
-            isCurrentTrack;
+            (playerState is AudioPlayerPaused || playerState is AudioPlayerStopped) && isCurrentTrack;
         final shouldShowSoundbar = isPlaying || isPausedOrStopped;
         final shouldHighlight =
             isCurrentTrack &&
@@ -129,7 +126,6 @@ class TrackInfoSection extends StatelessWidget {
             // Status badge (placeholder or actual widget)
             if (config.showStatusBadge) ...[
               statusBadge ?? Container(), // Placeholder when no badge provided
-              
             ],
             Expanded(
               child: Text(

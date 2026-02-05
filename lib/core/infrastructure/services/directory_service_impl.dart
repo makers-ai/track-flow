@@ -151,9 +151,7 @@ class DirectoryServiceImpl implements DirectoryService {
       if (absolutePath.contains(basePath)) {
         final relativePath = absolutePath.substring(basePath.length);
         // Remove leading slash if present
-        return relativePath.startsWith('/')
-            ? relativePath.substring(1)
-            : relativePath;
+        return relativePath.startsWith('/') ? relativePath.substring(1) : relativePath;
       }
 
       return absolutePath; // Fallback to absolute if not under base

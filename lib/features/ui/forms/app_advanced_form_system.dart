@@ -141,9 +141,7 @@ class FieldValidation {
 
   static String? _validatePhone(String value) {
     final phoneRegex = RegExp(r'^\+?[\d\s-\(\)]+$');
-    return !phoneRegex.hasMatch(value)
-        ? 'Please enter a valid phone number'
-        : null;
+    return !phoneRegex.hasMatch(value) ? 'Please enter a valid phone number' : null;
   }
 }
 
@@ -166,8 +164,7 @@ class MultiStepForm extends StatefulWidget {
   State<MultiStepForm> createState() => _MultiStepFormState();
 }
 
-class _MultiStepFormState extends State<MultiStepForm>
-    with TickerProviderStateMixin {
+class _MultiStepFormState extends State<MultiStepForm> with TickerProviderStateMixin {
   int _currentStep = 0;
   final Map<String, dynamic> _formData = {};
   late AnimationController _animationController;
@@ -279,12 +276,7 @@ class _MultiStepFormState extends State<MultiStepForm>
                   width: Dimensions.space24,
                   height: Dimensions.space24,
                   decoration: BoxDecoration(
-                    color:
-                        isCompleted
-                            ? AppColors.success
-                            : (isActive
-                                ? AppColors.primary
-                                : AppColors.disabled),
+                    color: isCompleted ? AppColors.success : (isActive ? AppColors.primary : AppColors.disabled),
                     shape: BoxShape.circle,
                   ),
                   child:

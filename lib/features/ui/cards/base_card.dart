@@ -37,8 +37,7 @@ class BaseCard extends StatefulWidget {
   State<BaseCard> createState() => _BaseCardState();
 }
 
-class _BaseCardState extends State<BaseCard>
-    with SingleTickerProviderStateMixin {
+class _BaseCardState extends State<BaseCard> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
   bool _isHovered = false;
@@ -54,10 +53,12 @@ class _BaseCardState extends State<BaseCard>
     _scaleAnimation = Tween<double>(
       begin: AppAnimations.scaleNormal,
       end: AppAnimations.scaleDown,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: AppAnimations.easeOut,
-    ));
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: AppAnimations.easeOut,
+      ),
+    );
   }
 
   @override
@@ -91,7 +92,7 @@ class _BaseCardState extends State<BaseCard>
 
   List<BoxShadow> get _currentShadow {
     if (widget.boxShadow != null) return widget.boxShadow!;
-    
+
     if (_isHovered && widget.onTap != null) {
       return AppShadows.cardHover;
     }

@@ -9,8 +9,7 @@ import '../../../../core/di/injection.dart';
 /// where Flutter widget tree is not available (notifications, background audio)
 class TrackContextBackgroundService {
   static TrackContextBackgroundService? _instance;
-  static TrackContextBackgroundService get instance =>
-      _instance ??= TrackContextBackgroundService._();
+  static TrackContextBackgroundService get instance => _instance ??= TrackContextBackgroundService._();
 
   TrackContextBackgroundService._();
 
@@ -110,6 +109,5 @@ class BackgroundTrackInfo {
   });
 
   @override
-  String toString() =>
-      'BackgroundTrackInfo(title: $title, artist: $artist, duration: $duration)';
+  String toString() => 'BackgroundTrackInfo(title: $title, artist: $artist, duration: $duration)';
 }

@@ -39,7 +39,7 @@ class InvitationActionButtons extends StatelessWidget {
       },
       builder: (context, state) {
         final isLoading = state is InvitationActorLoading;
-        
+
         return Row(
           children: [
             Expanded(
@@ -111,7 +111,7 @@ class SentInvitationActionButtons extends StatelessWidget {
       },
       builder: (context, state) {
         final isLoading = state is InvitationActorLoading;
-        
+
         return PrimaryButton(
           text: 'Cancel Invitation',
           onPressed: isLoading ? null : () => _handleCancel(context),

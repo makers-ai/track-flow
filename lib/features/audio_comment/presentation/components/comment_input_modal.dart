@@ -39,8 +39,7 @@ class CommentInputModal extends StatefulWidget {
   State<CommentInputModal> createState() => _CommentInputModalState();
 }
 
-class _CommentInputModalState extends State<CommentInputModal>
-    with SingleTickerProviderStateMixin {
+class _CommentInputModalState extends State<CommentInputModal> with SingleTickerProviderStateMixin {
   final FocusNode _focusNode = FocusNode();
   final TextEditingController _controller = TextEditingController();
   Duration? _capturedTimestamp;
@@ -194,58 +193,57 @@ class _CommentInputModalState extends State<CommentInputModal>
         }
       },
       child: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(Dimensions.radiusLarge),
-              topRight: Radius.circular(Dimensions.radiusLarge),
-            ),
-            boxShadow: AppShadows.medium,
-            border: Border(top: AppBorders.subtleSide(context)),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(Dimensions.radiusLarge),
+            topRight: Radius.circular(Dimensions.radiusLarge),
           ),
-          child: SafeArea(
-            top: false,
-            child: Padding(
-              padding: EdgeInsets.only(
-                left: Dimensions.space16,
-                right: Dimensions.space16,
-                top: Dimensions.space16,
-                bottom: Dimensions.space16,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Header with X button and timestamp (if focused)
-                  if (_isInputFocused && _capturedTimestamp != null) ...[
-                    CommentInputHeader(
-                      timestamp: _capturedTimestamp,
-                      onClose: _handleClose,
-                    ),
-                    Divider(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.outline.withValues(alpha: 0.3),
-                      height: Dimensions.space8,
-                    ),
-                  ],
-
-                  AudioCommentInputBar(
-                    controller: _controller,
-                    focusNode: _focusNode,
-                    onSendText: _handleSendTextComment,
-                    onSendAudio: _onSendAudioRequested,
-                    onCancelAudio: _onCancelAudioRequested,
-                    onCaptureTimestamp: _onCaptureTimestamp,
+          boxShadow: AppShadows.medium,
+          border: Border(top: AppBorders.subtleSide(context)),
+        ),
+        child: SafeArea(
+          top: false,
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: Dimensions.space16,
+              right: Dimensions.space16,
+              top: Dimensions.space16,
+              bottom: Dimensions.space16,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header with X button and timestamp (if focused)
+                if (_isInputFocused && _capturedTimestamp != null) ...[
+                  CommentInputHeader(
+                    timestamp: _capturedTimestamp,
+                    onClose: _handleClose,
+                  ),
+                  Divider(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.outline.withValues(alpha: 0.3),
+                    height: Dimensions.space8,
                   ),
                 ],
-              ),
+
+                AudioCommentInputBar(
+                  controller: _controller,
+                  focusNode: _focusNode,
+                  onSendText: _handleSendTextComment,
+                  onSendAudio: _onSendAudioRequested,
+                  onCancelAudio: _onCancelAudioRequested,
+                  onCaptureTimestamp: _onCaptureTimestamp,
+                ),
+              ],
             ),
           ),
         ),
+      ),
     );
   }
-
 
   // Recording error UI handled by SnackBar listener
 }

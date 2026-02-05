@@ -86,8 +86,7 @@ class _CommentsSliverSectionState extends State<CommentsSliverSection> {
         }
         if (state is AudioCommentsLoaded) {
           final userState = context.watch<CurrentUserBloc>().state;
-          final String? currentUserId =
-              userState is CurrentUserLoaded ? userState.profile.id.value : null;
+          final String? currentUserId = userState is CurrentUserLoaded ? userState.profile.id.value : null;
 
           if (state.comments.isEmpty) {
             return SliverToBoxAdapter(
@@ -113,8 +112,7 @@ class _CommentsSliverSectionState extends State<CommentsSliverSection> {
                   (u) => u.id == comment.createdBy,
                   orElse: () => state.collaborators.first,
                 );
-                final bool isMine =
-                    currentUserId != null && comment.createdBy == currentUserId;
+                final bool isMine = currentUserId != null && comment.createdBy == currentUserId;
 
                 return AudioCommentComponent(
                   comment: comment,
@@ -136,5 +134,3 @@ class _CommentsSliverSectionState extends State<CommentsSliverSection> {
     );
   }
 }
-
-

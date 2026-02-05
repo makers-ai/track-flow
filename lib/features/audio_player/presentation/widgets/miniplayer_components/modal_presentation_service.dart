@@ -9,7 +9,6 @@ abstract class IModalPresentationService {
 }
 
 class ModalPresentationService implements IModalPresentationService {
-  
   @override
   void showFullPlayerModal(BuildContext context) {
     // Read blocs up-front to avoid looking up ancestors from a possibly deactivated context later

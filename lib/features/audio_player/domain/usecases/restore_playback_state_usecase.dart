@@ -78,11 +78,9 @@ class RestorePlaybackStateUseCase {
                   );
 
                   // Try to get cached path first, fallback to streaming URL
-                  final cacheResult = await _audioStorageRepository
-                      .getCachedAudioPath(trackId);
+                  final cacheResult = await _audioStorageRepository.getCachedAudioPath(trackId);
                   final sourceUrl = cacheResult.fold(
-                    (cacheFailure) =>
-                        audioTrack.coverUrl, // Use streaming URL if not cached
+                    (cacheFailure) => audioTrack.coverUrl, // Use streaming URL if not cached
                     (cachedPath) => cachedPath, // Use cached file if available
                   );
 

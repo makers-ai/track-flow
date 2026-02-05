@@ -4,7 +4,7 @@ import 'package:injectable/injectable.dart';
 import 'package:trackflow/core/entities/unique_id.dart';
 import 'package:trackflow/core/error/failures.dart';
 import 'package:trackflow/core/network/network_state_manager.dart';
-import 'package:trackflow/core/sync/domain/services/background_sync_coordinator.dart';    
+import 'package:trackflow/core/sync/domain/services/background_sync_coordinator.dart';
 import 'package:trackflow/core/sync/domain/services/pending_operations_manager.dart';
 import 'package:trackflow/features/user_profile/data/datasources/user_profile_local_datasource.dart';
 import 'package:trackflow/features/user_profile/data/datasources/user_profile_remote_datasource.dart';
@@ -66,8 +66,7 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
     try {
       // Normalize and cache local avatar path if needed
       var dto = UserProfileDTO.fromDomain(profile);
-      final isLocalAvatar =
-          dto.avatarUrl.isNotEmpty && !dto.avatarUrl.startsWith('http');
+      final isLocalAvatar = dto.avatarUrl.isNotEmpty && !dto.avatarUrl.startsWith('http');
       if (isLocalAvatar) {
         try {
           final cachedPath = await ImageUtils.saveLocalImage(dto.avatarUrl);

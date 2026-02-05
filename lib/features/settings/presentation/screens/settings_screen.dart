@@ -34,8 +34,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final currentState = currentUserBloc.state;
 
     // Only trigger profile loading if we're in initial state or error state
-    if (currentState is CurrentUserInitial ||
-        currentState is CurrentUserError) {
+    if (currentState is CurrentUserInitial || currentState is CurrentUserError) {
       AppLogger.info(
         'SettingsScreen: Initializing user profile loading',
         tag: 'SETTINGS_SCREEN',
@@ -106,8 +105,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       onTap: () async {
                         try {
-                          final triggerSync =
-                              context.read<TriggerUpstreamSyncUseCase>();
+                          final triggerSync = context.read<TriggerUpstreamSyncUseCase>();
                           await triggerSync.call();
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Sync triggered')),

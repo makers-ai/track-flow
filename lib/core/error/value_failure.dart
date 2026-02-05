@@ -22,13 +22,11 @@ abstract class ValueFailure<T> extends Equatable {
 }
 
 class InvalidEmail<T> extends ValueFailure<T> {
-  const InvalidEmail(T failedValue)
-    : super(failedValue, 'Invalid email format');
+  const InvalidEmail(T failedValue) : super(failedValue, 'Invalid email format');
 }
 
 class ShortPassword<T> extends ValueFailure<T> {
-  const ShortPassword(T failedValue)
-    : super(failedValue, 'Password must be at least 6 characters');
+  const ShortPassword(T failedValue) : super(failedValue, 'Password must be at least 6 characters');
 }
 
 class EmptyField<T> extends ValueFailure<T> {
@@ -37,6 +35,5 @@ class EmptyField<T> extends ValueFailure<T> {
 
 class ExceedingLength<T> extends ValueFailure<T> {
   final int max;
-  const ExceedingLength(T failedValue, this.max)
-    : super(failedValue, 'Value must be less than $max characters');
+  const ExceedingLength(T failedValue, this.max) : super(failedValue, 'Value must be less than $max characters');
 }

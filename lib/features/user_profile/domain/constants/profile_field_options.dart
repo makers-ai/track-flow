@@ -45,4 +45,3 @@ const List<String> kPredefinedSkills = [
   'Vocal Production',
   'Live Performance',
 ];
-

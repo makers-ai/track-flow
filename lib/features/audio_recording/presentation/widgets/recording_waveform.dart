@@ -37,10 +37,11 @@ class WaveformPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 3.0
-      ..style = PaintingStyle.fill;
+    final paint =
+        Paint()
+          ..color = color
+          ..strokeWidth = 3.0
+          ..style = PaintingStyle.fill;
 
     final barHeight = amplitude * size.height;
     final rect = Rect.fromCenter(

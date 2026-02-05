@@ -17,16 +17,17 @@ import 'package:trackflow/features/projects/data/models/project_dto.dart';
 /// ✅ EFFICIENT: Uses timestamp-based queries
 /// ✅ RELIABLE: Proper error handling and fallbacks
 @LazySingleton(as: IncrementalSyncService<ProjectDTO>)
-class ProjectIncrementalSyncService
-    implements IncrementalSyncService<ProjectDTO> {
+class ProjectIncrementalSyncService implements IncrementalSyncService<ProjectDTO> {
   final ProjectRemoteDataSource _remoteDataSource;
   final ProjectsLocalDataSource _localDataSource;
 
   ProjectIncrementalSyncService(this._remoteDataSource, this._localDataSource);
 
   @override
-  Future<Either<Failure, IncrementalSyncResult<ProjectDTO>>>
-  performIncrementalSync(DateTime lastSyncTime, String userId) async {
+  Future<Either<Failure, IncrementalSyncResult<ProjectDTO>>> performIncrementalSync(
+    DateTime lastSyncTime,
+    String userId,
+  ) async {
     try {
       AppLogger.sync(
         'PROJECTS',
@@ -46,10 +47,8 @@ class ProjectIncrementalSyncService
       final allModifiedProjects = modifiedResult.getOrElse(() => []);
 
       // 2. Separate active and deleted projects
-      final activeProjects =
-          allModifiedProjects.where((p) => !p.isDeleted).toList();
-      final deletedProjects =
-          allModifiedProjects.where((p) => p.isDeleted).toList();
+      final activeProjects = allModifiedProjects.where((p) => !p.isDeleted).toList();
+      final deletedProjects = allModifiedProjects.where((p) => p.isDeleted).toList();
       final deletedIds = deletedProjects.map((p) => p.id).toList();
 
       AppLogger.sync(

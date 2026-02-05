@@ -65,26 +65,28 @@ class TrackListScreen extends StatelessWidget {
                 ),
                 Expanded(
                   child: ListView.separated(
-                    
                     padding: EdgeInsets.all(Dimensions.space0),
                     itemCount: tracks.length,
-                    separatorBuilder: (context, index) => SizedBox(
-                      height: Dimensions.space0,
-                    ),
+                    separatorBuilder:
+                        (context, index) => SizedBox(
+                          height: Dimensions.space0,
+                        ),
                     itemBuilder: (context, index) {
                       final trackUi = tracks[index];
-                      return TrackListItem(track: trackUi,
+                      return TrackListItem(
+                        track: trackUi,
 
-                       onTap: () {
-                        context.push(
-                          AppRoutes.trackDetail,
-                          extra: TrackDetailScreenArgs(
-                            projectId: trackUi.track.projectId,
-                            track: trackUi.track,
-                            versionId: trackUi.track.activeVersionId!,
-                          ),
-                        );
-                      });
+                        onTap: () {
+                          context.push(
+                            AppRoutes.trackDetail,
+                            extra: TrackDetailScreenArgs(
+                              projectId: trackUi.track.projectId,
+                              track: trackUi.track,
+                              versionId: trackUi.track.activeVersionId!,
+                            ),
+                          );
+                        },
+                      );
                     },
                   ),
                 ),
@@ -112,14 +114,11 @@ class TrackListScreen extends StatelessWidget {
           Text(
             'No tracks yet',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
         ],
       ),
     );
   }
-
 }
-
-

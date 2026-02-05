@@ -7,8 +7,7 @@ import '../services/audio_playback_service.dart';
 /// ONLY handles audio stop operation - NO business domain concerns
 @injectable
 class StopAudioUseCase {
-  const StopAudioUseCase({required AudioPlaybackService playbackService})
-    : _playbackService = playbackService;
+  const StopAudioUseCase({required AudioPlaybackService playbackService}) : _playbackService = playbackService;
 
   final AudioPlaybackService _playbackService;
 

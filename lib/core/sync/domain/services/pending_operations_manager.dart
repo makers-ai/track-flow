@@ -53,8 +53,7 @@ class PendingOperationsManager {
 
     final result = await _repositoryPendingOperations.addOperation(operation);
     return result.fold(
-      (failure) =>
-          Left(failure), // ❌ Queue failed - Repository must handle this
+      (failure) => Left(failure), // ❌ Queue failed - Repository must handle this
       (success) => Right(unit), // ✅ Queued successfully
     );
   }
@@ -131,8 +130,7 @@ class PendingOperationsManager {
       await result.fold(
         (failure) async {
           // 💥 Error getting operations from local database
-          final errorMsg =
-              'Failed to get pending operations (attempt $attempt/$maxRetries): ${failure.message}';
+          final errorMsg = 'Failed to get pending operations (attempt $attempt/$maxRetries): ${failure.message}';
 
           AppLogger.error(errorMsg, tag: 'PendingOperationsManager');
 
@@ -251,8 +249,7 @@ class PendingOperationsManager {
 
   /// 📈 Count pending operations for UI progress indicators
   Future<int> getPendingOperationsCount() async {
-    final result =
-        await _repositoryPendingOperations.getPendingOperationsCount();
+    final result = await _repositoryPendingOperations.getPendingOperationsCount();
     return result.fold((failure) => 0, (count) => count);
   }
 
@@ -265,8 +262,7 @@ class PendingOperationsManager {
   /// Returns information about queue health, error rates, and processing status
   Future<Map<String, dynamic>> getUpstreamSyncHealth() async {
     try {
-      final pendingResult =
-          await _repositoryPendingOperations.getPendingOperations();
+      final pendingResult = await _repositoryPendingOperations.getPendingOperations();
 
       return await pendingResult.fold(
         (failure) async {
@@ -290,15 +286,10 @@ class PendingOperationsManager {
           // Find oldest pending operation
           DateTime? oldestTimestamp;
           if (operations.isNotEmpty) {
-            oldestTimestamp = operations
-                .map((op) => op.timestamp)
-                .reduce((a, b) => a.isBefore(b) ? a : b);
+            oldestTimestamp = operations.map((op) => op.timestamp).reduce((a, b) => a.isBefore(b) ? a : b);
           }
 
-          final oldestAge =
-              oldestTimestamp != null
-                  ? now.difference(oldestTimestamp).inMinutes
-                  : null;
+          final oldestAge = oldestTimestamp != null ? now.difference(oldestTimestamp).inMinutes : null;
 
           // Determine health status
           String status;

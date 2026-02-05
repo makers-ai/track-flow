@@ -24,8 +24,7 @@ class ProfileCreationScreen extends StatefulWidget {
 }
 
 class _ProfileCreationScreenState extends State<ProfileCreationScreen> {
-  final GlobalKey<ProfileCreationFormState> _formKey =
-      GlobalKey<ProfileCreationFormState>();
+  final GlobalKey<ProfileCreationFormState> _formKey = GlobalKey<ProfileCreationFormState>();
 
   bool _isLoading = false;
   bool _isGoogleUser = false;

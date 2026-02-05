@@ -2,12 +2,12 @@ import 'package:equatable/equatable.dart';
 
 abstract class ValueObject<T> extends Equatable {
   const ValueObject(this.value);
-  
+
   final T value;
-  
+
   @override
   List<Object?> get props => [value];
-  
+
   @override
   String toString() => value.toString();
 }
@@ -73,7 +73,7 @@ class StorageLimit extends ValueObject<int> {
   /// Format storage limit for display
   String get formatted {
     if (isUnlimited) return 'Unlimited';
-    
+
     if (bytes < 1024) return '${bytes}B';
     if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)}KB';
     if (bytes < 1024 * 1024 * 1024) return '${megabytes.toStringAsFixed(1)}MB';

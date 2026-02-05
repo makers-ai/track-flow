@@ -7,8 +7,7 @@ import '../services/audio_playback_service.dart';
 /// ONLY handles playback speed adjustment - NO business domain concerns
 @injectable
 class SetPlaybackSpeedUseCase {
-  const SetPlaybackSpeedUseCase({required AudioPlaybackService playbackService})
-    : _playbackService = playbackService;
+  const SetPlaybackSpeedUseCase({required AudioPlaybackService playbackService}) : _playbackService = playbackService;
 
   final AudioPlaybackService _playbackService;
 

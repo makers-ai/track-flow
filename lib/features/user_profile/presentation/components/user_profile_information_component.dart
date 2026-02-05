@@ -81,30 +81,30 @@ class _ProfileInformationState extends State<ProfileInformation> {
                             width: 2,
                           ),
                         ),
-                        child: (profile.avatarLocalPath != null &&
-                                profile.avatarLocalPath!.isNotEmpty)
-                            ? UserAvatar(
-                              imageUrl: profile.avatarLocalPath!,
-                              size: 60,
-                              fallback: Icon(
-                                Icons.person,
-                                size: 30,
-                                color: AppColors.textSecondary.withValues(
-                                  alpha: 0.5,
+                        child:
+                            (profile.avatarLocalPath != null && profile.avatarLocalPath!.isNotEmpty)
+                                ? UserAvatar(
+                                  imageUrl: profile.avatarLocalPath!,
+                                  size: 60,
+                                  fallback: Icon(
+                                    Icons.person,
+                                    size: 30,
+                                    color: AppColors.textSecondary.withValues(
+                                      alpha: 0.5,
+                                    ),
+                                  ),
+                                )
+                                : UserAvatar(
+                                  imageUrl: profile.avatarUrl,
+                                  size: 60,
+                                  fallback: Icon(
+                                    Icons.person,
+                                    size: 30,
+                                    color: AppColors.textSecondary.withValues(
+                                      alpha: 0.5,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            )
-                            : UserAvatar(
-                              imageUrl: profile.avatarUrl,
-                              size: 60,
-                              fallback: Icon(
-                                Icons.person,
-                                size: 30,
-                                color: AppColors.textSecondary.withValues(
-                                  alpha: 0.5,
-                                ),
-                              ),
-                            ),
                       ),
                       SizedBox(width: Dimensions.space12),
                       Expanded(

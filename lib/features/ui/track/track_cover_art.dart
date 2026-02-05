@@ -216,13 +216,9 @@ class TrackCoverArt extends StatelessWidget {
       return Icons.piano;
     } else if (trackName.contains('guitar') || trackName.contains('string')) {
       return Icons.music_note_rounded;
-    } else if (trackName.contains('vocal') ||
-        trackName.contains('sing') ||
-        trackName.contains('voice')) {
+    } else if (trackName.contains('vocal') || trackName.contains('sing') || trackName.contains('voice')) {
       return Icons.mic_rounded;
-    } else if (trackName.contains('drum') ||
-        trackName.contains('beat') ||
-        trackName.contains('rhythm')) {
+    } else if (trackName.contains('drum') || trackName.contains('beat') || trackName.contains('rhythm')) {
       return Icons.circle_rounded;
     } else if (trackName.contains('bass') || trackName.contains('low')) {
       return Icons.speaker_rounded;

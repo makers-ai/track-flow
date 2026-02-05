@@ -53,9 +53,8 @@ class TrackVersionUiModel extends Equatable {
       createdAt: version.createdAt,
       createdBy: version.createdBy.value,
       displayLabel: version.label ?? 'Version ${version.versionNumber}',
-      formattedDuration: version.durationMs != null
-          ? _formatDuration(Duration(milliseconds: version.durationMs!))
-          : '--:--',
+      formattedDuration:
+          version.durationMs != null ? _formatDuration(Duration(milliseconds: version.durationMs!)) : '--:--',
       hasLocalFile: version.fileLocalPath != null,
     );
   }
@@ -68,19 +67,18 @@ class TrackVersionUiModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        trackId,
-        versionNumber,
-        label,
-        fileLocalPath,
-        fileRemoteUrl,
-        durationMs,
-        status,
-        createdAt,
-        createdBy,
-        displayLabel,
-        formattedDuration,
-        hasLocalFile,
-      ];
+    id,
+    trackId,
+    versionNumber,
+    label,
+    fileLocalPath,
+    fileRemoteUrl,
+    durationMs,
+    status,
+    createdAt,
+    createdBy,
+    displayLabel,
+    formattedDuration,
+    hasLocalFile,
+  ];
 }
-

@@ -25,10 +25,10 @@ class UserProfilesBloc extends Bloc<UserProfilesEvent, UserProfilesState> {
     required WatchUserProfileUseCase watchUserProfileUseCase,
     required WatchUserProfilesUseCase watchUserProfilesUseCase,
     required SyncCollaboratorProfileUseCase syncCollaboratorProfileUseCase,
-  })  : _watchUserProfileUseCase = watchUserProfileUseCase,
-        _watchUserProfilesUseCase = watchUserProfilesUseCase,
-        _syncCollaboratorProfileUseCase = syncCollaboratorProfileUseCase,
-        super(UserProfilesInitial()) {
+  }) : _watchUserProfileUseCase = watchUserProfileUseCase,
+       _watchUserProfilesUseCase = watchUserProfilesUseCase,
+       _syncCollaboratorProfileUseCase = syncCollaboratorProfileUseCase,
+       super(UserProfilesInitial()) {
     on<WatchUserProfile>(_onWatchUserProfile);
     on<WatchMultipleUserProfiles>(_onWatchMultipleUserProfiles);
     on<ClearUserProfiles>(_onClearUserProfiles);
@@ -71,9 +71,11 @@ class UserProfilesBloc extends Bloc<UserProfilesEvent, UserProfilesState> {
                 );
                 _hasSyncedProfile = true;
                 // Convert domain entity to UI model in BLoC
-                emit(UserProfileLoaded(
-                  uiModel: UserProfileUiModel.fromDomain(profile),
-                ));
+                emit(
+                  UserProfileLoaded(
+                    uiModel: UserProfileUiModel.fromDomain(profile),
+                  ),
+                );
               } else if (!_hasSyncedProfile) {
                 // Profile not in cache, sync from remote
                 AppLogger.info(
@@ -81,7 +83,7 @@ class UserProfilesBloc extends Bloc<UserProfilesEvent, UserProfilesState> {
                   tag: 'USER_PROFILES_BLOC',
                 );
                 _hasSyncedProfile = true;
-                
+
                 // Trigger sync in background
                 final syncResult = await _syncCollaboratorProfileUseCase.call(event.userId);
                 syncResult.fold(
@@ -160,12 +162,12 @@ class UserProfilesBloc extends Bloc<UserProfilesEvent, UserProfilesState> {
             (profiles) {
               // Convert list to map of UI models
               final uiModelMap = <String, UserProfileUiModel>{};
-              
+
               for (final profile in profiles) {
                 // Convert domain entity to UI model in BLoC
                 uiModelMap[profile.id.value] = UserProfileUiModel.fromDomain(profile);
               }
-              
+
               emit(UserProfilesLoaded(uiModels: uiModelMap));
             },
           );
@@ -189,8 +191,6 @@ class UserProfilesBloc extends Bloc<UserProfilesEvent, UserProfilesState> {
     }
   }
 
-  
-
   Future<void> _onClearUserProfiles(
     ClearUserProfiles event,
     Emitter<UserProfilesState> emit,
@@ -207,4 +207,3 @@ class UserProfilesBloc extends Bloc<UserProfilesEvent, UserProfilesState> {
     return super.close();
   }
 }
-

@@ -67,8 +67,7 @@ class UserSession extends Equatable {
     return UserSession(
       state: state ?? this.state,
       currentUser: currentUser ?? this.currentUser,
-      isOnboardingCompleted:
-          isOnboardingCompleted ?? this.isOnboardingCompleted,
+      isOnboardingCompleted: isOnboardingCompleted ?? this.isOnboardingCompleted,
       isProfileComplete: isProfileComplete ?? this.isProfileComplete,
       errorMessage: errorMessage ?? this.errorMessage,
     );
@@ -77,8 +76,7 @@ class UserSession extends Equatable {
   /// Helper getters for common checks
   bool get isAuthenticated => currentUser != null;
   bool get needsOnboarding => isAuthenticated && !isOnboardingCompleted;
-  bool get needsProfileSetup =>
-      isAuthenticated && isOnboardingCompleted && !isProfileComplete;
+  bool get needsProfileSetup => isAuthenticated && isOnboardingCompleted && !isProfileComplete;
   bool get isReady => state == SessionState.ready;
   bool get hasError => state == SessionState.error;
 

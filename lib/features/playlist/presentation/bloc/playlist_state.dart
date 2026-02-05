@@ -15,8 +15,7 @@ class PlaylistState extends Equatable {
     required this.items,
   });
 
-  factory PlaylistState.initial() =>
-      const PlaylistState(isLoading: true, error: null, tracks: [], items: []);
+  factory PlaylistState.initial() => const PlaylistState(isLoading: true, error: null, tracks: [], items: []);
 
   PlaylistState copyWith({
     bool? isLoading,

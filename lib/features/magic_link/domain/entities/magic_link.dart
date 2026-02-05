@@ -20,7 +20,6 @@ class MagicLink extends Entity<MagicLinkId> {
     required this.isUsed,
     required this.status,
   }) : super(id);
-
 }
 
 enum MagicLinkStatus { valid, expired, used }

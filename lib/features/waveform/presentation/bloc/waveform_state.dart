@@ -44,10 +44,8 @@ class WaveformState extends Equatable {
       currentPosition: currentPosition ?? this.currentPosition,
       isScrubbing: isScrubbing ?? this.isScrubbing,
       previewPosition: previewPosition ?? this.previewPosition,
-      dragStartPlaybackPosition:
-          dragStartPlaybackPosition ?? this.dragStartPlaybackPosition,
-      wasPlayingBeforeScrub:
-          wasPlayingBeforeScrub ?? this.wasPlayingBeforeScrub,
+      dragStartPlaybackPosition: dragStartPlaybackPosition ?? this.dragStartPlaybackPosition,
+      wasPlayingBeforeScrub: wasPlayingBeforeScrub ?? this.wasPlayingBeforeScrub,
     );
   }
 

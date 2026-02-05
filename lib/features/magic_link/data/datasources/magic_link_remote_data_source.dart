@@ -70,8 +70,7 @@ class MagicLinkRemoteDataSourceImpl extends MagicLinkRemoteDataSource {
     MagicLinkValidationDto validation,
   ) async {
     try {
-      final doc =
-          await _firestore.collection('magic_links').doc(validation.linkId).get();
+      final doc = await _firestore.collection('magic_links').doc(validation.linkId).get();
       if (!doc.exists) {
         return Left(ServerFailure('Magic link not found'));
       }
@@ -125,8 +124,7 @@ class MagicLinkRemoteDataSourceImpl extends MagicLinkRemoteDataSource {
     MagicLinkStatusDto status,
   ) async {
     try {
-      final doc =
-          await _firestore.collection('magic_links').doc(status.linkId).get();
+      final doc = await _firestore.collection('magic_links').doc(status.linkId).get();
       if (!doc.exists) {
         return Left(ServerFailure('Magic link not found'));
       }

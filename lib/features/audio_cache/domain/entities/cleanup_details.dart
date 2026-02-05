@@ -22,8 +22,7 @@ class CleanupDetails extends Equatable {
 
   bool get hasErrors => errors.isNotEmpty;
 
-  String get summary =>
-      'Removed $totalFilesRemoved files, freed ${_formatBytes(totalSpaceFreed)}';
+  String get summary => 'Removed $totalFilesRemoved files, freed ${_formatBytes(totalSpaceFreed)}';
 
   static String _formatBytes(int bytes) {
     if (bytes < 1024) return '${bytes}B';

@@ -24,45 +24,43 @@ class WaveformGestures extends StatelessWidget {
   Widget build(BuildContext context) {
     return RawGestureDetector(
       gestures: <Type, GestureRecognizerFactory>{
-        PanGestureRecognizer:
-            GestureRecognizerFactoryWithHandlers<PanGestureRecognizer>(
-              () => PanGestureRecognizer(),
-              (PanGestureRecognizer instance) {
-                Duration? lastPreview;
-                instance
-                  ..onStart = (details) {
-                    onScrubStarted();
-                  }
-                  ..onUpdate = (details) {
-                    final box = context.findRenderObject() as RenderBox?;
-                    if (box == null) return;
-                    final local = box.globalToLocal(details.globalPosition);
-                    final pos = positionFromX(local.dx, box.size.width);
-                    lastPreview = pos;
-                    onScrubUpdated(pos);
-                  }
-                  ..onEnd = (details) {
-                    if (lastPreview != null) {
-                      onScrubCommitted(lastPreview!);
-                    } else {
-                      onScrubCancelled();
-                    }
-                  };
-              },
-            ),
-        TapGestureRecognizer:
-            GestureRecognizerFactoryWithHandlers<TapGestureRecognizer>(
-              () => TapGestureRecognizer(),
-              (TapGestureRecognizer instance) {
-                instance.onTapUp = (details) {
-                  final box = context.findRenderObject() as RenderBox?;
-                  if (box == null) return;
-                  final local = box.globalToLocal(details.globalPosition);
-                  final pos = positionFromX(local.dx, box.size.width);
-                  onScrubCommitted(pos);
-                };
-              },
-            ),
+        PanGestureRecognizer: GestureRecognizerFactoryWithHandlers<PanGestureRecognizer>(
+          () => PanGestureRecognizer(),
+          (PanGestureRecognizer instance) {
+            Duration? lastPreview;
+            instance
+              ..onStart = (details) {
+                onScrubStarted();
+              }
+              ..onUpdate = (details) {
+                final box = context.findRenderObject() as RenderBox?;
+                if (box == null) return;
+                final local = box.globalToLocal(details.globalPosition);
+                final pos = positionFromX(local.dx, box.size.width);
+                lastPreview = pos;
+                onScrubUpdated(pos);
+              }
+              ..onEnd = (details) {
+                if (lastPreview != null) {
+                  onScrubCommitted(lastPreview!);
+                } else {
+                  onScrubCancelled();
+                }
+              };
+          },
+        ),
+        TapGestureRecognizer: GestureRecognizerFactoryWithHandlers<TapGestureRecognizer>(
+          () => TapGestureRecognizer(),
+          (TapGestureRecognizer instance) {
+            instance.onTapUp = (details) {
+              final box = context.findRenderObject() as RenderBox?;
+              if (box == null) return;
+              final local = box.globalToLocal(details.globalPosition);
+              final pos = positionFromX(local.dx, box.size.width);
+              onScrubCommitted(pos);
+            };
+          },
+        ),
       },
       behavior: HitTestBehavior.opaque, // widen hit target
       child: const SizedBox.expand(),

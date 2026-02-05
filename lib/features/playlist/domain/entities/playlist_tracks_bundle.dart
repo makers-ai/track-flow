@@ -11,19 +11,3 @@ class PlaylistTracksBundle extends Equatable {
   @override
   List<Object?> get props => [tracks, summaries];
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

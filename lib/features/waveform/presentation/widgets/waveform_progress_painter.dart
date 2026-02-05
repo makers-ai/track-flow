@@ -27,9 +27,7 @@ class WaveformProgressPainter extends CustomPainter {
     final double barWidth = size.width / amplitudes.length;
     final double baselineY = size.height - paddingBottom;
     final double maxHeight = size.height - paddingTop - paddingBottom;
-    final double progressX =
-        (progress.inMilliseconds / duration.inMilliseconds).clamp(0.0, 1.0) *
-        size.width;
+    final double progressX = (progress.inMilliseconds / duration.inMilliseconds).clamp(0.0, 1.0) * size.width;
 
     final paint =
         Paint()
@@ -41,8 +39,7 @@ class WaveformProgressPainter extends CustomPainter {
     for (int i = 0; i < amplitudes.length; i++) {
       final double x = i * barWidth;
       if (x > progressX) break;
-      final double barHeight =
-          (amplitudes[i] * maxHeight).clamp(1.0, maxHeight).toDouble();
+      final double barHeight = (amplitudes[i] * maxHeight).clamp(1.0, maxHeight).toDouble();
       canvas.drawLine(
         Offset(x, baselineY),
         Offset(x, baselineY - barHeight),

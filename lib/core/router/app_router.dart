@@ -68,17 +68,13 @@ class AppRouter {
 
         // Handle authenticated state with setup requirements
         if (flowState is AppFlowAuthenticated) {
-          if (flowState.needsOnboarding &&
-              currentLocation != AppRoutes.onboarding) {
+          if (flowState.needsOnboarding && currentLocation != AppRoutes.onboarding) {
             return AppRoutes.onboarding;
           }
-          if (flowState.needsProfileSetup &&
-              currentLocation != AppRoutes.profileCreation) {
+          if (flowState.needsProfileSetup && currentLocation != AppRoutes.profileCreation) {
             return AppRoutes.profileCreation;
           }
-          if (!flowState.needsOnboarding &&
-              !flowState.needsProfileSetup &&
-              currentLocation != AppRoutes.dashboard) {
+          if (!flowState.needsOnboarding && !flowState.needsProfileSetup && currentLocation != AppRoutes.dashboard) {
             return AppRoutes.dashboard;
           }
           return null;
@@ -102,7 +98,6 @@ class AppRouter {
               currentLocation == AppRoutes.editUserProfile ||
               currentLocation.startsWith('/artistprofile/') ||
               currentLocation.startsWith('/projects/')) {
-
             return null; // Allow navigation
           }
 
@@ -151,11 +146,7 @@ class AppRouter {
             final profile = state.extra as UserProfile?;
             if (profile == null) {
               // If no profile provided, navigate back to settings
-              return Scaffold(
-                body: Center(
-                  child: Text('Profile not found'),
-                ),
-              );
+              return Scaffold(body: Center(child: Text('Profile not found')));
             }
             return EditUserProfileScreen(profile: profile);
           },
@@ -203,40 +194,28 @@ class AppRouter {
           builder:
               (context, state, child) => MultiBlocProvider(
                 providers: AppBlocProviders.getMainShellProviders(),
-                child: AuthenticatedShell(
-                  child: MainScaffold(child: child),
-                ),
+                child: AuthenticatedShell(child: MainScaffold(child: child)),
               ),
           routes: [
             GoRoute(
               path: AppRoutes.dashboard,
-              pageBuilder:
-                  (context, state) =>
-                      const NoTransitionPage(child: DashboardScreen()),
+              pageBuilder: (context, state) => const NoTransitionPage(child: DashboardScreen()),
             ),
             GoRoute(
               path: AppRoutes.projects,
-              pageBuilder:
-                  (context, state) =>
-                      const NoTransitionPage(child: ProjectListScreen()),
+              pageBuilder: (context, state) => const NoTransitionPage(child: ProjectListScreen()),
             ),
             GoRoute(
               path: AppRoutes.trackList,
-              pageBuilder:
-                  (context, state) =>
-                      const NoTransitionPage(child: TrackListScreen()),
+              pageBuilder: (context, state) => const NoTransitionPage(child: TrackListScreen()),
             ),
             GoRoute(
               path: AppRoutes.notifications,
-              pageBuilder:
-                  (context, state) =>
-                      const NoTransitionPage(child: NotificationCenterScreen()),
+              pageBuilder: (context, state) => const NoTransitionPage(child: NotificationCenterScreen()),
             ),
             GoRoute(
               path: AppRoutes.voiceMemos,
-              pageBuilder:
-                  (context, state) =>
-                      const NoTransitionPage(child: VoiceMemosScreen()),
+              pageBuilder: (context, state) => const NoTransitionPage(child: VoiceMemosScreen()),
             ),
             GoRoute(
               path: AppRoutes.projectDetails,
@@ -252,9 +231,7 @@ class AppRouter {
             ),
             GoRoute(
               path: AppRoutes.settings,
-              pageBuilder:
-                  (context, state) =>
-                      const NoTransitionPage(child: SettingsScreen()),
+              pageBuilder: (context, state) => const NoTransitionPage(child: SettingsScreen()),
             ),
             GoRoute(
               path: AppRoutes.manageCollaborators,
@@ -275,16 +252,12 @@ class AppRouter {
             // Cache demo route removed
             GoRoute(
               path: AppRoutes.settings,
-              pageBuilder:
-                  (context, state) =>
-                      const NoTransitionPage(child: SettingsScreen()),
+              pageBuilder: (context, state) => const NoTransitionPage(child: SettingsScreen()),
             ),
           ],
         ),
       ],
-      errorBuilder:
-          (context, state) =>
-              Scaffold(body: Center(child: Text('Error: ${state.error}'))),
+      errorBuilder: (context, state) => Scaffold(body: Center(child: Text('Error: ${state.error}'))),
     );
   }
 }

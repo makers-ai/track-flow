@@ -38,7 +38,7 @@ class _PlaybackProgressState extends State<PlaybackProgress> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return BlocBuilder<AudioPlayerBloc, AudioPlayerState>(
       builder: (context, state) {
         Duration position = Duration.zero;
@@ -47,15 +47,14 @@ class _PlaybackProgressState extends State<PlaybackProgress> {
 
         if (state is AudioPlayerSessionState) {
           final session = state.session;
-          position = _isDragging 
-              ? Duration(milliseconds: (_dragPosition * (session.duration?.inMilliseconds ?? 0)).round())
-              : session.position;
+          position =
+              _isDragging
+                  ? Duration(milliseconds: (_dragPosition * (session.duration?.inMilliseconds ?? 0)).round())
+                  : session.position;
           duration = session.duration ?? Duration.zero;
-          
+
           if (duration.inMilliseconds > 0) {
-            progress = _isDragging 
-                ? _dragPosition 
-                : position.inMilliseconds / duration.inMilliseconds;
+            progress = _isDragging ? _dragPosition : position.inMilliseconds / duration.inMilliseconds;
           }
         }
 
@@ -73,29 +72,30 @@ class _PlaybackProgressState extends State<PlaybackProgress> {
                   overlayRadius: widget.thumbRadius * 1.5,
                 ),
                 activeTrackColor: widget.activeColor ?? theme.primaryColor,
-                inactiveTrackColor: widget.inactiveColor ?? 
-                    theme.primaryColor.withValues(alpha: 0.3),
+                inactiveTrackColor: widget.inactiveColor ?? theme.primaryColor.withValues(alpha: 0.3),
                 thumbColor: widget.thumbColor ?? theme.primaryColor,
-                overlayColor: (widget.thumbColor ?? theme.primaryColor)
-                    .withValues(alpha: 0.2),
+                overlayColor: (widget.thumbColor ?? theme.primaryColor).withValues(alpha: 0.2),
               ),
               child: Slider(
                 value: progress.clamp(0.0, 1.0),
-                onChanged: duration.inMilliseconds > 0 ? (value) {
-                  setState(() {
-                    _isDragging = true;
-                    _dragPosition = value;
-                  });
-                } : null,
+                onChanged:
+                    duration.inMilliseconds > 0
+                        ? (value) {
+                          setState(() {
+                            _isDragging = true;
+                            _dragPosition = value;
+                          });
+                        }
+                        : null,
                 onChangeEnd: (value) {
                   final newPosition = Duration(
                     milliseconds: (value * duration.inMilliseconds).round(),
                   );
-                  
+
                   context.read<AudioPlayerBloc>().add(
                     SeekToPositionRequested(newPosition),
                   );
-                  
+
                   setState(() {
                     _isDragging = false;
                     _dragPosition = 0.0;
@@ -113,14 +113,16 @@ class _PlaybackProgressState extends State<PlaybackProgress> {
                   children: [
                     Text(
                       _formatDuration(position),
-                      style: widget.timeTextStyle ?? 
+                      style:
+                          widget.timeTextStyle ??
                           theme.textTheme.bodySmall?.copyWith(
                             color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
                           ),
                     ),
                     Text(
                       _formatDuration(duration),
-                      style: widget.timeTextStyle ?? 
+                      style:
+                          widget.timeTextStyle ??
                           theme.textTheme.bodySmall?.copyWith(
                             color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
                           ),

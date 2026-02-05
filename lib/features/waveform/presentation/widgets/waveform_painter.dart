@@ -27,16 +27,13 @@ class WaveformPainter extends CustomPainter {
     final double maxHeight = size.height - paddingTop - paddingBottom;
     final progressX =
         (duration?.inMilliseconds ?? 0) > 0
-            ? ((currentPosition?.inMilliseconds ?? 0) /
-                    (duration!.inMilliseconds)) *
-                size.width
+            ? ((currentPosition?.inMilliseconds ?? 0) / (duration!.inMilliseconds)) * size.width
             : 0.0;
 
     // Draw waveform bars
     for (int i = 0; i < amplitudes.length; i++) {
       final x = i * barWidth;
-      final double barHeight =
-          (amplitudes[i] * maxHeight).clamp(1.0, maxHeight).toDouble();
+      final double barHeight = (amplitudes[i] * maxHeight).clamp(1.0, maxHeight).toDouble();
 
       // Choose paint based on playback progress
       final paint =

@@ -25,8 +25,7 @@ class AudioPlaybackServiceImpl implements AudioPlaybackService {
   final AudioPlayer _audioPlayer = AudioPlayer(); // use this to play audio
   PlaybackSession _currentSession = PlaybackSession.initial();
 
-  final StreamController<PlaybackSession> _sessionController =
-      StreamController<PlaybackSession>.broadcast();
+  final StreamController<PlaybackSession> _sessionController = StreamController<PlaybackSession>.broadcast();
 
   @override
   Stream<PlaybackSession> get sessionStream => _sessionController.stream;
@@ -62,8 +61,7 @@ class AudioPlaybackServiceImpl implements AudioPlaybackService {
       // Resolve URI
       late final Uri resolvedUri;
       if (isLocalFilePath) {
-        final filePath =
-            url.startsWith('file://') ? url.replaceFirst('file://', '') : url;
+        final filePath = url.startsWith('file://') ? url.replaceFirst('file://', '') : url;
         // Validate file exists to prevent platform exceptions
         if (!File(filePath).existsSync()) {
           AppLogger.error(
@@ -427,15 +425,12 @@ class AudioPlaybackServiceImpl implements AudioPlaybackService {
         artist: 'Comment',
         duration: metadata.duration,
         album: 'Comments',
-        artUri: metadata.coverUrl != null && metadata.coverUrl!.isNotEmpty
-            ? Uri.parse(metadata.coverUrl!)
-            : null,
+        artUri: metadata.coverUrl != null && metadata.coverUrl!.isNotEmpty ? Uri.parse(metadata.coverUrl!) : null,
       );
     }
 
     // Get enhanced context information from background service
-    final backgroundInfo = await TrackContextBackgroundService.instance
-        .getTrackInfoForBackground(trackId, title);
+    final backgroundInfo = await TrackContextBackgroundService.instance.getTrackInfoForBackground(trackId, title);
 
     return bg.MediaItem(
       id: trackId,
@@ -443,10 +438,7 @@ class AudioPlaybackServiceImpl implements AudioPlaybackService {
       artist: backgroundInfo.artist, // Rich artist from collaborator
       duration: backgroundInfo.duration, // Accurate duration from TrackVersion
       album: backgroundInfo.projectName, // Project name as album
-      artUri:
-          metadata.coverUrl != null && metadata.coverUrl!.isNotEmpty
-              ? Uri.parse(metadata.coverUrl!)
-              : null,
+      artUri: metadata.coverUrl != null && metadata.coverUrl!.isNotEmpty ? Uri.parse(metadata.coverUrl!) : null,
     );
   }
 
@@ -523,8 +515,7 @@ class AudioPlaybackServiceImpl implements AudioPlaybackService {
         newState = PlaybackState.loading;
         break;
       case ProcessingState.ready:
-        newState =
-            playerState.playing ? PlaybackState.playing : PlaybackState.paused;
+        newState = playerState.playing ? PlaybackState.playing : PlaybackState.paused;
         break;
       case ProcessingState.completed:
         newState = PlaybackState.completed;

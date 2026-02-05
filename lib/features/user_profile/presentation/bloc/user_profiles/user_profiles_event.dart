@@ -37,4 +37,3 @@ class LoadUserProfile extends UserProfilesEvent {
 
 /// Clear all cached profiles
 class ClearUserProfiles extends UserProfilesEvent {}
-

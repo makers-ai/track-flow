@@ -12,9 +12,7 @@ class NewUserIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (email.isNotEmpty &&
-        state is UserSearchSuccess &&
-        (state as UserSearchSuccess).user == null) {
+    if (email.isNotEmpty && state is UserSearchSuccess && (state as UserSearchSuccess).user == null) {
       return Column(
         children: [
           SizedBox(height: Dimensions.space12),

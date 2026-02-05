@@ -46,8 +46,7 @@ class SyncState extends Equatable {
   );
 
   /// Creates an error sync state
-  static SyncState error(String message) =>
-      SyncState(status: SyncStatus.error, errorMessage: message);
+  static SyncState error(String message) => SyncState(status: SyncStatus.error, errorMessage: message);
 
   /// Returns true if sync is complete and data is ready
   bool get isComplete => status == SyncStatus.complete;

@@ -69,10 +69,7 @@ class RoleOptionTile extends StatelessWidget {
           child: Container(
             padding: EdgeInsets.all(Dimensions.space16),
             decoration: BoxDecoration(
-              color:
-                  isSelected
-                      ? AppColors.primary.withValues(alpha: 0.1)
-                      : AppColors.surface,
+              color: isSelected ? AppColors.primary.withValues(alpha: 0.1) : AppColors.surface,
               borderRadius: BorderRadius.circular(Dimensions.radiusMedium),
               border: Border.all(
                 color: isSelected ? AppColors.primary : AppColors.border,
@@ -85,19 +82,13 @@ class RoleOptionTile extends StatelessWidget {
                   width: Dimensions.iconMedium,
                   height: Dimensions.iconMedium,
                   decoration: BoxDecoration(
-                    color:
-                        isSelected
-                            ? AppColors.primary
-                            : AppColors.textSecondary.withValues(alpha: 0.2),
+                    color: isSelected ? AppColors.primary : AppColors.textSecondary.withValues(alpha: 0.2),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     _getRoleIcon(role),
                     size: Dimensions.iconSmall,
-                    color:
-                        isSelected
-                            ? AppColors.onPrimary
-                            : AppColors.textSecondary,
+                    color: isSelected ? AppColors.onPrimary : AppColors.textSecondary,
                   ),
                 ),
                 SizedBox(width: Dimensions.space16),
@@ -108,10 +99,7 @@ class RoleOptionTile extends StatelessWidget {
                       Text(
                         _getRoleDisplayName(role),
                         style: AppTextStyle.bodyLarge.copyWith(
-                          color:
-                              isSelected
-                                  ? AppColors.primary
-                                  : AppColors.textPrimary,
+                          color: isSelected ? AppColors.primary : AppColors.textPrimary,
                           fontWeight: FontWeight.w600,
                         ),
                       ),

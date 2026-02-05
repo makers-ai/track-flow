@@ -7,8 +7,7 @@ import '../services/audio_playback_service.dart';
 /// ONLY handles audio pause operation - NO business domain concerns
 @injectable
 class PauseAudioUseCase {
-  const PauseAudioUseCase({required AudioPlaybackService playbackService})
-    : _playbackService = playbackService;
+  const PauseAudioUseCase({required AudioPlaybackService playbackService}) : _playbackService = playbackService;
 
   final AudioPlaybackService _playbackService;
 
