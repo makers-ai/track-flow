@@ -58,7 +58,7 @@ class ImageCompressionService {
       final savedPercentage = ((originalSize - compressedSize) / originalSize * 100).toStringAsFixed(1);
 
       AppLogger.info(
-        'Image compressed: ${originalSize} → ${compressedSize} bytes (saved ${savedPercentage}%)',
+        'Image compressed: $originalSize → $compressedSize bytes (saved $savedPercentage%)',
         tag: 'IMAGE_COMPRESSION',
       );
 

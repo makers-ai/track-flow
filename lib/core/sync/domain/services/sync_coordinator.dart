@@ -367,6 +367,7 @@ class SyncCoordinator implements SyncOrchestrator {
   /// 🧹 Clear all sync keys from SharedPreferences
   ///
   /// This removes all stored sync timestamps, forcing full sync on next pull
+  @override
   Future<void> clearAllSyncKeys() async {
     AppLogger.info(
       'Clearing all sync keys from SharedPreferences',

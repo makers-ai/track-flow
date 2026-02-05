@@ -65,11 +65,11 @@ class SessionService {
         _profileUseCase.isProfileComplete(user.id.value),
       ]);
 
-      final onboardingComplete = (results[0] as Either<Failure, bool>).fold(
+      final onboardingComplete = results[0].fold(
         (failure) => false,
         (completed) => completed,
       );
-      final profileComplete = (results[1] as Either<Failure, bool>).fold(
+      final profileComplete = results[1].fold(
         (failure) => false,
         (complete) => complete,
       );

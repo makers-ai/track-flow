@@ -2,6 +2,7 @@
 ///
 /// These constants define the available options for various profile fields
 /// such as roles, genres, and skills that users can select from.
+library;
 
 /// Available creative roles for music professionals
 const List<String> kPredefinedRoles = [

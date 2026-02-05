@@ -10,8 +10,6 @@ import 'package:trackflow/core/storage/domain/image_storage_repository.dart';
 import 'package:trackflow/features/projects/domain/entities/project.dart';
 import 'package:trackflow/features/projects/domain/repositories/projects_repository.dart';
 import 'package:trackflow/features/projects/domain/usecases/upload_cover_art_usecase.dart';
-import 'package:trackflow/features/projects/domain/value_objects/project_description.dart';
-import 'package:trackflow/features/projects/domain/value_objects/project_name.dart';
 
 import 'upload_cover_art_usecase_test.mocks.dart';
 
