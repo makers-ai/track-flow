@@ -92,44 +92,46 @@ class _UploadTrackFormState extends State<UploadTrackForm> {
   }
 
   Future<void> _submit() async {
-    if (_formKey.currentState!.validate()) {
-      _trackTitle = _titleController?.text;
-      final selected = _file;
-      if (selected != null) {
-        setState(() => _isSubmitting = true);
-        final file = await _materializePlatformFile(selected);
-        if (file == null) {
-          setState(() => _isSubmitting = false);
-          if (!mounted) return;
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Could not access selected audio file.'),
-              backgroundColor: AppColors.error,
-            ),
-          );
-          return;
-        }
+    if (!_formKey.currentState!.validate()) return;
 
-        if (!mounted) return;
-        context.read<AudioTrackBloc>().add(
-          UploadAudioTrackEvent(
-            name: _trackTitle!,
-            file: file,
-            projectId: widget.project.id,
-          ),
-        );
-        setState(() => _isSubmitting = false);
-        if (!mounted) return;
-        Navigator.of(context).pop();
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please select an audio file.'),
-            backgroundColor: AppColors.error,
-          ),
-        );
-      }
+    _trackTitle = _titleController?.text;
+    final selected = _file;
+
+    if (selected == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select an audio file.'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
     }
+
+    setState(() => _isSubmitting = true);
+    final file = await _materializePlatformFile(selected);
+    if (file == null) {
+      setState(() => _isSubmitting = false);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Could not access selected audio file.'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
+
+    if (!mounted) return;
+    context.read<AudioTrackBloc>().add(
+      UploadAudioTrackEvent(
+        name: _trackTitle!,
+        file: file,
+        projectId: widget.project.id,
+      ),
+    );
+    setState(() => _isSubmitting = false);
+    if (!mounted) return;
+    Navigator.of(context).pop();
   }
 
   @override
