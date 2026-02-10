@@ -69,13 +69,13 @@ class AddTrackVersionUseCase {
         duration = durationEither.getOrElse(() => Duration.zero);
       }
 
-      // 3) Create version first to get versionId, then cache with correct versionId
-      final addEither = await trackVersionRepository.addVersion(
+      // 3) Upload version to Firebase directly (online-first approach)
+      final addEither = await trackVersionRepository.addVersionOnline(
         trackId: params.trackId,
         file: params.file,
         label: params.label,
         duration: duration,
-        createdBy: UserId.fromUniqueString(userId),
+        createdBy: userId,
       );
 
       if (addEither.isLeft()) {
@@ -84,32 +84,35 @@ class AddTrackVersionUseCase {
 
       final version = addEither.getOrElse(() => throw Exception());
 
-      // 4) Cache audio locally using the actual versionId from created version
+      // 4) Cache audio locally for offline playback (best-effort, don't fail if this fails)
       final cacheEither = await audioStorageRepository.storeAudio(
         params.trackId,
-        version.id, // Use the actual versionId from the created version
+        version.id,
         params.file,
         directoryType: DirectoryType.audioTracks,
       );
 
-      if (cacheEither.isLeft()) {
-        // Rollback version creation if cache fails
-        await trackVersionRepository.deleteVersion(version.id);
-        final failure = cacheEither.fold((l) => l, (r) => null);
-        return Left(CacheFailure(failure?.message ?? 'Failed to cache audio'));
-      }
+      // Best-effort: log but don't fail the operation if cache fails
+      // The file is already uploaded to Firebase, so we can stream it later
+      File? cachedFile;
+      cacheEither.fold(
+        (failure) {
+          // Log warning but don't fail - file is already in Firebase
+        },
+        (cached) {
+          cachedFile = File(cached.filePath);
+        },
+      );
 
-      final cached = cacheEither.getOrElse(() => throw Exception());
-      final cachedFile = File(cached.filePath);
-
-      // 5) Fire-and-forget canonical waveform generation using cached file
+      // 5) Fire-and-forget canonical waveform generation using cached file or original
+      final waveformSourcePath = cachedFile?.path ?? params.file.path;
       () async {
         try {
           await generateAndStoreWaveform(
             GenerateAndStoreWaveformParams(
               trackId: params.trackId,
               versionId: version.id,
-              audioFilePath: cachedFile.path,
+              audioFilePath: waveformSourcePath,
               targetSampleCount: null,
             ),
           );

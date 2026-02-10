@@ -389,6 +389,42 @@ class MockProjectTrackService extends _i1.Mock
       ) as _i5.Future<_i2.Either<_i7.Failure, _i11.AudioTrack>>);
 
   @override
+  _i2.Either<_i7.Failure, _i11.AudioTrack> createTrackEntity({
+    required _i8.Project? project,
+    required _i9.UserId? requester,
+    required String? name,
+    Duration? duration,
+    _i9.TrackVersionId? activeVersionId,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #createTrackEntity,
+          [],
+          {
+            #project: project,
+            #requester: requester,
+            #name: name,
+            #duration: duration,
+            #activeVersionId: activeVersionId,
+          },
+        ),
+        returnValue: _FakeEither_0<_i7.Failure, _i11.AudioTrack>(
+          this,
+          Invocation.method(
+            #createTrackEntity,
+            [],
+            {
+              #project: project,
+              #requester: requester,
+              #name: name,
+              #duration: duration,
+              #activeVersionId: activeVersionId,
+            },
+          ),
+        ),
+      ) as _i2.Either<_i7.Failure, _i11.AudioTrack>);
+
+  @override
   _i5.Future<_i2.Either<_i7.Failure, _i2.Unit>> deleteTrack({
     required _i8.Project? project,
     required _i9.UserId? requester,
@@ -486,6 +522,44 @@ class MockTrackVersionRepository extends _i1.Mock
           this,
           Invocation.method(
             #addVersion,
+            [],
+            {
+              #trackId: trackId,
+              #file: file,
+              #label: label,
+              #duration: duration,
+              #createdBy: createdBy,
+            },
+          ),
+        )),
+      ) as _i5.Future<_i2.Either<_i7.Failure, _i13.TrackVersion>>);
+
+  @override
+  _i5.Future<_i2.Either<_i7.Failure, _i13.TrackVersion>> addVersionOnline({
+    required _i9.AudioTrackId? trackId,
+    required _i14.File? file,
+    String? label,
+    required Duration? duration,
+    required String? createdBy,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #addVersionOnline,
+          [],
+          {
+            #trackId: trackId,
+            #file: file,
+            #label: label,
+            #duration: duration,
+            #createdBy: createdBy,
+          },
+        ),
+        returnValue:
+            _i5.Future<_i2.Either<_i7.Failure, _i13.TrackVersion>>.value(
+                _FakeEither_0<_i7.Failure, _i13.TrackVersion>(
+          this,
+          Invocation.method(
+            #addVersionOnline,
             [],
             {
               #trackId: trackId,
@@ -758,6 +832,34 @@ class MockWaveformRepository extends _i1.Mock
           this,
           Invocation.method(
             #storeCanonicalWaveform,
+            [],
+            {
+              #trackId: trackId,
+              #waveform: waveform,
+            },
+          ),
+        )),
+      ) as _i5.Future<_i2.Either<_i7.Failure, _i2.Unit>>);
+
+  @override
+  _i5.Future<_i2.Either<_i7.Failure, _i2.Unit>> storeCanonicalWaveformOnline({
+    required _i9.AudioTrackId? trackId,
+    required _i16.AudioWaveform? waveform,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #storeCanonicalWaveformOnline,
+          [],
+          {
+            #trackId: trackId,
+            #waveform: waveform,
+          },
+        ),
+        returnValue: _i5.Future<_i2.Either<_i7.Failure, _i2.Unit>>.value(
+            _FakeEither_0<_i7.Failure, _i2.Unit>(
+          this,
+          Invocation.method(
+            #storeCanonicalWaveformOnline,
             [],
             {
               #trackId: trackId,

@@ -20,10 +20,32 @@ class TrackVersionsLoading extends TrackVersionsState {
 class TrackVersionsLoaded extends TrackVersionsState {
   final List<TrackVersionUiModel> versions;
   final TrackVersionId? activeVersionId;
-  const TrackVersionsLoaded({required this.versions, this.activeVersionId});
+  final bool isUploading;
+  final bool uploadSuccess;
+
+  const TrackVersionsLoaded({
+    required this.versions,
+    this.activeVersionId,
+    this.isUploading = false,
+    this.uploadSuccess = false,
+  });
+
+  TrackVersionsLoaded copyWith({
+    List<TrackVersionUiModel>? versions,
+    TrackVersionId? activeVersionId,
+    bool? isUploading,
+    bool? uploadSuccess,
+  }) {
+    return TrackVersionsLoaded(
+      versions: versions ?? this.versions,
+      activeVersionId: activeVersionId ?? this.activeVersionId,
+      isUploading: isUploading ?? this.isUploading,
+      uploadSuccess: uploadSuccess ?? this.uploadSuccess,
+    );
+  }
 
   @override
-  List<Object?> get props => [versions, activeVersionId];
+  List<Object?> get props => [versions, activeVersionId, isUploading, uploadSuccess];
 }
 
 class TrackVersionsError extends TrackVersionsState {

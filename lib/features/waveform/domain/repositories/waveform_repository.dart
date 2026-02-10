@@ -21,4 +21,11 @@ abstract class WaveformRepository {
     required AudioTrackId trackId,
     required AudioWaveform waveform,
   });
+
+  /// Store waveform using online-first approach: upload to Firebase first,
+  /// then cache locally. Path: waveforms/{trackId}/{versionId}.json
+  Future<Either<Failure, Unit>> storeCanonicalWaveformOnline({
+    required AudioTrackId trackId,
+    required AudioWaveform waveform,
+  });
 }

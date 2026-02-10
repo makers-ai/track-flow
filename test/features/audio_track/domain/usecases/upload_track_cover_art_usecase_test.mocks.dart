@@ -245,6 +245,52 @@ class MockAudioTrackRepository extends _i1.Mock
           ),
         )),
       ) as _i4.Future<_i2.Either<_i5.Failure, _i2.Unit>>);
+
+  @override
+  _i4.Future<_i2.Either<_i5.Failure, _i6.AudioTrack>> createTrackOnline(
+          _i6.AudioTrack? track) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #createTrackOnline,
+          [track],
+        ),
+        returnValue: _i4.Future<_i2.Either<_i5.Failure, _i6.AudioTrack>>.value(
+            _FakeEither_0<_i5.Failure, _i6.AudioTrack>(
+          this,
+          Invocation.method(
+            #createTrackOnline,
+            [track],
+          ),
+        )),
+      ) as _i4.Future<_i2.Either<_i5.Failure, _i6.AudioTrack>>);
+
+  @override
+  _i4.Future<_i2.Either<_i5.Failure, _i2.Unit>> setActiveVersionOnline({
+    required _i7.AudioTrackId? trackId,
+    required _i7.TrackVersionId? versionId,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #setActiveVersionOnline,
+          [],
+          {
+            #trackId: trackId,
+            #versionId: versionId,
+          },
+        ),
+        returnValue: _i4.Future<_i2.Either<_i5.Failure, _i2.Unit>>.value(
+            _FakeEither_0<_i5.Failure, _i2.Unit>(
+          this,
+          Invocation.method(
+            #setActiveVersionOnline,
+            [],
+            {
+              #trackId: trackId,
+              #versionId: versionId,
+            },
+          ),
+        )),
+      ) as _i4.Future<_i2.Either<_i5.Failure, _i2.Unit>>);
 }
 
 /// A class which mocks [ImageStorageRepository].

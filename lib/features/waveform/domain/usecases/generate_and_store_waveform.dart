@@ -46,7 +46,8 @@ class GenerateAndStoreWaveform {
         ),
       );
 
-      final storeEither = await _repository.storeCanonicalWaveform(
+      // Use online-first approach: upload to Firebase first, then cache locally
+      final storeEither = await _repository.storeCanonicalWaveformOnline(
         trackId: params.trackId,
         waveform: waveform,
       );

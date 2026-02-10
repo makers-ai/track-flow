@@ -7,6 +7,7 @@ import 'package:trackflow/core/theme/app_colors.dart';
 import 'package:trackflow/core/theme/app_dimensions.dart';
 import 'package:trackflow/features/audio_track/presentation/bloc/audio_track_bloc.dart';
 import 'package:trackflow/features/audio_track/presentation/bloc/audio_track_event.dart';
+import 'package:trackflow/features/audio_track/presentation/bloc/audio_track_state.dart';
 import 'package:trackflow/features/projects/domain/entities/project.dart';
 import 'package:trackflow/features/ui/forms/app_form_field.dart';
 import 'package:trackflow/features/ui/buttons/primary_button.dart';
@@ -27,7 +28,7 @@ class _UploadTrackFormState extends State<UploadTrackForm> {
   String? _trackTitle;
   PlatformFile? _file;
   bool _isSubmitting = false;
-  // Removed unused _isPicking
+  String? _errorMessage;
   TextEditingController? _titleController;
 
   @override
@@ -98,30 +99,26 @@ class _UploadTrackFormState extends State<UploadTrackForm> {
     final selected = _file;
 
     if (selected == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select an audio file.'),
-          backgroundColor: AppColors.error,
-        ),
-      );
+      setState(() => _errorMessage = 'Please select an audio file.');
       return;
     }
 
-    setState(() => _isSubmitting = true);
+    setState(() {
+      _isSubmitting = true;
+      _errorMessage = null;
+    });
     final file = await _materializePlatformFile(selected);
     if (file == null) {
-      setState(() => _isSubmitting = false);
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Could not access selected audio file.'),
-          backgroundColor: AppColors.error,
-        ),
-      );
+      setState(() {
+        _isSubmitting = false;
+        _errorMessage = 'Could not access selected audio file.';
+      });
       return;
     }
 
     if (!mounted) return;
+
+    // Dispatch the event - the BlocListener will handle success/error
     context.read<AudioTrackBloc>().add(
       UploadAudioTrackEvent(
         name: _trackTitle!,
@@ -129,53 +126,113 @@ class _UploadTrackFormState extends State<UploadTrackForm> {
         projectId: widget.project.id,
       ),
     );
-    setState(() => _isSubmitting = false);
-    if (!mounted) return;
-    Navigator.of(context).pop();
+    // Don't close here - wait for BLoC response via BlocListener
   }
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          AppFormField(
-            label: 'Track Title',
-            hint: 'Enter the title of your track',
-            controller: _titleController,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter a track title';
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: Dimensions.space24),
-          SecondaryButton(
-            text: _file == null ? 'Select Audio File' : 'Change Audio File',
-            icon: Icons.music_note,
-            onPressed: _isSubmitting ? null : _pickFile,
-            isDisabled: _isSubmitting,
-          ),
-          if (_file != null)
-            Padding(
-              padding: const EdgeInsets.only(top: Dimensions.space8),
-              child: Text(
-                'Selected: ${_file!.name}',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodySmall,
+    return BlocListener<AudioTrackBloc, AudioTrackState>(
+      listener: (context, state) {
+        if (state is AudioTrackUploadSuccess) {
+          // Upload succeeded - close the bottom sheet
+          setState(() => _isSubmitting = false);
+          Navigator.of(context).pop();
+        } else if (state is AudioTrackError) {
+          // Upload failed - show error and allow retry
+          setState(() {
+            _isSubmitting = false;
+            _errorMessage = state.message;
+          });
+        } else if (state is AudioTrackUploadLoading) {
+          // Upload in progress
+          setState(() => _isSubmitting = true);
+        }
+      },
+      child: PopScope(
+        canPop: !_isSubmitting,
+        onPopInvokedWithResult: (didPop, result) {
+          if (!didPop && _isSubmitting) {
+            // User tried to close while uploading - show message
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Please wait while the track is uploading...'),
+                duration: Duration(seconds: 2),
               ),
-            ),
-          const SizedBox(height: Dimensions.space32),
-          PrimaryButton(
-            text: 'Upload Track',
-            onPressed: _isSubmitting ? null : _submit,
-            isLoading: _isSubmitting,
+            );
+          }
+        },
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              IgnorePointer(
+                ignoring: _isSubmitting,
+                child: Opacity(
+                  opacity: _isSubmitting ? 0.6 : 1.0,
+                  child: AppFormField(
+                    label: 'Track Title',
+                    hint: 'Enter the title of your track',
+                    controller: _titleController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a track title';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: Dimensions.space24),
+              SecondaryButton(
+                text: _file == null ? 'Select Audio File' : 'Change Audio File',
+                icon: Icons.music_note,
+                onPressed: _isSubmitting ? null : _pickFile,
+                isDisabled: _isSubmitting,
+              ),
+              if (_file != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: Dimensions.space8),
+                  child: Text(
+                    'Selected: ${_file!.name}',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ),
+              if (_errorMessage != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: Dimensions.space16),
+                  child: Text(
+                    _errorMessage!,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: AppColors.error,
+                      fontSize: 13,
+                    ),
+                  ),
+                ),
+              const SizedBox(height: Dimensions.space32),
+              PrimaryButton(
+                text: _isSubmitting ? 'Uploading...' : 'Upload Track',
+                onPressed: _isSubmitting ? null : _submit,
+                isLoading: _isSubmitting,
+              ),
+              if (_isSubmitting)
+                const Padding(
+                  padding: EdgeInsets.only(top: Dimensions.space16),
+                  child: Text(
+                    'Please wait while your track is being uploaded.\nThis may take a moment.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

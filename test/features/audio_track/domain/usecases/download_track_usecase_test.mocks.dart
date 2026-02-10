@@ -553,6 +553,53 @@ class MockAudioTrackRepository extends _i1.Mock
           ),
         )),
       ) as _i4.Future<_i2.Either<_i11.Failure, _i2.Unit>>);
+
+  @override
+  _i4.Future<_i2.Either<_i11.Failure, _i12.AudioTrack>> createTrackOnline(
+          _i12.AudioTrack? track) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #createTrackOnline,
+          [track],
+        ),
+        returnValue:
+            _i4.Future<_i2.Either<_i11.Failure, _i12.AudioTrack>>.value(
+                _FakeEither_0<_i11.Failure, _i12.AudioTrack>(
+          this,
+          Invocation.method(
+            #createTrackOnline,
+            [track],
+          ),
+        )),
+      ) as _i4.Future<_i2.Either<_i11.Failure, _i12.AudioTrack>>);
+
+  @override
+  _i4.Future<_i2.Either<_i11.Failure, _i2.Unit>> setActiveVersionOnline({
+    required _i7.AudioTrackId? trackId,
+    required _i7.TrackVersionId? versionId,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #setActiveVersionOnline,
+          [],
+          {
+            #trackId: trackId,
+            #versionId: versionId,
+          },
+        ),
+        returnValue: _i4.Future<_i2.Either<_i11.Failure, _i2.Unit>>.value(
+            _FakeEither_0<_i11.Failure, _i2.Unit>(
+          this,
+          Invocation.method(
+            #setActiveVersionOnline,
+            [],
+            {
+              #trackId: trackId,
+              #versionId: versionId,
+            },
+          ),
+        )),
+      ) as _i4.Future<_i2.Either<_i11.Failure, _i2.Unit>>);
 }
 
 /// A class which mocks [TrackVersionRepository].
@@ -590,6 +637,44 @@ class MockTrackVersionRepository extends _i1.Mock
           this,
           Invocation.method(
             #addVersion,
+            [],
+            {
+              #trackId: trackId,
+              #file: file,
+              #label: label,
+              #duration: duration,
+              #createdBy: createdBy,
+            },
+          ),
+        )),
+      ) as _i4.Future<_i2.Either<_i11.Failure, _i14.TrackVersion>>);
+
+  @override
+  _i4.Future<_i2.Either<_i11.Failure, _i14.TrackVersion>> addVersionOnline({
+    required _i7.AudioTrackId? trackId,
+    required _i8.File? file,
+    String? label,
+    required Duration? duration,
+    required String? createdBy,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #addVersionOnline,
+          [],
+          {
+            #trackId: trackId,
+            #file: file,
+            #label: label,
+            #duration: duration,
+            #createdBy: createdBy,
+          },
+        ),
+        returnValue:
+            _i4.Future<_i2.Either<_i11.Failure, _i14.TrackVersion>>.value(
+                _FakeEither_0<_i11.Failure, _i14.TrackVersion>(
+          this,
+          Invocation.method(
+            #addVersionOnline,
             [],
             {
               #trackId: trackId,

@@ -9,6 +9,7 @@ import 'package:trackflow/features/audio_track/domain/services/project_track_ser
 import 'package:trackflow/features/projects/domain/repositories/projects_repository.dart';
 import 'package:trackflow/features/track_version/domain/usecases/add_track_version_usecase.dart';
 import 'package:trackflow/features/audio_track/domain/repositories/audio_track_repository.dart';
+import 'package:trackflow/features/track_version/domain/repositories/track_version_repository.dart';
 
 class UploadAudioTrackParams {
   final ProjectId projectId;
@@ -28,7 +29,8 @@ class UploadAudioTrackUseCase {
   final ProjectsRepository projectsRepository;
   final SessionStorage sessionStorage;
   final AddTrackVersionUseCase addTrackVersionUseCase;
-  final AudioTrackRepository audioTrackRepository; // Para actualizar activeVersionId
+  final AudioTrackRepository audioTrackRepository;
+  final TrackVersionRepository trackVersionRepository; // For rollback
 
   UploadAudioTrackUseCase(
     this.projectTrackService,
@@ -36,43 +38,40 @@ class UploadAudioTrackUseCase {
     this.sessionStorage,
     this.addTrackVersionUseCase,
     this.audioTrackRepository,
+    this.trackVersionRepository,
   );
 
   Future<Either<Failure, Unit>> call(UploadAudioTrackParams params) async {
     try {
-      // 1. OBTENER USUARIO Y PROYECTO
+      // 1. Auth check
       final userId = await sessionStorage.getUserId();
       if (userId == null) {
         return Left(AuthenticationFailure('User not authenticated'));
       }
 
-      final projectResult = await projectsRepository.getProjectById(
-        params.projectId,
-      );
+      // 2. Get project
+      final projectResult = await projectsRepository.getProjectById(params.projectId);
       if (projectResult.isLeft()) {
         return projectResult.map((_) => unit);
       }
       final project = projectResult.getOrElse(() => throw Exception());
 
-      // 2. VERIFICAR PERMISOS Y CREAR TRACK (usando ProjectTrackService)
-      final permissionCheck = await projectTrackService.addTrackToProject(
+      // 3. Create track entity (validates permissions, NO persistence yet)
+      final trackEntityResult = projectTrackService.createTrackEntity(
         project: project,
         requester: UserId.fromUniqueString(userId),
         name: params.name,
-        url: '', // temporary empty url
-        activeVersionId: null, // initially null, will be updated later
+        activeVersionId: null, // Will be updated after version upload
       );
 
-      // if permissions fail, return error
-      if (permissionCheck.isLeft()) {
-        return permissionCheck.map((_) => unit);
+      if (trackEntityResult.isLeft()) {
+        return trackEntityResult.map((_) => unit);
       }
+      final track = trackEntityResult.getOrElse(() => throw Exception());
 
-      // extract the created track from the result
-      final track = permissionCheck.getOrElse(() => throw Exception());
-
-      // 3. CREATE FIRST VERSION (before caching)
-      final addVersionResult = await addTrackVersionUseCase.call(
+      // 4. Upload version to Firebase FIRST (online-first approach)
+      // This uploads file to Storage + creates version in Firestore
+      final versionResult = await addTrackVersionUseCase.call(
         AddTrackVersionParams(
           trackId: track.id,
           file: params.file,
@@ -80,36 +79,21 @@ class UploadAudioTrackUseCase {
         ),
       );
 
-      if (addVersionResult.isLeft()) {
-        // Rollback: delete track if version creation fails
-        await projectTrackService.deleteTrack(
-          project: project,
-          requester: UserId.fromUniqueString(userId),
-          trackId: track.id,
-        );
-        return addVersionResult.map((_) => unit);
+      if (versionResult.isLeft()) {
+        // No rollback needed - nothing was persisted yet
+        return versionResult.map((_) => unit);
       }
+      final version = versionResult.getOrElse(() => throw Exception());
 
-      final version = addVersionResult.getOrElse(() => throw Exception());
+      // 5. Create track metadata in Firestore (after version upload succeeded)
+      // Use copyWith to set the activeVersionId
+      final trackWithVersion = track.copyWith(activeVersionId: version.id);
+      final createTrackResult = await audioTrackRepository.createTrackOnline(trackWithVersion);
 
-      // 4. UPDATE TRACK WITH ACTIVE VERSION
-      final updateActiveVersionResult = await audioTrackRepository.setActiveVersion(
-        trackId: track.id,
-        versionId: version.id,
-      );
-      if (updateActiveVersionResult.isLeft()) {
-        // Rollback: delete track if active version update fails
-        await projectTrackService.deleteTrack(
-          project: project,
-          requester: UserId.fromUniqueString(userId),
-          trackId: track.id,
-        );
-        return Left(
-          updateActiveVersionResult.fold(
-            (l) => l,
-            (_) => UnexpectedFailure('Failed to set active version'),
-          ),
-        );
+      if (createTrackResult.isLeft()) {
+        // Rollback: delete the uploaded version since track creation failed
+        await trackVersionRepository.deleteVersion(version.id);
+        return createTrackResult.map((_) => unit);
       }
 
       return Right(unit);

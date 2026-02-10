@@ -14,6 +14,7 @@ import 'package:trackflow/core/sync/data/models/sync_operation_document.dart';
 @Injectable(as: WaveformRepository)
 class WaveformRepositoryImpl implements WaveformRepository {
   final WaveformLocalDataSource _localDataSource;
+  final WaveformRemoteDataSource _remoteDataSource;
   final BackgroundSyncCoordinator _backgroundSyncCoordinator;
   final PendingOperationsManager _pendingOperationsManager;
 
@@ -23,6 +24,7 @@ class WaveformRepositoryImpl implements WaveformRepository {
     required BackgroundSyncCoordinator backgroundSyncCoordinator,
     required PendingOperationsManager pendingOperationsManager,
   }) : _localDataSource = localDataSource,
+       _remoteDataSource = remoteDataSource,
        _backgroundSyncCoordinator = backgroundSyncCoordinator,
        _pendingOperationsManager = pendingOperationsManager;
 
@@ -96,6 +98,7 @@ class WaveformRepositoryImpl implements WaveformRepository {
     }
   }
 
+  @Deprecated('Use storeCanonicalWaveformOnline instead for online-first flow')
   @override
   Future<Either<Failure, Unit>> storeCanonicalWaveform({
     required AudioTrackId trackId,
@@ -139,6 +142,27 @@ class WaveformRepositoryImpl implements WaveformRepository {
       return const Right(unit);
     } catch (e) {
       return Left(ServerFailure('Failed to store canonical waveform: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> storeCanonicalWaveformOnline({
+    required AudioTrackId trackId,
+    required AudioWaveform waveform,
+  }) async {
+    try {
+      // 1. Upload to Firebase Storage FIRST (online-first)
+      await _remoteDataSource.uploadCanonical(
+        trackId: trackId.value,
+        waveform: waveform,
+      );
+
+      // 2. Cache locally only after remote success
+      await _localDataSource.saveWaveform(waveform);
+
+      return const Right(unit);
+    } catch (e) {
+      return Left(ServerFailure('Failed to store canonical waveform online: $e'));
     }
   }
 }

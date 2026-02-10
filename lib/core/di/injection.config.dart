@@ -157,11 +157,11 @@ import 'package:trackflow/features/audio_comment/data/datasources/audio_comment_
 import 'package:trackflow/features/audio_comment/data/datasources/audio_comment_remote_datasource.dart'
     as _i87;
 import 'package:trackflow/features/audio_comment/data/models/audio_comment_dto.dart'
-    as _i101;
+    as _i107;
 import 'package:trackflow/features/audio_comment/data/repositories/audio_comment_repository_impl.dart'
     as _i193;
 import 'package:trackflow/features/audio_comment/data/services/audio_comment_incremental_sync_service.dart'
-    as _i102;
+    as _i108;
 import 'package:trackflow/features/audio_comment/domain/repositories/audio_comment_repository.dart'
     as _i192;
 import 'package:trackflow/features/audio_comment/domain/services/comment_audio_playback_service.dart'
@@ -423,11 +423,11 @@ import 'package:trackflow/features/projects/data/datasources/project_local_data_
 import 'package:trackflow/features/projects/data/datasources/project_remote_data_source.dart'
     as _i53;
 import 'package:trackflow/features/projects/data/models/project_dto.dart'
-    as _i107;
+    as _i101;
 import 'package:trackflow/features/projects/data/repositories/projects_repository_impl.dart'
     as _i164;
 import 'package:trackflow/features/projects/data/services/project_incremental_sync_service.dart'
-    as _i108;
+    as _i102;
 import 'package:trackflow/features/projects/domain/repositories/projects_repository.dart'
     as _i163;
 import 'package:trackflow/features/projects/domain/usecases/create_project_usecase.dart'
@@ -772,11 +772,10 @@ extension GetItInjectableX on _i1.GetIt {
           gh<_i22.GoogleSignIn>(),
           gh<_i19.FirebaseAuth>(),
         ));
-    gh.lazySingleton<_i26.IncrementalSyncService<_i101.AudioCommentDTO>>(
-        () => _i102.AudioCommentIncrementalSyncService(
-              gh<_i87.AudioCommentRemoteDataSource>(),
-              gh<_i86.AudioCommentLocalDataSource>(),
-              gh<_i72.TrackVersionLocalDataSource>(),
+    gh.lazySingleton<_i26.IncrementalSyncService<_i101.ProjectDTO>>(
+        () => _i102.ProjectIncrementalSyncService(
+              gh<_i53.ProjectRemoteDataSource>(),
+              gh<_i54.ProjectsLocalDataSource>(),
             ));
     gh.lazySingleton<_i26.IncrementalSyncService<_i103.UserProfileDTO>>(
         () => _i104.UserProfileIncrementalSyncService(
@@ -789,10 +788,11 @@ extension GetItInjectableX on _i1.GetIt {
               gh<_i88.AudioTrackLocalDataSource>(),
               gh<_i54.ProjectsLocalDataSource>(),
             ));
-    gh.lazySingleton<_i26.IncrementalSyncService<_i107.ProjectDTO>>(
-        () => _i108.ProjectIncrementalSyncService(
-              gh<_i53.ProjectRemoteDataSource>(),
-              gh<_i54.ProjectsLocalDataSource>(),
+    gh.lazySingleton<_i26.IncrementalSyncService<_i107.AudioCommentDTO>>(
+        () => _i108.AudioCommentIncrementalSyncService(
+              gh<_i87.AudioCommentRemoteDataSource>(),
+              gh<_i86.AudioCommentLocalDataSource>(),
+              gh<_i72.TrackVersionLocalDataSource>(),
             ));
     gh.lazySingleton<_i109.InvitationLocalDataSource>(
         () => _i109.IsarInvitationLocalDataSource(gh<_i32.Isar>()));
@@ -997,6 +997,7 @@ extension GetItInjectableX on _i1.GetIt {
     gh.lazySingleton<_i171.TrackVersionRepository>(
         () => _i172.TrackVersionRepositoryImpl(
               gh<_i72.TrackVersionLocalDataSource>(),
+              gh<_i170.TrackVersionRemoteDataSource>(),
               gh<_i140.BackgroundSyncCoordinator>(),
               gh<_i117.PendingOperationsManager>(),
             ));
@@ -1093,6 +1094,7 @@ extension GetItInjectableX on _i1.GetIt {
     gh.lazySingleton<_i196.AudioTrackRepository>(
         () => _i197.AudioTrackRepositoryImpl(
               gh<_i88.AudioTrackLocalDataSource>(),
+              gh<_i89.AudioTrackRemoteDataSource>(),
               gh<_i140.BackgroundSyncCoordinator>(),
               gh<_i117.PendingOperationsManager>(),
             ));
@@ -1505,6 +1507,7 @@ extension GetItInjectableX on _i1.GetIt {
               gh<_i121.SessionStorage>(),
               gh<_i251.AddTrackVersionUseCase>(),
               gh<_i196.AudioTrackRepository>(),
+              gh<_i171.TrackVersionRepository>(),
             ));
     gh.factory<_i275.VoiceMemoBloc>(() => _i275.VoiceMemoBloc(
           gh<_i80.WatchVoiceMemosUseCase>(),

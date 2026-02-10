@@ -13,6 +13,17 @@ abstract class TrackVersionRepository {
     required UserId createdBy,
   });
 
+  /// Adds a new version directly to Firebase (online-first approach).
+  /// Uploads file to Firebase Storage first, then saves metadata to Firestore,
+  /// and finally caches locally. Returns the created version with remote URL populated.
+  Future<Either<Failure, TrackVersion>> addVersionOnline({
+    required AudioTrackId trackId,
+    required File file,
+    String? label,
+    required Duration duration,
+    required String createdBy,
+  });
+
   Stream<Either<Failure, List<TrackVersion>>> watchVersionsByTrack(
     AudioTrackId trackId,
   );

@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-// import 'package:trackflow/features/track_version/domain/usecases/watch_track_versions_usecase.dart';
 import 'package:trackflow/features/track_version/domain/usecases/watch_track_versions_bundle_usecase.dart';
 import 'package:trackflow/features/track_version/domain/usecases/set_active_track_version_usecase.dart';
 import 'package:trackflow/features/track_version/domain/usecases/add_track_version_usecase.dart';
@@ -87,6 +86,11 @@ class TrackVersionsBloc extends Bloc<TrackVersionsEvent, TrackVersionsState> {
     AddTrackVersionRequested event,
     Emitter<TrackVersionsState> emit,
   ) async {
+    final currentState = state;
+    if (currentState is TrackVersionsLoaded) {
+      emit(currentState.copyWith(isUploading: true, uploadSuccess: false));
+    }
+
     final result = await _addVersion(
       AddTrackVersionParams(
         trackId: event.trackId,
@@ -95,7 +99,16 @@ class TrackVersionsBloc extends Bloc<TrackVersionsEvent, TrackVersionsState> {
         duration: event.duration,
       ),
     );
-    result.fold((failure) => emit(TrackVersionsError(failure.message)), (_) {});
+
+    result.fold(
+      (failure) => emit(TrackVersionsError(failure.message)),
+      (_) {
+        final latestState = state;
+        if (latestState is TrackVersionsLoaded) {
+          emit(latestState.copyWith(isUploading: false, uploadSuccess: true));
+        }
+      },
+    );
   }
 
   Future<void> _onRenameVersionRequested(
@@ -127,12 +140,7 @@ class TrackVersionsBloc extends Bloc<TrackVersionsEvent, TrackVersionsState> {
   ) async {
     final currentState = state;
     if (currentState is TrackVersionsLoaded) {
-      emit(
-        TrackVersionsLoaded(
-          versions: currentState.versions,
-          activeVersionId: event.activeVersionId,
-        ),
-      );
+      emit(currentState.copyWith(activeVersionId: event.activeVersionId));
     }
   }
 }

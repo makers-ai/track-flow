@@ -102,6 +102,44 @@ class MockTrackVersionRepository extends _i1.Mock
       ) as _i4.Future<_i2.Either<_i5.Failure, _i6.TrackVersion>>);
 
   @override
+  _i4.Future<_i2.Either<_i5.Failure, _i6.TrackVersion>> addVersionOnline({
+    required _i7.AudioTrackId? trackId,
+    required _i8.File? file,
+    String? label,
+    required Duration? duration,
+    required String? createdBy,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #addVersionOnline,
+          [],
+          {
+            #trackId: trackId,
+            #file: file,
+            #label: label,
+            #duration: duration,
+            #createdBy: createdBy,
+          },
+        ),
+        returnValue:
+            _i4.Future<_i2.Either<_i5.Failure, _i6.TrackVersion>>.value(
+                _FakeEither_0<_i5.Failure, _i6.TrackVersion>(
+          this,
+          Invocation.method(
+            #addVersionOnline,
+            [],
+            {
+              #trackId: trackId,
+              #file: file,
+              #label: label,
+              #duration: duration,
+              #createdBy: createdBy,
+            },
+          ),
+        )),
+      ) as _i4.Future<_i2.Either<_i5.Failure, _i6.TrackVersion>>);
+
+  @override
   _i4.Stream<
       _i2.Either<_i5.Failure, List<_i6.TrackVersion>>> watchVersionsByTrack(
           _i7.AudioTrackId? trackId) =>
@@ -363,6 +401,34 @@ class MockWaveformRepository extends _i1.Mock
           this,
           Invocation.method(
             #storeCanonicalWaveform,
+            [],
+            {
+              #trackId: trackId,
+              #waveform: waveform,
+            },
+          ),
+        )),
+      ) as _i4.Future<_i2.Either<_i5.Failure, _i2.Unit>>);
+
+  @override
+  _i4.Future<_i2.Either<_i5.Failure, _i2.Unit>> storeCanonicalWaveformOnline({
+    required _i7.AudioTrackId? trackId,
+    required _i10.AudioWaveform? waveform,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #storeCanonicalWaveformOnline,
+          [],
+          {
+            #trackId: trackId,
+            #waveform: waveform,
+          },
+        ),
+        returnValue: _i4.Future<_i2.Either<_i5.Failure, _i2.Unit>>.value(
+            _FakeEither_0<_i5.Failure, _i2.Unit>(
+          this,
+          Invocation.method(
+            #storeCanonicalWaveformOnline,
             [],
             {
               #trackId: trackId,

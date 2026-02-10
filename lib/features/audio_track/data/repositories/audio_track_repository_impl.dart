@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:trackflow/core/entities/unique_id.dart';
 import 'package:trackflow/core/error/failures.dart';
 import 'package:trackflow/features/audio_track/data/datasources/audio_track_local_datasource.dart';
+import 'package:trackflow/features/audio_track/data/datasources/audio_track_remote_datasource.dart';
 import 'package:trackflow/features/audio_track/data/models/audio_track_dto.dart';
 import 'package:trackflow/features/audio_track/domain/entities/audio_track.dart';
 import 'package:trackflow/features/audio_track/domain/repositories/audio_track_repository.dart';
@@ -14,11 +15,13 @@ import 'package:trackflow/core/utils/app_logger.dart';
 @LazySingleton(as: AudioTrackRepository)
 class AudioTrackRepositoryImpl implements AudioTrackRepository {
   final AudioTrackLocalDataSource localDataSource;
+  final AudioTrackRemoteDataSource remoteDataSource;
   final BackgroundSyncCoordinator _backgroundSyncCoordinator;
   final PendingOperationsManager _pendingOperationsManager;
 
   AudioTrackRepositoryImpl(
     this.localDataSource,
+    this.remoteDataSource,
     this._backgroundSyncCoordinator,
     this._pendingOperationsManager,
   );
@@ -118,12 +121,13 @@ class AudioTrackRepositoryImpl implements AudioTrackRepository {
     }
   }
 
+  @Deprecated('Use createTrackOnline instead for online-first upload flow')
   @override
   Future<Either<Failure, AudioTrack>> createTrack(AudioTrack track) async {
     try {
       final dto = AudioTrackDTO.fromDomain(track, extension: 'mp3');
 
-      // 1. Save locally first
+      // 1. Save locally first (offline-first approach - deprecated)
       final cacheResult = await localDataSource.cacheTrack(dto);
       if (cacheResult.isLeft()) {
         return cacheResult.map(
@@ -362,6 +366,52 @@ class AudioTrackRepositoryImpl implements AudioTrackRepository {
       return const Right(unit);
     } catch (e) {
       return Left(DatabaseFailure('Failed to delete all tracks: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, AudioTrack>> createTrackOnline(AudioTrack track) async {
+    try {
+      final dto = AudioTrackDTO.fromDomain(track, extension: 'mp3');
+
+      // 1. Create in Firestore FIRST (online-first)
+      final remoteResult = await remoteDataSource.createAudioTrack(dto);
+
+      return await remoteResult.fold(
+        (failure) => Left(failure),
+        (uploadedDto) async {
+          // 2. Cache locally only after remote success
+          await localDataSource.cacheTrack(uploadedDto);
+          return Right(track);
+        },
+      );
+    } catch (e) {
+      return Left(DatabaseFailure('Failed to create track online: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> setActiveVersionOnline({
+    required AudioTrackId trackId,
+    required TrackVersionId versionId,
+  }) async {
+    try {
+      // 1. Update in Firestore FIRST (online-first)
+      final remoteResult = await remoteDataSource.updateActiveVersion(
+        trackId.value,
+        versionId.value,
+      );
+
+      return await remoteResult.fold(
+        (failure) => Left(failure),
+        (_) async {
+          // 2. Update local cache only after remote success
+          await localDataSource.setActiveVersion(trackId.value, versionId.value);
+          return const Right(unit);
+        },
+      );
+    } catch (e) {
+      return Left(DatabaseFailure('Failed to set active version online: $e'));
     }
   }
 

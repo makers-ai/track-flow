@@ -21,6 +21,7 @@ class ProjectTrackService {
     return trackRepository.watchTracksByProject(projectId);
   }
 
+  @Deprecated('Use createTrackEntity + audioTrackRepository.createTrackOnline for online-first flow')
   Future<Either<Failure, AudioTrack>> addTrackToProject({
     required Project project,
     required UserId requester,
@@ -54,6 +55,37 @@ class ProjectTrackService {
       (failure) => Left(failure),
       (createdTrack) => Right(createdTrack),
     );
+  }
+
+  /// Creates a track entity after validating permissions, WITHOUT persisting it.
+  /// Used for online-first flow where we need to upload the version first.
+  Either<Failure, AudioTrack> createTrackEntity({
+    required Project project,
+    required UserId requester,
+    required String name,
+    Duration? duration,
+    TrackVersionId? activeVersionId,
+  }) {
+    // 1. Verify user permissions
+    final collaborator = project.collaborators.firstWhere(
+      (c) => c.userId == requester,
+      orElse: () => throw UserNotCollaboratorException(),
+    );
+
+    if (!collaborator.hasPermission(ProjectPermission.addTrack)) {
+      return Left(ProjectPermissionException());
+    }
+
+    // 2. Create track entity (metadata only, no persistence)
+    final track = AudioTrack.create(
+      name: name,
+      duration: duration ?? Duration.zero,
+      projectId: project.id,
+      uploadedBy: requester,
+      activeVersionId: activeVersionId,
+    );
+
+    return Right(track);
   }
 
   Future<Either<Failure, Unit>> deleteTrack({

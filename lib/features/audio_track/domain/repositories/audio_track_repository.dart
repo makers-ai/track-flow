@@ -43,4 +43,15 @@ abstract class AudioTrackRepository {
 
   /// Delete all tracks from local cache
   Future<Either<Failure, Unit>> deleteAllTracks();
+
+  /// Creates a new track directly in Firebase (online-first approach).
+  /// Saves to Firestore first, then caches locally.
+  Future<Either<Failure, AudioTrack>> createTrackOnline(AudioTrack track);
+
+  /// Updates active version directly in Firebase (online-first approach).
+  /// Updates Firestore first, then updates local cache.
+  Future<Either<Failure, Unit>> setActiveVersionOnline({
+    required AudioTrackId trackId,
+    required TrackVersionId versionId,
+  });
 }

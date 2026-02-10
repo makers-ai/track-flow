@@ -455,6 +455,42 @@ class MockProjectTrackService extends _i1.Mock
       ) as _i11.Future<_i2.Either<_i12.Failure, _i15.AudioTrack>>);
 
   @override
+  _i2.Either<_i12.Failure, _i15.AudioTrack> createTrackEntity({
+    required _i13.Project? project,
+    required _i14.UserId? requester,
+    required String? name,
+    Duration? duration,
+    _i14.TrackVersionId? activeVersionId,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #createTrackEntity,
+          [],
+          {
+            #project: project,
+            #requester: requester,
+            #name: name,
+            #duration: duration,
+            #activeVersionId: activeVersionId,
+          },
+        ),
+        returnValue: _FakeEither_0<_i12.Failure, _i15.AudioTrack>(
+          this,
+          Invocation.method(
+            #createTrackEntity,
+            [],
+            {
+              #project: project,
+              #requester: requester,
+              #name: name,
+              #duration: duration,
+              #activeVersionId: activeVersionId,
+            },
+          ),
+        ),
+      ) as _i2.Either<_i12.Failure, _i15.AudioTrack>);
+
+  @override
   _i11.Future<_i2.Either<_i12.Failure, _i2.Unit>> deleteTrack({
     required _i13.Project? project,
     required _i14.UserId? requester,

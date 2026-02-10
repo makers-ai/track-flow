@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:trackflow/core/entities/unique_id.dart';
 import 'package:trackflow/core/error/failures.dart';
 import 'package:trackflow/core/sync/domain/services/background_sync_coordinator.dart';
 import 'package:trackflow/features/track_version/data/datasources/track_version_local_data_source.dart';
+import 'package:trackflow/features/track_version/data/datasources/track_version_remote_datasource.dart';
+import 'package:trackflow/features/track_version/data/models/track_version_dto.dart';
 import 'package:trackflow/features/track_version/domain/entities/track_version.dart';
 import 'package:trackflow/features/track_version/domain/repositories/track_version_repository.dart';
 import 'package:trackflow/core/sync/domain/services/pending_operations_manager.dart';
@@ -15,15 +18,18 @@ import 'package:trackflow/core/utils/app_logger.dart';
 @LazySingleton(as: TrackVersionRepository)
 class TrackVersionRepositoryImpl implements TrackVersionRepository {
   final TrackVersionLocalDataSource _local;
+  final TrackVersionRemoteDataSource _remote;
   final BackgroundSyncCoordinator _backgroundSyncCoordinator;
   final PendingOperationsManager _pendingOperationsManager;
 
   TrackVersionRepositoryImpl(
     this._local,
+    this._remote,
     this._backgroundSyncCoordinator,
     this._pendingOperationsManager,
   );
 
+  @Deprecated('Use addVersionOnline instead for online-first upload flow')
   @override
   Future<Either<Failure, TrackVersion>> addVersion({
     required UserId createdBy,
@@ -57,6 +63,56 @@ class TrackVersionRepositoryImpl implements TrackVersionRepository {
       return Right(version);
     } catch (e) {
       return Left(DatabaseFailure('Failed to add track version: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, TrackVersion>> addVersionOnline({
+    required AudioTrackId trackId,
+    required File file,
+    String? label,
+    required Duration duration,
+    required String createdBy,
+  }) async {
+    try {
+      // 1. Calculate next version number from local data
+      final existingVersionsResult = await _local.getVersionsByTrack(trackId);
+      final nextVersionNumber = existingVersionsResult.fold(
+        (failure) => 1,
+        (versions) => versions.isEmpty ? 1 : versions.map((v) => v.versionNumber).reduce(max) + 1,
+      );
+
+      // 2. Create DTO for remote upload
+      final versionId = TrackVersionId();
+      final dto = TrackVersionDTO(
+        id: versionId.value,
+        trackId: trackId.value,
+        versionNumber: nextVersionNumber,
+        label: label,
+        fileLocalPath: file.path,
+        fileRemoteUrl: null, // Will be set by remote datasource
+        durationMs: duration.inMilliseconds,
+        status: 'processing',
+        createdAt: DateTime.now(),
+        createdBy: createdBy,
+        isDeleted: false,
+      );
+
+      // 3. Upload to Firebase (Storage + Firestore) - ONLINE FIRST
+      final remoteResult = await _remote.createTrackVersion(dto, file);
+
+      return await remoteResult.fold(
+        (failure) => Left(failure),
+        (uploadedDto) async {
+          // 4. Cache locally only after remote success
+          await _local.cacheVersion(uploadedDto);
+
+          // 5. Return domain entity
+          return Right(uploadedDto.toDomain());
+        },
+      );
+    } catch (e) {
+      return Left(DatabaseFailure('Failed to upload version online: $e'));
     }
   }
 
