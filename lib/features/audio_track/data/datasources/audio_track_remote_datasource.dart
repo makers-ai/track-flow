@@ -64,7 +64,6 @@ class AudioTrackRemoteDataSourceImpl implements AudioTrackRemoteDataSource {
   @override
   Future<Either<Failure, Unit>> deleteAudioTrack(String trackId) async {
     try {
-      // Soft delete: mark as deleted with server timestamp
       await _firestore.collection(AudioTrackDTO.collection).doc(trackId).update(
         {'isDeleted': true, 'lastModified': FieldValue.serverTimestamp()},
       );
@@ -72,7 +71,7 @@ class AudioTrackRemoteDataSourceImpl implements AudioTrackRemoteDataSource {
       return const Right(unit);
     } catch (e) {
       return Left(
-        ServerFailure('Error soft deleting audio track metadata: $e'),
+        ServerFailure('Error deleting audio track: $e'),
       );
     }
   }

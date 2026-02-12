@@ -54,4 +54,9 @@ abstract class AudioTrackRepository {
     required AudioTrackId trackId,
     required TrackVersionId versionId,
   });
+
+  /// Deletes a track using optimistic online-first approach.
+  /// Removes from local cache immediately for instant UX, then hard deletes
+  /// from Firestore. Rolls back local cache if remote deletion fails.
+  Future<Either<Failure, Unit>> deleteTrackOnline(AudioTrackId trackId);
 }

@@ -112,6 +112,8 @@ class _SmartTrackCacheIconState extends State<SmartTrackCacheIcon> {
   Widget build(BuildContext context) {
     return BlocBuilder<TrackCacheBloc, TrackCacheState>(
       builder: (context, state) {
+        // TODO(yohanangulo) track bug here
+        print('build blocbuilder');
         CacheStatus status;
         if (state is TrackCacheStatusLoaded) {
           status = state.status;

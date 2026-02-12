@@ -166,6 +166,7 @@ class AudioTrackRepositoryImpl implements AudioTrackRepository {
     }
   }
 
+  @Deprecated('Use deleteTrackOnline instead for online-first delete flow')
   @override
   Future<Either<Failure, Unit>> deleteTrack(
     AudioTrackId trackId,
@@ -412,6 +413,36 @@ class AudioTrackRepositoryImpl implements AudioTrackRepository {
       );
     } catch (e) {
       return Left(DatabaseFailure('Failed to set active version online: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> deleteTrackOnline(AudioTrackId trackId) async {
+    try {
+      // 1. Get track data before deletion (for rollback if remote fails)
+      final trackResult = await localDataSource.getTrackById(trackId.value);
+      final trackDto = trackResult.fold((_) => null, (dto) => dto);
+
+      if (trackDto == null) {
+        return Left(DatabaseFailure('Track not found: ${trackId.value}'));
+      }
+
+      // 2. Optimistic delete: remove from local cache immediately
+      await localDataSource.deleteTrack(trackId.value);
+
+      // 3. Hard delete from Firestore
+      final remoteResult = await remoteDataSource.deleteAudioTrack(trackId.value);
+
+      return remoteResult.fold(
+        (failure) {
+          // 4. Rollback: restore track in local cache
+          localDataSource.cacheTrack(trackDto);
+          return Left(failure);
+        },
+        (_) => const Right(unit),
+      );
+    } catch (e) {
+      return Left(DatabaseFailure('Failed to delete track online: $e'));
     }
   }
 

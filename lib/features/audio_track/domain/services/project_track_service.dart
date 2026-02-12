@@ -103,8 +103,8 @@ class ProjectTrackService {
       return Left(ProjectPermissionException());
     }
 
-    // 2. Eliminar track (solo metadata, archivos se manejan en versiones)
-    final deleteResult = await trackRepository.deleteTrack(trackId, project.id);
+    // 2. Optimistic hard delete (local first for UX, then Firebase, rollback on failure)
+    final deleteResult = await trackRepository.deleteTrackOnline(trackId);
 
     return deleteResult.fold((failure) => Left(failure), (_) => Right(unit));
   }
