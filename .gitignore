@@ -50,6 +50,9 @@ app.*.map.json
 .env*
 !.env.example
 
+# Firebase config (contains sensitive data)
+ios/Runner/GoogleService-Info.plist
+
 # Generated
 lib/**/*.freezed.dart
 lib/**/*.g.dart
