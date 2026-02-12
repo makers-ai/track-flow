@@ -6,6 +6,7 @@ import 'package:trackflow/core/entities/unique_id.dart';
 import 'package:trackflow/features/auth/presentation/bloc/auth_state.dart';
 import 'package:trackflow/features/onboarding/presentation/bloc/onboarding_state.dart';
 import 'package:trackflow/features/user_profile/presentation/bloc/current_user/current_user_state.dart';
+import 'package:trackflow/features/user_profile/presentation/models/user_profile_ui_model.dart';
 import 'package:trackflow/core/di/injection.dart';
 
 /// Test helper class for managing user states and navigation flows
@@ -126,7 +127,7 @@ class TestData {
       'authState': AuthAuthenticated(TestUserFlow.mockUser),
       'onboardingState': OnboardingCompleted(),
       'profileState': CurrentUserLoaded(
-        profile: TestUserFlow.mockCompleteProfile,
+        uiModel: UserProfileUiModel.fromDomain(TestUserFlow.mockCompleteProfile),
       ),
       'expectedRoute': '/dashboard',
       'description': 'Returning user should go directly to dashboard',
