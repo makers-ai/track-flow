@@ -600,6 +600,24 @@ class MockAudioTrackRepository extends _i1.Mock
           ),
         )),
       ) as _i4.Future<_i2.Either<_i11.Failure, _i2.Unit>>);
+
+  @override
+  _i4.Future<_i2.Either<_i11.Failure, _i2.Unit>> deleteTrackOnline(
+          _i7.AudioTrackId? trackId) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #deleteTrackOnline,
+          [trackId],
+        ),
+        returnValue: _i4.Future<_i2.Either<_i11.Failure, _i2.Unit>>.value(
+            _FakeEither_0<_i11.Failure, _i2.Unit>(
+          this,
+          Invocation.method(
+            #deleteTrackOnline,
+            [trackId],
+          ),
+        )),
+      ) as _i4.Future<_i2.Either<_i11.Failure, _i2.Unit>>);
 }
 
 /// A class which mocks [TrackVersionRepository].
