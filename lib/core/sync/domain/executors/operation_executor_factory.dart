@@ -7,7 +7,6 @@ import 'package:trackflow/core/sync/domain/executors/track_version_operation_exe
 import 'package:trackflow/core/sync/domain/executors/audio_comment_operation_executor.dart';
 import 'package:trackflow/core/sync/domain/executors/user_profile_operation_executor.dart';
 import 'package:trackflow/core/sync/domain/executors/playlist_operation_executor.dart';
-import 'package:trackflow/core/sync/domain/executors/waveform_operation_executor.dart';
 
 /// Factory for creating operation executors based on entity type
 ///
@@ -36,8 +35,6 @@ class OperationExecutorFactory {
         return sl<UserProfileOperationExecutor>();
       case 'playlist':
         return sl<PlaylistOperationExecutor>();
-      case 'audio_waveform':
-        return sl<WaveformOperationExecutor>();
       default:
         throw UnsupportedError(
           'No executor found for entity type: $entityType',
@@ -54,6 +51,5 @@ class OperationExecutorFactory {
     'audio_comment_by_version',
     'user_profile',
     'playlist',
-    'audio_waveform',
   ];
 }

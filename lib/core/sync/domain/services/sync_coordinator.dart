@@ -10,7 +10,6 @@ import 'package:trackflow/features/audio_comment/data/models/audio_comment_dto.d
 import 'package:trackflow/features/user_profile/data/models/user_profile_dto.dart';
 import 'package:trackflow/features/user_profile/data/services/user_profile_collaborator_incremental_sync_service.dart';
 import 'package:trackflow/features/track_version/data/models/track_version_dto.dart';
-import 'package:trackflow/features/waveform/data/services/waveform_incremental_sync_service.dart';
 
 /// Interface for sync orchestration operations
 abstract class SyncOrchestrator {
@@ -49,7 +48,6 @@ class SyncCoordinator implements SyncOrchestrator {
   static const String _collaboratorsLastSyncKey = 'collaborators_last_sync';
   static const String _notificationsLastSyncKey = 'notifications_last_sync';
   static const String _trackVersionsLastSyncKey = 'track_versions_last_sync';
-  static const String _waveformsLastSyncKey = 'waveforms_last_sync';
 
   // Service registry keys
   static const String _projectsServiceKey = 'projects';
@@ -59,7 +57,6 @@ class SyncCoordinator implements SyncOrchestrator {
   static const String _collaboratorsServiceKey = 'collaborators';
   static const String _notificationsServiceKey = 'notifications';
   static const String _trackVersionsServiceKey = 'track_versions';
-  static const String _waveformsServiceKey = 'waveforms';
 
   SyncCoordinator(this._prefs);
 
@@ -150,12 +147,6 @@ class SyncCoordinator implements SyncOrchestrator {
       'track_versions',
       userId,
     );
-    await _syncEntityByKey(
-      _waveformsServiceKey,
-      _waveformsLastSyncKey,
-      'waveforms',
-      userId,
-    );
 
     AppLogger.sync(
       'COORDINATOR',
@@ -208,7 +199,6 @@ class SyncCoordinator implements SyncOrchestrator {
         _collaboratorsServiceKey,
         _notificationsServiceKey,
         _trackVersionsServiceKey,
-        _waveformsServiceKey,
       ],
     };
   }
@@ -232,8 +222,6 @@ class SyncCoordinator implements SyncOrchestrator {
           return sl<NotificationIncrementalSyncService>();
         case _trackVersionsServiceKey:
           return sl<IncrementalSyncService<TrackVersionDTO>>();
-        case _waveformsServiceKey:
-          return sl<WaveformIncrementalSyncService>();
         default:
           return null;
       }
@@ -323,8 +311,6 @@ class SyncCoordinator implements SyncOrchestrator {
         return _notificationsServiceKey;
       case 'track_versions':
         return _trackVersionsServiceKey;
-      case 'waveforms':
-        return _waveformsServiceKey;
       default:
         return null;
     }
@@ -347,8 +333,6 @@ class SyncCoordinator implements SyncOrchestrator {
         return _notificationsLastSyncKey;
       case 'track_versions':
         return _trackVersionsLastSyncKey;
-      case 'waveforms':
-        return _waveformsLastSyncKey;
       default:
         throw ArgumentError('Unknown entity type: $entityType');
     }
@@ -382,7 +366,6 @@ class SyncCoordinator implements SyncOrchestrator {
     await _prefs.remove(_collaboratorsLastSyncKey);
     await _prefs.remove(_notificationsLastSyncKey);
     await _prefs.remove(_trackVersionsLastSyncKey);
-    await _prefs.remove(_waveformsLastSyncKey);
 
     AppLogger.info('All sync keys cleared successfully', tag: 'COORDINATOR');
   }

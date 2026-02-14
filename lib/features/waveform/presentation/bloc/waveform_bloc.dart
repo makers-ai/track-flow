@@ -61,11 +61,6 @@ class WaveformBloc extends Bloc<WaveformEvent, WaveformState> {
       'WaveformBloc: Loading waveform for version ${event.versionId.value}',
       tag: 'WAVEFORM_BLOC',
     );
-    AppLogger.debug(
-      'WaveformBloc: audioSourceHash: ${event.audioSourceHash}, audioFilePath: ${event.audioFilePath}',
-      tag: 'WAVEFORM_BLOC',
-    );
-
     emit(
       state.copyWith(
         status: WaveformStatus.loading,
@@ -81,7 +76,7 @@ class WaveformBloc extends Bloc<WaveformEvent, WaveformState> {
       'WaveformBloc: Loading waveform by versionId ${event.versionId.value}',
       tag: 'WAVEFORM_BLOC',
     );
-    final result = await _getWaveformByVersion.call(event.versionId);
+    final result = await _getWaveformByVersion.call(event.trackId, event.versionId);
 
     result.fold(
       (failure) => {

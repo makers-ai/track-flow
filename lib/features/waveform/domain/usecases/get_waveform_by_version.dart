@@ -10,7 +10,10 @@ class GetWaveformByVersion {
   final WaveformRepository _repository;
   GetWaveformByVersion(this._repository);
 
-  Future<Either<Failure, AudioWaveform>> call(TrackVersionId versionId) {
-    return _repository.getWaveformByVersionId(versionId);
+  Future<Either<Failure, AudioWaveform>> call(
+    AudioTrackId trackId,
+    TrackVersionId versionId,
+  ) {
+    return _repository.getWaveformByVersionId(trackId, versionId);
   }
 }

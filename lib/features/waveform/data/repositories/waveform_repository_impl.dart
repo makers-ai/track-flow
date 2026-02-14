@@ -1,45 +1,51 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
-import 'dart:async';
 import 'package:trackflow/core/entities/unique_id.dart';
 import 'package:trackflow/core/error/failures.dart';
 import 'package:trackflow/features/waveform/domain/entities/audio_waveform.dart';
 import 'package:trackflow/features/waveform/domain/repositories/waveform_repository.dart';
 import 'package:trackflow/features/waveform/data/datasources/waveform_local_datasource.dart';
 import 'package:trackflow/features/waveform/data/datasources/waveform_remote_datasource.dart';
-import 'package:trackflow/core/sync/domain/services/background_sync_coordinator.dart';
-import 'package:trackflow/core/sync/domain/services/pending_operations_manager.dart';
-import 'package:trackflow/core/sync/data/models/sync_operation_document.dart';
 
 @Injectable(as: WaveformRepository)
 class WaveformRepositoryImpl implements WaveformRepository {
   final WaveformLocalDataSource _localDataSource;
   final WaveformRemoteDataSource _remoteDataSource;
-  final BackgroundSyncCoordinator _backgroundSyncCoordinator;
-  final PendingOperationsManager _pendingOperationsManager;
 
   WaveformRepositoryImpl({
     required WaveformLocalDataSource localDataSource,
     required WaveformRemoteDataSource remoteDataSource,
-    required BackgroundSyncCoordinator backgroundSyncCoordinator,
-    required PendingOperationsManager pendingOperationsManager,
   }) : _localDataSource = localDataSource,
-       _remoteDataSource = remoteDataSource,
-       _backgroundSyncCoordinator = backgroundSyncCoordinator,
-       _pendingOperationsManager = pendingOperationsManager;
+       _remoteDataSource = remoteDataSource;
 
   @override
   Future<Either<Failure, AudioWaveform>> getWaveformByVersionId(
+    AudioTrackId trackId,
     TrackVersionId versionId,
   ) async {
     try {
-      final waveform = await _localDataSource.getWaveformByVersionId(versionId);
-      if (waveform == null) {
+      // 1. Try local cache first
+      final localWaveform = await _localDataSource.getWaveformByVersionId(versionId);
+      if (localWaveform != null) {
+        return Right(localWaveform);
+      }
+
+      // 2. Fallback to remote
+      final remoteWaveform = await _remoteDataSource.fetchCanonicalForVersion(
+        trackId: trackId.value,
+        versionId: versionId,
+      );
+
+      if (remoteWaveform == null) {
         return Left(
           ServerFailure('Waveform not found for version: ${versionId.value}'),
         );
       }
-      return Right(waveform);
+
+      // 3. Cache locally after remote success
+      await _localDataSource.saveWaveform(remoteWaveform);
+
+      return Right(remoteWaveform);
     } catch (e) {
       return Left(ServerFailure('Failed to get waveform: $e'));
     }
@@ -51,35 +57,18 @@ class WaveformRepositoryImpl implements WaveformRepository {
     TrackVersionId versionId,
   ) async {
     try {
-      // 1. ALWAYS delete locally first (offline-first principle)
-      await _localDataSource.deleteWaveformsForVersion(versionId);
-
-      // 2. Queue for background sync to delete remotely
-      final queueResult = await _pendingOperationsManager.addOperation(
-        entityType: 'audio_waveform',
-        entityId: versionId.value,
-        operationType: 'delete',
-        priority: SyncPriority.medium,
-        data: {'trackId': trackId.value, 'versionId': versionId.value},
+      // 1. Delete from remote FIRST
+      await _remoteDataSource.deleteWaveformsForVersion(
+        trackId: trackId.value,
+        versionId: versionId,
       );
 
-      // 3. Handle queue failure
-      if (queueResult.isLeft()) {
-        final failure = queueResult.fold((l) => l, (r) => null);
-        return Left(
-          DatabaseFailure(
-            'Failed to queue waveform deletion: ${failure?.message}',
-          ),
-        );
-      }
+      // 2. Delete from local cache after remote success
+      await _localDataSource.deleteWaveformsForVersion(versionId);
 
-      // 4. Trigger upstream sync only (more efficient for deletions)
-      unawaited(_backgroundSyncCoordinator.pushUpstream());
-
-      // 5. Return success after successful local deletion and queuing
       return const Right(unit);
     } catch (e) {
-      return Left(DatabaseFailure('Critical waveform deletion error: $e'));
+      return Left(ServerFailure('Failed to delete waveform: $e'));
     }
   }
 
@@ -98,60 +87,13 @@ class WaveformRepositoryImpl implements WaveformRepository {
     }
   }
 
-  @Deprecated('Use storeCanonicalWaveformOnline instead for online-first flow')
-  @override
-  Future<Either<Failure, Unit>> storeCanonicalWaveform({
-    required AudioTrackId trackId,
-    required AudioWaveform waveform,
-  }) async {
-    try {
-      await _localDataSource.saveWaveform(waveform);
-      // Queue upstream sync operation instead of calling remote directly
-      final queueResult = await _pendingOperationsManager.addUpdateOperation(
-        entityType: 'audio_waveform',
-        entityId: waveform.versionId.value,
-        priority: SyncPriority.medium,
-        data: {
-          'trackId': trackId.value,
-          'id': waveform.id.value,
-          'versionId': waveform.versionId.value,
-          'amplitudes': waveform.data.amplitudes,
-          'sampleRate': waveform.data.sampleRate,
-          'durationMs': waveform.data.duration.inMilliseconds,
-          'targetSampleCount': waveform.data.targetSampleCount,
-          'maxAmplitude': waveform.metadata.maxAmplitude,
-          'rmsLevel': waveform.metadata.rmsLevel,
-          'compressionLevel': waveform.metadata.compressionLevel,
-          'generationMethod': waveform.metadata.generationMethod,
-          'generatedAt': waveform.generatedAt.toIso8601String(),
-        },
-      );
-
-      if (queueResult.isLeft()) {
-        final failure = queueResult.fold((l) => l, (r) => null);
-        return Left(
-          DatabaseFailure(
-            'Failed to queue sync operation: ${failure?.message}',
-          ),
-        );
-      }
-
-      // Trigger upstream-only sync (non-blocking)
-      _backgroundSyncCoordinator.pushUpstream();
-
-      return const Right(unit);
-    } catch (e) {
-      return Left(ServerFailure('Failed to store canonical waveform: $e'));
-    }
-  }
-
   @override
   Future<Either<Failure, Unit>> storeCanonicalWaveformOnline({
     required AudioTrackId trackId,
     required AudioWaveform waveform,
   }) async {
     try {
-      // 1. Upload to Firebase Storage FIRST (online-first)
+      // 1. Upload to Firebase Storage FIRST (remote-first)
       await _remoteDataSource.uploadCanonical(
         trackId: trackId.value,
         waveform: waveform,

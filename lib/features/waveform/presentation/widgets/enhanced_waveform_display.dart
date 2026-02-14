@@ -29,7 +29,10 @@ class _EnhancedWaveformDisplayState extends State<EnhancedWaveformDisplay> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.versionId != null) {
-        context.read<WaveformBloc>().add(LoadWaveform(widget.versionId!));
+        context.read<WaveformBloc>().add(LoadWaveform(
+          trackId: widget.track.id,
+          versionId: widget.versionId!,
+        ));
       }
     });
   }
@@ -38,7 +41,10 @@ class _EnhancedWaveformDisplayState extends State<EnhancedWaveformDisplay> {
   void didUpdateWidget(EnhancedWaveformDisplay oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.versionId != widget.versionId && widget.versionId != null) {
-      context.read<WaveformBloc>().add(LoadWaveform(widget.versionId!));
+      context.read<WaveformBloc>().add(LoadWaveform(
+        trackId: widget.track.id,
+        versionId: widget.versionId!,
+      ));
     }
   }
 
