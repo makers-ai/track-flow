@@ -6,8 +6,9 @@ class PlaylistDto {
   final String name;
   final List<String> trackIds;
   final String playlistSource;
+  final String? userId;
 
-  // ⭐ NEW: Sync metadata fields for proper offline-first sync
+  // Sync metadata fields
   final int version;
   final DateTime? lastModified;
 
@@ -16,7 +17,7 @@ class PlaylistDto {
     required this.name,
     required this.trackIds,
     required this.playlistSource,
-    // ⭐ NEW: Sync metadata fields
+    this.userId,
     this.version = 1,
     this.lastModified,
   });
@@ -26,7 +27,7 @@ class PlaylistDto {
     'name': name,
     'trackIds': trackIds,
     'playlistSource': playlistSource,
-    // ⭐ NEW: Include sync metadata in JSON
+    if (userId != null) 'userId': userId,
     'version': version,
     'lastModified': lastModified?.toIso8601String(),
   };
@@ -37,7 +38,7 @@ class PlaylistDto {
       name: json['name'] as String,
       trackIds: List<String>.from(json['trackIds']),
       playlistSource: json['playlistSource'] as String,
-      // ⭐ NEW: Parse sync metadata from JSON
+      userId: json['userId'] as String?,
       version: json['version'] as int? ?? 1,
       lastModified: json['lastModified'] != null ? DateTime.tryParse(json['lastModified'] as String) : null,
     );
@@ -52,15 +53,15 @@ class PlaylistDto {
     );
   }
 
-  factory PlaylistDto.fromDomain(Playlist playlist) {
+  factory PlaylistDto.fromDomain(Playlist playlist, {String? userId}) {
     return PlaylistDto(
       id: playlist.id.value,
       name: playlist.name,
       trackIds: playlist.trackIds,
       playlistSource: playlist.playlistSource.name,
-      // ⭐ NEW: Include sync metadata for new playlists
-      version: 1, // Initial version for new playlists
-      lastModified: DateTime.now(), // Current time as initial lastModified
+      userId: userId,
+      version: 1,
+      lastModified: DateTime.now(),
     );
   }
 

@@ -2,106 +2,81 @@ import 'package:injectable/injectable.dart';
 import 'package:trackflow/core/entities/unique_id.dart';
 import 'package:dartz/dartz.dart';
 import 'package:trackflow/core/error/failures.dart';
-import 'package:trackflow/core/sync/domain/services/background_sync_coordinator.dart';
-import 'package:trackflow/core/sync/domain/services/pending_operations_manager.dart';
-import 'package:trackflow/core/sync/data/models/sync_operation_document.dart';
 import 'package:trackflow/core/utils/app_logger.dart';
 
 import '../../domain/entities/playlist.dart';
 import '../../domain/repositories/playlist_repository.dart';
 import '../datasources/playlist_local_data_source.dart';
+import '../datasources/playlist_remote_data_source.dart';
 import '../models/playlist_dto.dart';
 
 @LazySingleton(as: PlaylistRepository)
 class PlaylistRepositoryImpl implements PlaylistRepository {
-  final PlaylistLocalDataSource _localDataSource;
-  final BackgroundSyncCoordinator _backgroundSyncCoordinator;
-  final PendingOperationsManager _pendingOperationsManager;
+  PlaylistRepositoryImpl(
+    this._localDataSource,
+    this._remoteDataSource,
+  );
 
-  PlaylistRepositoryImpl({
-    required PlaylistLocalDataSource localDataSource,
-    required BackgroundSyncCoordinator backgroundSyncCoordinator,
-    required PendingOperationsManager pendingOperationsManager,
-  }) : _localDataSource = localDataSource,
-       _backgroundSyncCoordinator = backgroundSyncCoordinator,
-       _pendingOperationsManager = pendingOperationsManager;
+  final PlaylistLocalDataSource _localDataSource;
+  final PlaylistRemoteDataSource _remoteDataSource;
 
   @override
   Future<Either<Failure, Unit>> addPlaylist(Playlist playlist) async {
     try {
       final dto = PlaylistDto.fromDomain(playlist);
 
-      // 1. ALWAYS save locally first
-      final cacheResult = await _localDataSource.addPlaylist(dto);
-      if (cacheResult.isLeft()) {
-        final failure = cacheResult.fold((l) => l, (r) => null);
-        return Left(failure!);
-      }
+      // 1. Optimistic local write
+      await _localDataSource.addPlaylist(dto);
 
-      // 2. Try to queue for background sync
-      final queueResult = await _pendingOperationsManager.addCreateOperation(
-        entityType: 'playlist',
-        entityId: playlist.id.value,
-        data: {
-          'name': playlist.name,
-          'trackIds': playlist.trackIds,
-          'playlistSource': playlist.playlistSource.name,
+      // 2. Remote call
+      final remoteResult = await _remoteDataSource.addPlaylist(dto);
+
+      return remoteResult.fold(
+        (failure) async {
+          // 3. Rollback: remove optimistic local write
+          await _localDataSource.deletePlaylist(dto.id);
+          return Left(failure);
         },
-        priority: SyncPriority.medium,
+        (_) => const Right(unit),
       );
-
-      // 3. Handle queue failure
-      if (queueResult.isLeft()) {
-        final failure = queueResult.fold((l) => l, (r) => null);
-        return Left(
-          DatabaseFailure(
-            'Failed to queue sync operation: ${failure?.message}',
-          ),
-        );
-      }
-
-      // 4. Trigger upstream sync only (more efficient for local changes)
-      unawaited(_backgroundSyncCoordinator.pushUpstream());
-
-      // 5. Return success only after successful queue
-      return const Right(unit);
     } catch (e) {
-      return Left(DatabaseFailure('Critical storage error: ${e.toString()}'));
+      return Left(DatabaseFailure('Failed to add playlist: $e'));
     }
   }
 
   @override
-  Future<Either<Failure, List<Playlist>>> getAllPlaylists() async {
+  Future<Either<Failure, List<Playlist>>> getAllPlaylists(String userId) async {
     try {
-      // 1. ALWAYS try local cache first
-      final either = await _localDataSource.getAllPlaylists();
+      // 1. Return local cache immediately
+      final localResult = await _localDataSource.getAllPlaylists();
 
-      // 3. Return local data immediately
-      return either.fold(
+      // 2. Fire-and-forget remote revalidation
+      _revalidatePlaylistsFromRemote(userId);
+
+      return localResult.fold(
         (failure) => Left(failure),
         (dtos) => Right(dtos.map((dto) => dto.toDomain()).toList()),
       );
     } catch (e) {
-      return Left(
-        DatabaseFailure('Failed to access local cache: ${e.toString()}'),
-      );
+      return Left(DatabaseFailure('Failed to get playlists: $e'));
     }
   }
 
   @override
   Future<Either<Failure, Playlist?>> getPlaylistById(PlaylistId id) async {
     try {
-      // 1. ALWAYS try local cache first
-      final either = await _localDataSource.getPlaylistById(id.value);
-      // 3. Return local data immediately
-      return either.fold(
+      // 1. Return local cache first
+      final localResult = await _localDataSource.getPlaylistById(id.value);
+
+      // 2. Fire-and-forget remote revalidation
+      _revalidatePlaylistByIdFromRemote(id.value);
+
+      return localResult.fold(
         (failure) => Left(failure),
         (dto) => Right(dto?.toDomain()),
       );
     } catch (e) {
-      return Left(
-        DatabaseFailure('Failed to access local cache: ${e.toString()}'),
-      );
+      return Left(DatabaseFailure('Failed to get playlist: $e'));
     }
   }
 
@@ -110,90 +85,104 @@ class PlaylistRepositoryImpl implements PlaylistRepository {
     try {
       final dto = PlaylistDto.fromDomain(playlist);
 
-      // 1. ALWAYS update locally first
-      final cacheResult = await _localDataSource.updatePlaylist(dto);
-      if (cacheResult.isLeft()) {
-        final failure = cacheResult.fold((l) => l, (r) => null);
-        return Left(failure!);
-      }
+      // 1. Snapshot for rollback
+      final snapshotResult = await _localDataSource.getPlaylistById(dto.id);
+      final snapshot = snapshotResult.fold((_) => null, (dto) => dto);
 
-      // 2. Try to queue for background sync
-      final queueResult = await _pendingOperationsManager.addUpdateOperation(
-        entityType: 'playlist',
-        entityId: playlist.id.value,
-        data: {
-          'name': playlist.name,
-          'trackIds': playlist.trackIds,
-          'playlistSource': playlist.playlistSource.name,
+      // 2. Optimistic local write
+      await _localDataSource.updatePlaylist(dto);
+
+      // 3. Remote call
+      final remoteResult = await _remoteDataSource.updatePlaylist(dto);
+
+      return remoteResult.fold(
+        (failure) async {
+          // 4. Rollback to snapshot
+          if (snapshot != null) {
+            await _localDataSource.updatePlaylist(snapshot);
+          }
+          return Left(failure);
         },
-        priority: SyncPriority.medium,
+        (_) => const Right(unit),
       );
-
-      // 3. Handle queue failure
-      if (queueResult.isLeft()) {
-        final failure = queueResult.fold((l) => l, (r) => null);
-        return Left(
-          DatabaseFailure(
-            'Failed to queue sync operation: ${failure?.message}',
-          ),
-        );
-      }
-
-      // 4. Trigger upstream sync only (more efficient for local changes)
-      unawaited(_backgroundSyncCoordinator.pushUpstream()); //
-
-      // 5. Return success only after successful queue
-      return const Right(unit);
     } catch (e) {
-      return Left(DatabaseFailure('Critical storage error: ${e.toString()}'));
+      return Left(DatabaseFailure('Failed to update playlist: $e'));
     }
   }
 
   @override
   Future<Either<Failure, Unit>> deletePlaylist(PlaylistId id) async {
     try {
-      // 1. ALWAYS soft delete locally first
-      final cacheResult = await _localDataSource.deletePlaylist(id.value);
-      if (cacheResult.isLeft()) {
-        final failure = cacheResult.fold((l) => l, (r) => null);
-        return Left(failure!);
-      }
+      // 1. Snapshot for rollback
+      final snapshotResult = await _localDataSource.getPlaylistById(id.value);
+      final snapshot = snapshotResult.fold((_) => null, (dto) => dto);
 
-      // 2. Try to queue for background sync
-      final queueResult = await _pendingOperationsManager.addDeleteOperation(
-        entityType: 'playlist',
-        entityId: id.value,
-        priority: SyncPriority.medium,
+      // 2. Optimistic local delete
+      await _localDataSource.deletePlaylist(id.value);
+
+      // 3. Remote call
+      final remoteResult = await _remoteDataSource.deletePlaylist(id.value);
+
+      return remoteResult.fold(
+        (failure) async {
+          // 4. Rollback: re-insert deleted playlist
+          if (snapshot != null) {
+            await _localDataSource.addPlaylist(snapshot);
+          }
+          return Left(failure);
+        },
+        (_) => const Right(unit),
       );
-
-      // 3. Handle queue failure
-      if (queueResult.isLeft()) {
-        final failure = queueResult.fold((l) => l, (r) => null);
-        return Left(
-          DatabaseFailure(
-            'Failed to queue sync operation: ${failure?.message}',
-          ),
-        );
-      }
-
-      // 4. Trigger upstream sync only (more efficient for local changes)
-      unawaited(_backgroundSyncCoordinator.pushUpstream()); //
-
-      // 5. Return success only after successful queue
-      return const Right(unit);
     } catch (e) {
-      return Left(DatabaseFailure('Critical storage error: ${e.toString()}'));
+      return Left(DatabaseFailure('Failed to delete playlist: $e'));
     }
   }
 
-  // Helper method for fire-and-forget background operations
-  void unawaited(Future future) {
-    future.catchError((error) {
-      // Log error but don't propagate - this is background operation
-      AppLogger.warning(
-        'Background sync trigger failed: $error',
-        tag: 'PlaylistRepositoryImpl',
-      );
-    });
+  void _revalidatePlaylistsFromRemote(String userId) {
+    _remoteDataSource
+        .getAllPlaylists(userId)
+        .then((result) {
+          result.fold(
+            (failure) => AppLogger.warning(
+              'Remote revalidation failed: ${failure.message}',
+              tag: 'PlaylistRepositoryImpl',
+            ),
+            (remoteDtos) async {
+              for (final dto in remoteDtos) {
+                await _localDataSource.addPlaylist(dto);
+              }
+            },
+          );
+        })
+        .catchError((e) {
+          AppLogger.warning(
+            'Remote revalidation error: $e',
+            tag: 'PlaylistRepositoryImpl',
+          );
+        });
+  }
+
+  void _revalidatePlaylistByIdFromRemote(String id) {
+    _remoteDataSource
+        .getPlaylistById(id)
+        .then((result) {
+          result.fold(
+            (failure) => AppLogger.warning(
+              'Remote revalidation failed for playlist $id: ${failure.message}',
+              tag: 'PlaylistRepositoryImpl',
+            ),
+            (remoteDto) async {
+              if (remoteDto != null) {
+                await _localDataSource.addPlaylist(remoteDto);
+              }
+            },
+          );
+        })
+        .catchError((e) {
+          AppLogger.warning(
+            'Remote revalidation error for playlist $id: $e',
+            tag: 'PlaylistRepositoryImpl',
+          );
+        });
   }
 }

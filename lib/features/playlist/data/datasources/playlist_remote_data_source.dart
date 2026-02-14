@@ -6,7 +6,7 @@ import '../models/playlist_dto.dart';
 
 abstract class PlaylistRemoteDataSource {
   Future<Either<Failure, Unit>> addPlaylist(PlaylistDto playlist);
-  Future<Either<Failure, List<PlaylistDto>>> getAllPlaylists();
+  Future<Either<Failure, List<PlaylistDto>>> getAllPlaylists(String userId);
   Future<Either<Failure, PlaylistDto?>> getPlaylistById(String id);
   Future<Either<Failure, Unit>> updatePlaylist(PlaylistDto playlist);
   Future<Either<Failure, Unit>> deletePlaylist(String id);
@@ -29,9 +29,12 @@ class PlaylistRemoteDataSourceImpl implements PlaylistRemoteDataSource {
   }
 
   @override
-  Future<Either<Failure, List<PlaylistDto>>> getAllPlaylists() async {
+  Future<Either<Failure, List<PlaylistDto>>> getAllPlaylists(String userId) async {
     try {
-      final querySnapshot = await firestore.collection('playlists').get();
+      final querySnapshot = await firestore
+          .collection('playlists')
+          .where('userId', isEqualTo: userId)
+          .get();
       final playlists = querySnapshot.docs.map((doc) => PlaylistDto.fromJson(doc.data())).toList();
       return Right(playlists);
     } catch (e) {

@@ -8,7 +8,7 @@ class GetPlaylists {
 
   GetPlaylists(this.repository);
 
-  Future<Either<Failure, List<Playlist>>> call() async {
-    return await repository.getAllPlaylists();
+  Future<Either<Failure, List<Playlist>>> call(String userId) async {
+    return await repository.getAllPlaylists(userId);
   }
 }

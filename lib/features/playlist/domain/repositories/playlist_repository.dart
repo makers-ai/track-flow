@@ -5,7 +5,7 @@ import '../entities/playlist.dart';
 
 abstract class PlaylistRepository {
   Future<Either<Failure, Unit>> addPlaylist(Playlist playlist);
-  Future<Either<Failure, List<Playlist>>> getAllPlaylists();
+  Future<Either<Failure, List<Playlist>>> getAllPlaylists(String userId);
   Future<Either<Failure, Playlist?>> getPlaylistById(PlaylistId id);
   Future<Either<Failure, Unit>> updatePlaylist(Playlist playlist);
   Future<Either<Failure, Unit>> deletePlaylist(PlaylistId id);
