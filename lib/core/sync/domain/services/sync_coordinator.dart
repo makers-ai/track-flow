@@ -7,13 +7,11 @@ import 'package:trackflow/features/notifications/data/services/notification_incr
 import 'package:trackflow/features/projects/data/models/project_dto.dart';
 import 'package:trackflow/features/audio_track/data/models/audio_track_dto.dart';
 import 'package:trackflow/features/audio_comment/data/models/audio_comment_dto.dart';
-import 'package:trackflow/features/user_profile/data/models/user_profile_dto.dart';
-import 'package:trackflow/features/user_profile/data/services/user_profile_collaborator_incremental_sync_service.dart';
 import 'package:trackflow/features/track_version/data/models/track_version_dto.dart';
 
 /// Interface for sync orchestration operations
 abstract class SyncOrchestrator {
-  /// Pull only critical data for app startup (user_profile, projects, collaborators)
+  /// Pull only critical data for app startup (projects)
   Future<void> pullStartupData(String userId);
 
   /// Pull all data (full downstream sync)
@@ -44,8 +42,6 @@ class SyncCoordinator implements SyncOrchestrator {
   static const String _projectsLastSyncKey = 'projects_last_sync';
   static const String _tracksLastSyncKey = 'tracks_last_sync';
   static const String _commentsLastSyncKey = 'comments_last_sync';
-  static const String _userProfileLastSyncKey = 'user_profile_last_sync';
-  static const String _collaboratorsLastSyncKey = 'collaborators_last_sync';
   static const String _notificationsLastSyncKey = 'notifications_last_sync';
   static const String _trackVersionsLastSyncKey = 'track_versions_last_sync';
 
@@ -53,8 +49,6 @@ class SyncCoordinator implements SyncOrchestrator {
   static const String _projectsServiceKey = 'projects';
   static const String _tracksServiceKey = 'audio_tracks';
   static const String _commentsServiceKey = 'audio_comments';
-  static const String _userProfileServiceKey = 'user_profile';
-  static const String _collaboratorsServiceKey = 'collaborators';
   static const String _notificationsServiceKey = 'notifications';
   static const String _trackVersionsServiceKey = 'track_versions';
 
@@ -70,25 +64,9 @@ class SyncCoordinator implements SyncOrchestrator {
 
     // Only sync the most critical data for startup
     await _syncEntityByKey(
-      _userProfileServiceKey,
-      _userProfileLastSyncKey,
-      'user_profile',
-      userId,
-      isFullSync: true, // Incremental for faster startup
-    );
-
-    await _syncEntityByKey(
       _projectsServiceKey,
       _projectsLastSyncKey,
       'projects',
-      userId,
-      isFullSync: false, // Incremental for faster startup
-    );
-
-    await _syncEntityByKey(
-      _collaboratorsServiceKey,
-      _collaboratorsLastSyncKey,
-      'collaborators',
       userId,
       isFullSync: false, // Incremental for faster startup
     );
@@ -121,18 +99,6 @@ class SyncCoordinator implements SyncOrchestrator {
       _commentsServiceKey,
       _commentsLastSyncKey,
       'audio_comments',
-      userId,
-    );
-    await _syncEntityByKey(
-      _userProfileServiceKey,
-      _userProfileLastSyncKey,
-      'user_profile',
-      userId,
-    );
-    await _syncEntityByKey(
-      _collaboratorsServiceKey,
-      _collaboratorsLastSyncKey,
-      'collaborators',
       userId,
     );
     await _syncEntityByKey(
@@ -195,8 +161,6 @@ class SyncCoordinator implements SyncOrchestrator {
         _projectsServiceKey,
         _tracksServiceKey,
         _commentsServiceKey,
-        _userProfileServiceKey,
-        _collaboratorsServiceKey,
         _notificationsServiceKey,
         _trackVersionsServiceKey,
       ],
@@ -213,11 +177,6 @@ class SyncCoordinator implements SyncOrchestrator {
           return sl<IncrementalSyncService<AudioTrackDTO>>();
         case _commentsServiceKey:
           return sl<IncrementalSyncService<AudioCommentDTO>>();
-        case _userProfileServiceKey:
-          return sl<IncrementalSyncService<UserProfileDTO>>();
-        case _collaboratorsServiceKey:
-          // Special case: registered as concrete class, not interface
-          return sl<UserProfileCollaboratorIncrementalSyncService>();
         case _notificationsServiceKey:
           return sl<NotificationIncrementalSyncService>();
         case _trackVersionsServiceKey:
@@ -303,10 +262,6 @@ class SyncCoordinator implements SyncOrchestrator {
         return _tracksServiceKey;
       case 'audio_comments':
         return _commentsServiceKey;
-      case 'user_profile':
-        return _userProfileServiceKey;
-      case 'collaborators':
-        return _collaboratorsServiceKey;
       case 'notifications':
         return _notificationsServiceKey;
       case 'track_versions':
@@ -325,10 +280,6 @@ class SyncCoordinator implements SyncOrchestrator {
         return _tracksLastSyncKey;
       case 'audio_comments':
         return _commentsLastSyncKey;
-      case 'user_profile':
-        return _userProfileLastSyncKey;
-      case 'collaborators':
-        return _collaboratorsLastSyncKey;
       case 'notifications':
         return _notificationsLastSyncKey;
       case 'track_versions':
@@ -362,8 +313,6 @@ class SyncCoordinator implements SyncOrchestrator {
     await _prefs.remove(_projectsLastSyncKey);
     await _prefs.remove(_tracksLastSyncKey);
     await _prefs.remove(_commentsLastSyncKey);
-    await _prefs.remove(_userProfileLastSyncKey);
-    await _prefs.remove(_collaboratorsLastSyncKey);
     await _prefs.remove(_notificationsLastSyncKey);
     await _prefs.remove(_trackVersionsLastSyncKey);
 

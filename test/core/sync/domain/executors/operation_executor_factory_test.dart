@@ -3,7 +3,6 @@ import 'package:trackflow/core/sync/domain/executors/operation_executor_factory.
 import 'package:trackflow/core/sync/domain/executors/project_operation_executor.dart';
 import 'package:trackflow/core/sync/domain/executors/audio_track_operation_executor.dart';
 import 'package:trackflow/core/sync/domain/executors/audio_comment_operation_executor.dart';
-import 'package:trackflow/core/sync/domain/executors/user_profile_operation_executor.dart';
 void main() {
   late OperationExecutorFactory factory;
 
@@ -45,18 +44,6 @@ void main() {
       },
     );
 
-    test(
-      'should return UserProfileOperationExecutor for user_profile entity type',
-      () {
-        // Act
-        final executor = factory.getExecutor('user_profile');
-
-        // Assert
-        expect(executor, isA<UserProfileOperationExecutor>());
-        expect(executor.entityType, equals('user_profile'));
-      },
-    );
-
     test('should throw UnsupportedError for unknown entity type', () {
       // Act & Assert
       expect(
@@ -80,11 +67,12 @@ void main() {
         containsAll([
           'project',
           'audio_track',
+          'track_version',
           'audio_comment',
-          'user_profile',
+          'audio_comment_by_version',
         ]),
       );
-      expect(supportedTypes.length, equals(4));
+      expect(supportedTypes.length, equals(5));
     });
 
     group('consistency tests', () {

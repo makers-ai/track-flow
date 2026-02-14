@@ -5,7 +5,6 @@ import 'package:trackflow/core/sync/domain/executors/project_operation_executor.
 import 'package:trackflow/core/sync/domain/executors/audio_track_operation_executor.dart';
 import 'package:trackflow/core/sync/domain/executors/track_version_operation_executor.dart';
 import 'package:trackflow/core/sync/domain/executors/audio_comment_operation_executor.dart';
-import 'package:trackflow/core/sync/domain/executors/user_profile_operation_executor.dart';
 
 /// Factory for creating operation executors based on entity type
 ///
@@ -30,8 +29,6 @@ class OperationExecutorFactory {
         return sl<TrackVersionOperationExecutor>();
       case 'audio_comment' || 'audio_comment_by_version': // Bulk delete operation uses same executor
         return sl<AudioCommentOperationExecutor>();
-      case 'user_profile':
-        return sl<UserProfileOperationExecutor>();
       default:
         throw UnsupportedError(
           'No executor found for entity type: $entityType',
@@ -46,6 +43,5 @@ class OperationExecutorFactory {
     'track_version',
     'audio_comment',
     'audio_comment_by_version',
-    'user_profile',
   ];
 }
