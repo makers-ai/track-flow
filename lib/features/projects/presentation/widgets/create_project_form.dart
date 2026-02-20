@@ -44,15 +44,15 @@ class _ProjectFormBottomSheetState extends State<ProjectFormBottomSheet> {
 
     final params = CreateProjectParams(name: name);
     context.read<ProjectsBloc>().add(CreateProjectRequested(params));
+
+    Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<ProjectsBloc, ProjectsState>(
       listener: (context, state) {
-        if (state is ProjectCreatedSuccess) {
-          Navigator.of(context).pop();
-        } else if (state is ProjectsError) {
+        if (state is ProjectsError) {
           AppFeedbackSystem.showSnackBar(
             context,
             message: 'Error: ${state.message}',
