@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide RepeatMode;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/repeat_mode.dart';
 import '../bloc/audio_player_bloc.dart';
