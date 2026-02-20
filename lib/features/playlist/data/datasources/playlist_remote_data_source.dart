@@ -31,10 +31,7 @@ class PlaylistRemoteDataSourceImpl implements PlaylistRemoteDataSource {
   @override
   Future<Either<Failure, List<PlaylistDto>>> getAllPlaylists(String userId) async {
     try {
-      final querySnapshot = await firestore
-          .collection('playlists')
-          .where('userId', isEqualTo: userId)
-          .get();
+      final querySnapshot = await firestore.collection('playlists').where('userId', isEqualTo: userId).get();
       final playlists = querySnapshot.docs.map((doc) => PlaylistDto.fromJson(doc.data())).toList();
       return Right(playlists);
     } catch (e) {
