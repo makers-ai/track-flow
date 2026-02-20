@@ -26,10 +26,7 @@ void main() {
     mockLocalDataSource = MockProjectsLocalDataSource();
     mockRemoteDataSource = MockProjectRemoteDataSource();
 
-    repository = ProjectsRepositoryImpl(
-      localDataSource: mockLocalDataSource,
-      remoteDataSource: mockRemoteDataSource,
-    );
+    repository = ProjectsRepositoryImpl(mockLocalDataSource, mockRemoteDataSource);
 
     testProject = Project(
       id: ProjectId.fromUniqueString('test-project-id'),
@@ -61,13 +58,10 @@ void main() {
   // createProject
   // ---------------------------------------------------------------------------
   group('createProject', () {
-    test('should cache locally, call remote, then update cache on success',
-        () async {
+    test('should cache locally, call remote, then update cache on success', () async {
       // Arrange
-      when(mockLocalDataSource.cacheProject(any))
-          .thenAnswer((_) async => const Right(unit));
-      when(mockRemoteDataSource.createProject(any))
-          .thenAnswer((_) async => Right(remoteDtoResponse));
+      when(mockLocalDataSource.cacheProject(any)).thenAnswer((_) async => const Right(unit));
+      when(mockRemoteDataSource.createProject(any)).thenAnswer((_) async => Right(remoteDtoResponse));
 
       // Act
       final result = await repository.createProject(testProject);
@@ -88,12 +82,9 @@ void main() {
 
     test('should rollback local cache when remote fails', () async {
       // Arrange
-      when(mockLocalDataSource.cacheProject(any))
-          .thenAnswer((_) async => const Right(unit));
-      when(mockRemoteDataSource.createProject(any))
-          .thenAnswer((_) async => const Left(ServerFailure('Remote failed')));
-      when(mockLocalDataSource.removeCachedProject(any))
-          .thenAnswer((_) async => const Right(unit));
+      when(mockLocalDataSource.cacheProject(any)).thenAnswer((_) async => const Right(unit));
+      when(mockRemoteDataSource.createProject(any)).thenAnswer((_) async => const Left(ServerFailure('Remote failed')));
+      when(mockLocalDataSource.removeCachedProject(any)).thenAnswer((_) async => const Right(unit));
 
       // Act
       final result = await repository.createProject(testProject);
@@ -106,8 +97,7 @@ void main() {
       );
 
       // Verify rollback was called
-      verify(mockLocalDataSource.removeCachedProject('test-project-id'))
-          .called(1);
+      verify(mockLocalDataSource.removeCachedProject('test-project-id')).called(1);
     });
   });
 
@@ -115,16 +105,11 @@ void main() {
   // updateProject
   // ---------------------------------------------------------------------------
   group('updateProject', () {
-    test(
-        'should snapshot previous, cache new, call remote, return success',
-        () async {
+    test('should snapshot previous, cache new, call remote, return success', () async {
       // Arrange
-      when(mockLocalDataSource.getCachedProject(any))
-          .thenAnswer((_) async => Right(testDto));
-      when(mockLocalDataSource.cacheProject(any))
-          .thenAnswer((_) async => const Right(unit));
-      when(mockRemoteDataSource.updateProject(any))
-          .thenAnswer((_) async => const Right(unit));
+      when(mockLocalDataSource.getCachedProject(any)).thenAnswer((_) async => Right(testDto));
+      when(mockLocalDataSource.cacheProject(any)).thenAnswer((_) async => const Right(unit));
+      when(mockRemoteDataSource.updateProject(any)).thenAnswer((_) async => const Right(unit));
 
       // Act
       final result = await repository.updateProject(testProject);
@@ -137,12 +122,9 @@ void main() {
     test('should rollback to previous snapshot when remote fails', () async {
       // Arrange
       final previousDto = testDto.copyWith(name: 'Old Name');
-      when(mockLocalDataSource.getCachedProject(any))
-          .thenAnswer((_) async => Right(previousDto));
-      when(mockLocalDataSource.cacheProject(any))
-          .thenAnswer((_) async => const Right(unit));
-      when(mockRemoteDataSource.updateProject(any))
-          .thenAnswer((_) async => const Left(ServerFailure('Remote failed')));
+      when(mockLocalDataSource.getCachedProject(any)).thenAnswer((_) async => Right(previousDto));
+      when(mockLocalDataSource.cacheProject(any)).thenAnswer((_) async => const Right(unit));
+      when(mockRemoteDataSource.updateProject(any)).thenAnswer((_) async => const Left(ServerFailure('Remote failed')));
 
       // Act
       final result = await repository.updateProject(testProject);
@@ -156,12 +138,9 @@ void main() {
 
     test('should not rollback when no previous snapshot exists', () async {
       // Arrange - getCachedProject returns failure (no snapshot)
-      when(mockLocalDataSource.getCachedProject(any))
-          .thenAnswer((_) async => const Left(CacheFailure('Not found')));
-      when(mockLocalDataSource.cacheProject(any))
-          .thenAnswer((_) async => const Right(unit));
-      when(mockRemoteDataSource.updateProject(any))
-          .thenAnswer((_) async => const Left(ServerFailure('Remote failed')));
+      when(mockLocalDataSource.getCachedProject(any)).thenAnswer((_) async => const Left(CacheFailure('Not found')));
+      when(mockLocalDataSource.cacheProject(any)).thenAnswer((_) async => const Right(unit));
+      when(mockRemoteDataSource.updateProject(any)).thenAnswer((_) async => const Left(ServerFailure('Remote failed')));
 
       // Act
       final result = await repository.updateProject(testProject);
@@ -180,33 +159,25 @@ void main() {
   group('deleteProject', () {
     test('should remove from cache optimistically then call remote', () async {
       // Arrange
-      when(mockLocalDataSource.getCachedProject(any))
-          .thenAnswer((_) async => Right(testDto));
-      when(mockLocalDataSource.removeCachedProject(any))
-          .thenAnswer((_) async => const Right(unit));
-      when(mockRemoteDataSource.deleteProject(any))
-          .thenAnswer((_) async => const Right(unit));
+      when(mockLocalDataSource.getCachedProject(any)).thenAnswer((_) async => Right(testDto));
+      when(mockLocalDataSource.removeCachedProject(any)).thenAnswer((_) async => const Right(unit));
+      when(mockRemoteDataSource.deleteProject(any)).thenAnswer((_) async => const Right(unit));
 
       // Act
       final result = await repository.deleteProject(testProject);
 
       // Assert
       expect(result.isRight(), true);
-      verify(mockLocalDataSource.removeCachedProject('test-project-id'))
-          .called(1);
+      verify(mockLocalDataSource.removeCachedProject('test-project-id')).called(1);
       verify(mockRemoteDataSource.deleteProject('test-project-id')).called(1);
     });
 
     test('should rollback (re-cache) when remote delete fails', () async {
       // Arrange
-      when(mockLocalDataSource.getCachedProject(any))
-          .thenAnswer((_) async => Right(testDto));
-      when(mockLocalDataSource.removeCachedProject(any))
-          .thenAnswer((_) async => const Right(unit));
-      when(mockLocalDataSource.cacheProject(any))
-          .thenAnswer((_) async => const Right(unit));
-      when(mockRemoteDataSource.deleteProject(any))
-          .thenAnswer((_) async => const Left(ServerFailure('Remote failed')));
+      when(mockLocalDataSource.getCachedProject(any)).thenAnswer((_) async => Right(testDto));
+      when(mockLocalDataSource.removeCachedProject(any)).thenAnswer((_) async => const Right(unit));
+      when(mockLocalDataSource.cacheProject(any)).thenAnswer((_) async => const Right(unit));
+      when(mockRemoteDataSource.deleteProject(any)).thenAnswer((_) async => const Left(ServerFailure('Remote failed')));
 
       // Act
       final result = await repository.deleteProject(testProject);
@@ -220,12 +191,9 @@ void main() {
 
     test('should not rollback when no snapshot exists for delete', () async {
       // Arrange
-      when(mockLocalDataSource.getCachedProject(any))
-          .thenAnswer((_) async => const Left(CacheFailure('Not found')));
-      when(mockLocalDataSource.removeCachedProject(any))
-          .thenAnswer((_) async => const Right(unit));
-      when(mockRemoteDataSource.deleteProject(any))
-          .thenAnswer((_) async => const Left(ServerFailure('Remote failed')));
+      when(mockLocalDataSource.getCachedProject(any)).thenAnswer((_) async => const Left(CacheFailure('Not found')));
+      when(mockLocalDataSource.removeCachedProject(any)).thenAnswer((_) async => const Right(unit));
+      when(mockRemoteDataSource.deleteProject(any)).thenAnswer((_) async => const Left(ServerFailure('Remote failed')));
 
       // Act
       final result = await repository.deleteProject(testProject);
@@ -244,13 +212,10 @@ void main() {
   group('getProjectById', () {
     test('should return local project when cache hit (not deleted)', () async {
       // Arrange
-      when(mockLocalDataSource.getCachedProject(any))
-          .thenAnswer((_) async => Right(testDto));
+      when(mockLocalDataSource.getCachedProject(any)).thenAnswer((_) async => Right(testDto));
       // Mock revalidation calls (fire-and-forget)
-      when(mockRemoteDataSource.getProjectById(any))
-          .thenAnswer((_) async => Right(remoteDtoResponse));
-      when(mockLocalDataSource.cacheProject(any))
-          .thenAnswer((_) async => const Right(unit));
+      when(mockRemoteDataSource.getProjectById(any)).thenAnswer((_) async => Right(remoteDtoResponse));
+      when(mockLocalDataSource.cacheProject(any)).thenAnswer((_) async => const Right(unit));
 
       // Act
       final result = await repository.getProjectById(
@@ -265,16 +230,12 @@ void main() {
       );
     });
 
-    test('should skip cache and fetch from remote when project is deleted',
-        () async {
+    test('should skip cache and fetch from remote when project is deleted', () async {
       // Arrange
       final deletedDto = testDto.copyWith(isDeleted: true);
-      when(mockLocalDataSource.getCachedProject(any))
-          .thenAnswer((_) async => Right(deletedDto));
-      when(mockRemoteDataSource.getProjectById(any))
-          .thenAnswer((_) async => Right(remoteDtoResponse));
-      when(mockLocalDataSource.cacheProject(any))
-          .thenAnswer((_) async => const Right(unit));
+      when(mockLocalDataSource.getCachedProject(any)).thenAnswer((_) async => Right(deletedDto));
+      when(mockRemoteDataSource.getProjectById(any)).thenAnswer((_) async => Right(remoteDtoResponse));
+      when(mockLocalDataSource.cacheProject(any)).thenAnswer((_) async => const Right(unit));
 
       // Act
       final result = await repository.getProjectById(
@@ -288,12 +249,9 @@ void main() {
 
     test('should fetch from remote when not in local cache', () async {
       // Arrange
-      when(mockLocalDataSource.getCachedProject(any))
-          .thenAnswer((_) async => const Right(null));
-      when(mockRemoteDataSource.getProjectById(any))
-          .thenAnswer((_) async => Right(remoteDtoResponse));
-      when(mockLocalDataSource.cacheProject(any))
-          .thenAnswer((_) async => const Right(unit));
+      when(mockLocalDataSource.getCachedProject(any)).thenAnswer((_) async => const Right(null));
+      when(mockRemoteDataSource.getProjectById(any)).thenAnswer((_) async => Right(remoteDtoResponse));
+      when(mockLocalDataSource.cacheProject(any)).thenAnswer((_) async => const Right(unit));
 
       // Act
       final result = await repository.getProjectById(
@@ -307,13 +265,12 @@ void main() {
       verify(mockLocalDataSource.cacheProject(remoteDtoResponse)).called(1);
     });
 
-    test('should return failure when remote also fails on cache miss',
-        () async {
+    test('should return failure when remote also fails on cache miss', () async {
       // Arrange
-      when(mockLocalDataSource.getCachedProject(any))
-          .thenAnswer((_) async => const Right(null));
-      when(mockRemoteDataSource.getProjectById(any)).thenAnswer(
-          (_) async => const Left(ServerFailure('Project not found')));
+      when(mockLocalDataSource.getCachedProject(any)).thenAnswer((_) async => const Right(null));
+      when(
+        mockRemoteDataSource.getProjectById(any),
+      ).thenAnswer((_) async => const Left(ServerFailure('Project not found')));
 
       // Act
       final result = await repository.getProjectById(
@@ -339,10 +296,8 @@ void main() {
         (_) => Stream.value(Right([testDto])),
       );
       // Mock revalidation (fire-and-forget)
-      when(mockRemoteDataSource.getUserProjects(any))
-          .thenAnswer((_) async => Right([testDto]));
-      when(mockLocalDataSource.cacheProject(any))
-          .thenAnswer((_) async => const Right(unit));
+      when(mockRemoteDataSource.getUserProjects(any)).thenAnswer((_) async => Right([testDto]));
+      when(mockLocalDataSource.cacheProject(any)).thenAnswer((_) async => const Right(unit));
 
       // Act
       final stream = repository.watchLocalProjects(
@@ -372,10 +327,8 @@ void main() {
         (_) => Stream.value(Right(testDto)),
       );
       // Mock revalidation (fire-and-forget)
-      when(mockRemoteDataSource.getProjectById(any))
-          .thenAnswer((_) async => Right(remoteDtoResponse));
-      when(mockLocalDataSource.cacheProject(any))
-          .thenAnswer((_) async => const Right(unit));
+      when(mockRemoteDataSource.getProjectById(any)).thenAnswer((_) async => Right(remoteDtoResponse));
+      when(mockLocalDataSource.cacheProject(any)).thenAnswer((_) async => const Right(unit));
 
       // Act
       final stream = repository.watchProjectById(
@@ -401,8 +354,7 @@ void main() {
   group('clearLocalCache', () {
     test('should delegate to local data source', () async {
       // Arrange
-      when(mockLocalDataSource.clearCache())
-          .thenAnswer((_) async => const Right(unit));
+      when(mockLocalDataSource.clearCache()).thenAnswer((_) async => const Right(unit));
 
       // Act
       final result = await repository.clearLocalCache();
@@ -414,8 +366,7 @@ void main() {
 
     test('should return failure when local data source throws', () async {
       // Arrange
-      when(mockLocalDataSource.clearCache())
-          .thenThrow(Exception('Database error'));
+      when(mockLocalDataSource.clearCache()).thenThrow(Exception('Database error'));
 
       // Act
       final result = await repository.clearLocalCache();
