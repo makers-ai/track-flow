@@ -164,7 +164,7 @@ void main() {
         // Verify no deletion operations were attempted
         verifyNever(mockProjectTrackService.watchTracksByProject(any));
         verifyNever(mockDeleteAudioTrack.call(any));
-        verifyNever(mockProjectsRepository.deleteProject(any as Project));
+        verifyNever(mockProjectsRepository.deleteProject(any));
       });
 
       test('should fail when user lacks delete permission', () async {

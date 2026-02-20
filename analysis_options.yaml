@@ -12,6 +12,8 @@ include: package:flutter_lints/flutter.yaml
 analyzer:
   exclude:
     - lib/features/ui/testing/**
+    - lib/**/*.g.dart
+    - test/**/*.mocks.dart
 
 formatter:
   page_width: 120

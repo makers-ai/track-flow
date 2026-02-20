@@ -19,7 +19,6 @@ import 'package:trackflow/core/sync/domain/services/pending_operations_manager.d
 /// - Handle sync logic (that's SyncCoordinator/PendingOperationsManager's job)
 @injectable
 class SyncStatusProvider {
-  final SyncCoordinator _syncCoordinator;
   final PendingOperationsManager _pendingOperationsManager;
 
   // Stream controller for sync state
@@ -28,8 +27,7 @@ class SyncStatusProvider {
   SyncStatusProvider({
     required SyncCoordinator syncCoordinator,
     required PendingOperationsManager pendingOperationsManager,
-  }) : _syncCoordinator = syncCoordinator,
-       _pendingOperationsManager = pendingOperationsManager {
+  }) : _pendingOperationsManager = pendingOperationsManager {
     // Initialize with initial state
     _syncStateController.add(SyncState.initial);
   }
