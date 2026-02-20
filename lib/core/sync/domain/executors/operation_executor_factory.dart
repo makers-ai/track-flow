@@ -1,7 +1,6 @@
 import 'package:injectable/injectable.dart';
 import 'package:trackflow/core/di/injection.dart';
 import 'package:trackflow/core/sync/domain/executors/operation_executor.dart';
-import 'package:trackflow/core/sync/domain/executors/project_operation_executor.dart';
 import 'package:trackflow/core/sync/domain/executors/audio_track_operation_executor.dart';
 import 'package:trackflow/core/sync/domain/executors/track_version_operation_executor.dart';
 import 'package:trackflow/core/sync/domain/executors/audio_comment_operation_executor.dart';
@@ -21,8 +20,6 @@ class OperationExecutorFactory {
   /// Throws [UnsupportedError] if the entity type is not supported.
   OperationExecutor getExecutor(String entityType) {
     switch (entityType) {
-      case 'project':
-        return sl<ProjectOperationExecutor>();
       case 'audio_track':
         return sl<AudioTrackOperationExecutor>();
       case 'track_version':
@@ -38,7 +35,6 @@ class OperationExecutorFactory {
 
   /// Get all supported entity types
   List<String> get supportedEntityTypes => [
-    'project',
     'audio_track',
     'track_version',
     'audio_comment',

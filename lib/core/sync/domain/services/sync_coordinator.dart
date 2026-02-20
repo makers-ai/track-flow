@@ -4,7 +4,6 @@ import 'package:trackflow/core/utils/app_logger.dart';
 import 'package:trackflow/core/sync/domain/services/incremental_sync_service.dart';
 import 'package:trackflow/core/di/injection.dart';
 import 'package:trackflow/features/notifications/data/services/notification_incremental_sync_service.dart';
-import 'package:trackflow/features/projects/data/models/project_dto.dart';
 import 'package:trackflow/features/audio_track/data/models/audio_track_dto.dart';
 import 'package:trackflow/features/audio_comment/data/models/audio_comment_dto.dart';
 import 'package:trackflow/features/track_version/data/models/track_version_dto.dart';
@@ -39,14 +38,12 @@ class SyncCoordinator implements SyncOrchestrator {
   final SharedPreferences _prefs;
 
   // Keys for SharedPreferences and service registry
-  static const String _projectsLastSyncKey = 'projects_last_sync';
   static const String _tracksLastSyncKey = 'tracks_last_sync';
   static const String _commentsLastSyncKey = 'comments_last_sync';
   static const String _notificationsLastSyncKey = 'notifications_last_sync';
   static const String _trackVersionsLastSyncKey = 'track_versions_last_sync';
 
   // Service registry keys
-  static const String _projectsServiceKey = 'projects';
   static const String _tracksServiceKey = 'audio_tracks';
   static const String _commentsServiceKey = 'audio_comments';
   static const String _notificationsServiceKey = 'notifications';
@@ -59,19 +56,8 @@ class SyncCoordinator implements SyncOrchestrator {
   Future<void> pullStartupData(String userId) async {
     AppLogger.sync(
       'COORDINATOR',
-      'Starting startup sync for user: $userId',
+      'Startup sync for user: $userId (no critical entities to sync)',
     );
-
-    // Only sync the most critical data for startup
-    await _syncEntityByKey(
-      _projectsServiceKey,
-      _projectsLastSyncKey,
-      'projects',
-      userId,
-      isFullSync: false, // Incremental for faster startup
-    );
-
-    AppLogger.sync('COORDINATOR', 'Startup sync completed for user: $userId');
   }
 
   /// 🚀 Pull all data (full downstream sync)
@@ -83,12 +69,6 @@ class SyncCoordinator implements SyncOrchestrator {
     );
 
     // Sync all entities
-    await _syncEntityByKey(
-      _projectsServiceKey,
-      _projectsLastSyncKey,
-      'projects',
-      userId,
-    );
     await _syncEntityByKey(
       _tracksServiceKey,
       _tracksLastSyncKey,
@@ -158,7 +138,6 @@ class SyncCoordinator implements SyncOrchestrator {
       'userId': userId,
       'timestamp': DateTime.now().toIso8601String(),
       'services': [
-        _projectsServiceKey,
         _tracksServiceKey,
         _commentsServiceKey,
         _notificationsServiceKey,
@@ -171,8 +150,6 @@ class SyncCoordinator implements SyncOrchestrator {
   IncrementalSyncService<dynamic>? _getServiceByKey(String serviceKey) {
     try {
       switch (serviceKey) {
-        case _projectsServiceKey:
-          return sl<IncrementalSyncService<ProjectDTO>>();
         case _tracksServiceKey:
           return sl<IncrementalSyncService<AudioTrackDTO>>();
         case _commentsServiceKey:
@@ -256,8 +233,6 @@ class SyncCoordinator implements SyncOrchestrator {
   /// 🔧 Get service key for entity type
   String? _getServiceKeyForEntity(String entityType) {
     switch (entityType) {
-      case 'projects':
-        return _projectsServiceKey;
       case 'audio_tracks':
         return _tracksServiceKey;
       case 'audio_comments':
@@ -274,8 +249,6 @@ class SyncCoordinator implements SyncOrchestrator {
   /// 🔧 Get sync key for entity type
   String _getSyncKeyForEntity(String entityType) {
     switch (entityType) {
-      case 'projects':
-        return _projectsLastSyncKey;
       case 'audio_tracks':
         return _tracksLastSyncKey;
       case 'audio_comments':
@@ -310,7 +283,6 @@ class SyncCoordinator implements SyncOrchestrator {
     );
 
     // Remove all sync key entries
-    await _prefs.remove(_projectsLastSyncKey);
     await _prefs.remove(_tracksLastSyncKey);
     await _prefs.remove(_commentsLastSyncKey);
     await _prefs.remove(_notificationsLastSyncKey);

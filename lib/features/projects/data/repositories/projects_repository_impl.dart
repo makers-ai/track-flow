@@ -2,10 +2,9 @@ import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:trackflow/core/error/failures.dart';
-import 'package:trackflow/core/sync/domain/services/background_sync_coordinator.dart';
-import 'package:trackflow/core/sync/domain/services/pending_operations_manager.dart';
-import 'package:trackflow/core/sync/data/models/sync_operation_document.dart';
+import 'package:trackflow/core/utils/app_logger.dart';
 import 'package:trackflow/features/projects/data/datasources/project_local_data_source.dart';
+import 'package:trackflow/features/projects/data/datasources/project_remote_data_source.dart';
 import 'package:trackflow/features/projects/data/models/project_dto.dart';
 import 'package:trackflow/features/projects/domain/entities/project.dart';
 import 'package:trackflow/features/projects/domain/repositories/projects_repository.dart';
@@ -13,197 +12,140 @@ import 'package:trackflow/core/entities/unique_id.dart';
 
 @LazySingleton(as: ProjectsRepository)
 class ProjectsRepositoryImpl implements ProjectsRepository {
-  final ProjectsLocalDataSource _localDataSource;
-  final BackgroundSyncCoordinator _backgroundSyncCoordinator;
-  final PendingOperationsManager _pendingOperationsManager;
+  ProjectsRepositoryImpl(
+    this._localDataSource,
+    this._remoteDataSource,
+  );
 
-  ProjectsRepositoryImpl({
-    required ProjectsLocalDataSource localDataSource,
-    required BackgroundSyncCoordinator backgroundSyncCoordinator,
-    required PendingOperationsManager pendingOperationsManager,
-  }) : _localDataSource = localDataSource,
-       _backgroundSyncCoordinator = backgroundSyncCoordinator,
-       _pendingOperationsManager = pendingOperationsManager;
+  final ProjectsLocalDataSource _localDataSource;
+  final ProjectRemoteDataSource _remoteDataSource;
 
   @override
   Future<Either<Failure, Project>> createProject(Project project) async {
-    try {
-      final projectDto = ProjectDTO.fromDomain(project);
+    final dto = ProjectDTO.fromDomain(project);
 
-      // 1. ALWAYS save locally first (ignore minor cache errors)
-      await _localDataSource.cacheProject(projectDto);
+    // 1. Optimistic: cache locally for immediate UI feedback
+    await _localDataSource.cacheProject(dto);
 
-      // 2. Try to queue for background sync
-      final queueResult = await _pendingOperationsManager.addCreateOperation(
-        entityType: 'project',
-        entityId: project.id.value,
-        data: projectDto.toMap(), // Use complete DTO data
-        priority: SyncPriority.high,
-      );
+    // 2. Persist to remote (source of truth)
+    final remoteResult = await _remoteDataSource.createProject(dto);
 
-      // 3. Handle queue failure
-      if (queueResult.isLeft()) {
-        // ❌ CRITICAL: Failed to queue - this is a serious issue
-        final failure = queueResult.fold((l) => l, (r) => null);
-        return Left(
-          DatabaseFailure(
-            'Failed to queue sync operation: ${failure?.message}',
-          ),
-        );
-      }
-
-      // 4. Trigger upstream sync
-      unawaited(_backgroundSyncCoordinator.pushUpstream());
-
-      // 5. Return success only after successful queue
-      return Right(project);
-    } catch (e) {
-      // Only fail for critical storage errors (disk full, etc.)
-      return Left(DatabaseFailure('Critical storage error: ${e.toString()}'));
-    }
+    return remoteResult.fold(
+      (failure) {
+        // 3. Rollback: remove optimistic cache on remote failure
+        _localDataSource.removeCachedProject(project.id.value);
+        return Left(failure);
+      },
+      (remoteDto) {
+        // 4. Success: sync local with remote response if needed
+        _localDataSource.cacheProject(remoteDto);
+        return Right(project);
+      },
+    );
   }
 
   @override
   Future<Either<Failure, Unit>> updateProject(Project project) async {
-    try {
-      final projectDto = ProjectDTO.fromDomain(project);
+    final dto = ProjectDTO.fromDomain(project);
 
-      // 1. ALWAYS update locally first
-      await _localDataSource.cacheProject(projectDto);
+    // 1. Snapshot previous state for rollback
+    final prevResult = await _localDataSource.getCachedProject(project.id.value);
 
-      // Ensure timestamps for incremental detection
-      final nowIso = DateTime.now().toUtc().toIso8601String();
-      final operationData =
-          projectDto.toMap()
-            ..['updatedAt'] = nowIso
-            ..['lastModified'] = nowIso;
+    final prevDto = prevResult.fold((_) => null, (dto) => dto);
 
-      // 2. Try to queue for background sync
-      final queueResult = await _pendingOperationsManager.addUpdateOperation(
-        entityType: 'project',
-        entityId: project.id.value,
-        data: operationData,
-        priority: SyncPriority.medium,
-      );
+    // 2. Optimistic: apply changes locally
+    await _localDataSource.cacheProject(dto);
 
-      // 3. Handle queue failure
-      if (queueResult.isLeft()) {
-        final failure = queueResult.fold((l) => l, (r) => null);
-        return Left(
-          DatabaseFailure(
-            'Failed to queue sync operation: ${failure?.message}',
-          ),
-        );
-      }
+    // 3. Persist to remote (source of truth)
+    final remoteResult = await _remoteDataSource.updateProject(dto);
 
-      // 4. Trigger upstream sync only (more efficient for local changes)
-      unawaited(_backgroundSyncCoordinator.pushUpstream());
-
-      // 5. Return success only after successful queue
-      return const Right(unit);
-    } catch (e) {
-      return Left(DatabaseFailure('Critical storage error: ${e.toString()}'));
-    }
+    return remoteResult.fold(
+      (failure) {
+        // 4. Rollback: restore previous state
+        if (prevDto != null) {
+          _localDataSource.cacheProject(prevDto);
+        }
+        return Left(failure);
+      },
+      (_) => const Right(unit),
+    );
   }
 
   @override
   Future<Either<Failure, Unit>> deleteProject(Project project) async {
-    try {
-      final projectDto = ProjectDTO.fromDomain(project);
+    // 1. Snapshot for rollback
+    final prevResult = await _localDataSource.getCachedProject(project.id.value);
 
-      // 1. ALWAYS hard delete locally first (remove from cache)
-      await _localDataSource.removeCachedProject(project.id.value);
+    final prevDto = prevResult.fold((_) => null, (dto) => dto);
 
-      // Ensure soft delete flags and timestamps for incremental detection
-      final nowIso = DateTime.now().toUtc().toIso8601String();
-      final operationData =
-          projectDto.toMap()
-            ..['isDeleted'] = true
-            ..['updatedAt'] = nowIso
-            ..['lastModified'] = nowIso;
+    // 2. Optimistic: soft delete locally (disappears from watches)
+    await _localDataSource.removeCachedProject(project.id.value);
 
-      // 2. Try to queue for background sync (soft delete in remote)
-      final queueResult = await _pendingOperationsManager.addUpdateOperation(
-        entityType: 'project',
-        entityId: project.id.value,
-        data: operationData, // Include complete DTO with isDeleted: true
-        priority: SyncPriority.medium,
-      );
+    // 3. Persist to remote (soft delete in Firestore)
+    final remoteResult = await _remoteDataSource.deleteProject(project.id.value);
 
-      // 3. Handle queue failure
-      if (queueResult.isLeft()) {
-        final failure = queueResult.fold((l) => l, (r) => null);
-        return Left(
-          DatabaseFailure(
-            'Failed to queue sync operation: ${failure?.message}',
-          ),
-        );
-      }
-
-      // 4. Trigger upstream sync only (more efficient for local changes)
-      unawaited(_backgroundSyncCoordinator.pushUpstream());
-
-      // 5. Return success only after successful queue
-      return const Right(unit);
-    } catch (e) {
-      return Left(DatabaseFailure('Critical storage error: ${e.toString()}'));
-    }
+    return remoteResult.fold(
+      (failure) {
+        // 4. Rollback: restore project in local cache
+        if (prevDto != null) {
+          _localDataSource.cacheProject(prevDto);
+        }
+        return Left(failure);
+      },
+      (_) => const Right(unit),
+    );
   }
 
   @override
   Future<Either<Failure, Project>> getProjectById(ProjectId projectId) async {
-    try {
-      // 1. ALWAYS try local cache first
-      final localResult = await _localDataSource.getCachedProject(
-        projectId.value,
-      );
+    // 1. Try local cache first
+    final localResult = await _localDataSource.getCachedProject(projectId.value);
 
-      final localProject = localResult.fold(
-        (failure) => null,
-        (projectDto) => projectDto?.toDomain(),
-      );
+    final localDto = localResult.fold((_) => null, (dto) => dto);
 
-      // 2. If found locally, return it and trigger background refresh
-      if (localProject != null) {
-        // No sync in get methods - just return local data
-
-        return Right(localProject);
-      }
-
-      // 3. Not found locally - return not found (no sync in get methods)
-
-      // Return "not found locally" instead of network error
-      return Left(DatabaseFailure('Project not found in local cache'));
-    } catch (e) {
-      return Left(
-        DatabaseFailure('Failed to access local cache: ${e.toString()}'),
-      );
+    if (localDto != null && !localDto.isDeleted) {
+      // 2. Return local immediately + trigger background revalidation
+      unawaited(_revalidateProject(projectId.value));
+      return Right(localDto.toDomain());
     }
+
+    // 3. Not in cache → fetch from remote directly
+    final remoteResult = await _remoteDataSource.getProjectById(
+      projectId.value,
+    );
+
+    return remoteResult.fold(
+      (failure) => Left(failure),
+      (dto) {
+        // 4. Cache for future reads
+        _localDataSource.cacheProject(dto);
+        return Right(dto.toDomain());
+      },
+    );
   }
 
   @override
   Stream<Either<Failure, List<Project>>> watchLocalProjects(UserId ownerId) {
-    // NO sync in watch methods - just return local data stream
+    // Trigger background revalidation (fire-and-forget)
+    unawaited(_revalidateProjects(ownerId.value));
 
+    // Return local stream - auto-emits when cache is updated by revalidation
     return _localDataSource
         .watchAllProjects(ownerId.value)
         .map((either) {
-          // Always return local data immediately (even if empty)
           return either.map(
             (projects) => projects.map((project) => project.toDomain()).toList(),
           );
         })
         .handleError((error) {
-          // Handle stream errors gracefully
-          return left<Failure, List<Project>>(
-            DatabaseFailure('Local projects stream error: $error'),
-          );
+          return left(DatabaseFailure('Local projects stream error: $error'));
         });
   }
 
   @override
   Stream<Either<Failure, Project?>> watchProjectById(ProjectId projectId) {
-    // NO sync in watch methods - just return local data stream
+    // Trigger background revalidation (fire-and-forget)
+    unawaited(_revalidateProject(projectId.value));
 
     return _localDataSource
         .watchProjectById(projectId.value)
@@ -222,6 +164,58 @@ class ProjectsRepositoryImpl implements ProjectsRepository {
       return const Right(unit);
     } catch (e) {
       return Left(DatabaseFailure('Failed to clear projects cache: $e'));
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Background revalidation (stale-while-revalidate)
+  // ---------------------------------------------------------------------------
+
+  /// Revalidates all projects for a user from remote.
+  /// Updates local cache with fresh data. Isar watches auto-emit on changes.
+  Future<void> _revalidateProjects(String userId) async {
+    try {
+      final remoteResult = await _remoteDataSource.getUserProjects(userId);
+
+      await remoteResult.fold(
+        (_) async {}, // Silently fail - local data still shown
+        (remoteDtos) async {
+          for (final dto in remoteDtos) {
+            if (dto.isDeleted) {
+              await _localDataSource.removeCachedProject(dto.id);
+            } else {
+              await _localDataSource.cacheProject(dto);
+            }
+          }
+        },
+      );
+    } catch (e) {
+      AppLogger.warning(
+        'Background project revalidation failed: $e',
+        tag: 'ProjectsRepositoryImpl',
+      );
+    }
+  }
+
+  /// Revalidates a single project from remote.
+  Future<void> _revalidateProject(String projectId) async {
+    try {
+      final remoteResult = await _remoteDataSource.getProjectById(projectId);
+      await remoteResult.fold(
+        (_) async {}, // Silently fail
+        (dto) async {
+          if (dto.isDeleted) {
+            await _localDataSource.removeCachedProject(dto.id);
+          } else {
+            await _localDataSource.cacheProject(dto);
+          }
+        },
+      );
+    } catch (e) {
+      AppLogger.warning(
+        'Background project revalidation failed: $e',
+        tag: 'ProjectsRepositoryImpl',
+      );
     }
   }
 }
