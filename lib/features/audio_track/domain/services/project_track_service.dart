@@ -21,7 +21,6 @@ class ProjectTrackService {
     return trackRepository.watchTracksByProject(projectId);
   }
 
-  @Deprecated('Use createTrackEntity + audioTrackRepository.createTrackOnline for online-first flow')
   Future<Either<Failure, AudioTrack>> addTrackToProject({
     required Project project,
     required UserId requester,
@@ -104,7 +103,7 @@ class ProjectTrackService {
     }
 
     // 2. Optimistic hard delete (local first for UX, then Firebase, rollback on failure)
-    final deleteResult = await trackRepository.deleteTrackOnline(trackId);
+    final deleteResult = await trackRepository.deleteTrack(trackId);
 
     return deleteResult.fold((failure) => Left(failure), (_) => Right(unit));
   }

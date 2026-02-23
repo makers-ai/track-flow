@@ -88,7 +88,7 @@ class UploadAudioTrackUseCase {
       // 5. Create track metadata in Firestore (after version upload succeeded)
       // Use copyWith to set the activeVersionId
       final trackWithVersion = track.copyWith(activeVersionId: version.id);
-      final createTrackResult = await audioTrackRepository.createTrackOnline(trackWithVersion);
+      final createTrackResult = await audioTrackRepository.createTrack(trackWithVersion);
 
       if (createTrackResult.isLeft()) {
         // Rollback: delete the uploaded version since track creation failed

@@ -19,13 +19,13 @@ abstract class AudioTrackRepository {
     UserId userId,
   );
 
-  /// Create a new track with metadata only (no file upload)
+  /// Create a new track with metadata only (no file upload).
+  /// Remote-first: calls Firebase first, caches locally on success.
   Future<Either<Failure, AudioTrack>> createTrack(AudioTrack track);
 
-  Future<Either<Failure, Unit>> deleteTrack(
-    AudioTrackId trackId,
-    ProjectId projectId,
-  );
+  /// Delete a track. Optimistic: removes from local cache immediately,
+  /// then soft-deletes in Firebase. Rolls back on remote failure.
+  Future<Either<Failure, Unit>> deleteTrack(AudioTrackId trackId);
 
   Future<Either<Failure, Unit>> editTrackName({
     required AudioTrackId trackId,
@@ -43,20 +43,4 @@ abstract class AudioTrackRepository {
 
   /// Delete all tracks from local cache
   Future<Either<Failure, Unit>> deleteAllTracks();
-
-  /// Creates a new track directly in Firebase (online-first approach).
-  /// Saves to Firestore first, then caches locally.
-  Future<Either<Failure, AudioTrack>> createTrackOnline(AudioTrack track);
-
-  /// Updates active version directly in Firebase (online-first approach).
-  /// Updates Firestore first, then updates local cache.
-  Future<Either<Failure, Unit>> setActiveVersionOnline({
-    required AudioTrackId trackId,
-    required TrackVersionId versionId,
-  });
-
-  /// Deletes a track using optimistic online-first approach.
-  /// Removes from local cache immediately for instant UX, then hard deletes
-  /// from Firestore. Rolls back local cache if remote deletion fails.
-  Future<Either<Failure, Unit>> deleteTrackOnline(AudioTrackId trackId);
 }

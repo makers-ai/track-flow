@@ -4,7 +4,6 @@ import 'package:trackflow/core/utils/app_logger.dart';
 import 'package:trackflow/core/sync/domain/services/incremental_sync_service.dart';
 import 'package:trackflow/core/di/injection.dart';
 import 'package:trackflow/features/notifications/data/services/notification_incremental_sync_service.dart';
-import 'package:trackflow/features/audio_track/data/models/audio_track_dto.dart';
 import 'package:trackflow/features/audio_comment/data/models/audio_comment_dto.dart';
 import 'package:trackflow/features/track_version/data/models/track_version_dto.dart';
 
@@ -38,13 +37,11 @@ class SyncCoordinator implements SyncOrchestrator {
   final SharedPreferences _prefs;
 
   // Keys for SharedPreferences and service registry
-  static const String _tracksLastSyncKey = 'tracks_last_sync';
   static const String _commentsLastSyncKey = 'comments_last_sync';
   static const String _notificationsLastSyncKey = 'notifications_last_sync';
   static const String _trackVersionsLastSyncKey = 'track_versions_last_sync';
 
   // Service registry keys
-  static const String _tracksServiceKey = 'audio_tracks';
   static const String _commentsServiceKey = 'audio_comments';
   static const String _notificationsServiceKey = 'notifications';
   static const String _trackVersionsServiceKey = 'track_versions';
@@ -69,12 +66,6 @@ class SyncCoordinator implements SyncOrchestrator {
     );
 
     // Sync all entities
-    await _syncEntityByKey(
-      _tracksServiceKey,
-      _tracksLastSyncKey,
-      'audio_tracks',
-      userId,
-    );
     await _syncEntityByKey(
       _commentsServiceKey,
       _commentsLastSyncKey,
@@ -138,7 +129,6 @@ class SyncCoordinator implements SyncOrchestrator {
       'userId': userId,
       'timestamp': DateTime.now().toIso8601String(),
       'services': [
-        _tracksServiceKey,
         _commentsServiceKey,
         _notificationsServiceKey,
         _trackVersionsServiceKey,
@@ -150,8 +140,6 @@ class SyncCoordinator implements SyncOrchestrator {
   IncrementalSyncService<dynamic>? _getServiceByKey(String serviceKey) {
     try {
       switch (serviceKey) {
-        case _tracksServiceKey:
-          return sl<IncrementalSyncService<AudioTrackDTO>>();
         case _commentsServiceKey:
           return sl<IncrementalSyncService<AudioCommentDTO>>();
         case _notificationsServiceKey:
@@ -233,8 +221,6 @@ class SyncCoordinator implements SyncOrchestrator {
   /// 🔧 Get service key for entity type
   String? _getServiceKeyForEntity(String entityType) {
     switch (entityType) {
-      case 'audio_tracks':
-        return _tracksServiceKey;
       case 'audio_comments':
         return _commentsServiceKey;
       case 'notifications':
@@ -249,8 +235,6 @@ class SyncCoordinator implements SyncOrchestrator {
   /// 🔧 Get sync key for entity type
   String _getSyncKeyForEntity(String entityType) {
     switch (entityType) {
-      case 'audio_tracks':
-        return _tracksLastSyncKey;
       case 'audio_comments':
         return _commentsLastSyncKey;
       case 'notifications':
@@ -283,7 +267,6 @@ class SyncCoordinator implements SyncOrchestrator {
     );
 
     // Remove all sync key entries
-    await _prefs.remove(_tracksLastSyncKey);
     await _prefs.remove(_commentsLastSyncKey);
     await _prefs.remove(_notificationsLastSyncKey);
     await _prefs.remove(_trackVersionsLastSyncKey);
