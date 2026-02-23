@@ -514,18 +514,21 @@ class _DynamicFormState extends State<DynamicForm> {
       children: [
         Text(field.label, style: AppTextStyle.labelMedium),
         SizedBox(height: Dimensions.space8),
-        ...options.map((option) {
-          return RadioListTile<String>(
-            title: Text(option),
-            value: option,
-            groupValue: selectedValue,
-            onChanged: (value) {
-              setState(() {
-                _formData[field.key] = value;
-              });
-            },
-          );
-        }),
+        RadioGroup<String>(
+          groupValue: selectedValue,
+          onChanged: (value) {
+            setState(() => _formData[field.key] = value);
+          },
+          child: Column(
+            children:
+                options.map((option) {
+                  return RadioListTile<String>(
+                    title: Text(option),
+                    value: option,
+                  );
+                }).toList(),
+          ),
+        ),
       ],
     );
   }
