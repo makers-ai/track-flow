@@ -107,6 +107,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         try {
                           final triggerSync = context.read<TriggerUpstreamSyncUseCase>();
                           await triggerSync.call();
+                          if (!context.mounted) return;
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Sync triggered')),
                           );
