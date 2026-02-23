@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:trackflow/core/error/failures.dart';
-import 'package:trackflow/core/sync/domain/value_objects/Incremental_sync_result.dart';
+import 'package:trackflow/core/sync/domain/value_objects/incremental_sync_result.dart';
 
 /// Generic interface for incremental synchronization services
 ///
