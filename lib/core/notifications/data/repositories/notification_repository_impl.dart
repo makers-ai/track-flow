@@ -22,199 +22,189 @@ class NotificationRepositoryImpl implements NotificationRepository {
   final NotificationLocalDataSource _localDataSource;
   final NotificationRemoteDataSource _remoteDataSource;
   final NetworkStateManager _networkStateManager;
-  // Actor Methods (for performing actions)
+
+  // ============================================================
+  // WRITE METHODS (Online-First Optimistic + Rollback)
+  // ============================================================
 
   @override
   Future<Either<Failure, Notification>> createNotification(
     Notification notification,
   ) async {
-    try {
-      // Convert to DTO
-      final notificationDto = NotificationDto.fromDomain(notification);
+    final notificationDto = NotificationDto.fromDomain(notification);
 
-      // OFFLINE-FIRST: Save locally immediately
-      await _localDataSource.cacheNotification(notificationDto);
+    // 1. Optimistic: cache locally for immediate feedback
+    await _localDataSource.cacheNotification(notificationDto);
 
-      // Try to sync to remote if connected
-      try {
-        final isConnected = await _networkStateManager.isConnected;
-        if (isConnected) {
-          final remoteResult = await _remoteDataSource.createNotification(
-            notificationDto,
-          );
-          remoteResult.fold(
-            (failure) {
-              AppLogger.warning(
-                'Failed to sync notification to remote: ${failure.message}',
-                tag: 'NotificationRepository',
-              );
-              // Don't fail the operation - local save was successful
-            },
-            (_) {
-              AppLogger.info(
-                'Notification synced to remote successfully',
-                tag: 'NotificationRepository',
-              );
-            },
-          );
-        }
-      } catch (e) {
-        AppLogger.warning(
-          'Background sync failed, but local save was successful: $e',
-          tag: 'NotificationRepository',
-        );
-        // Don't fail the operation - local save was successful
-      }
+    // 2. Persist to remote (source of truth)
+    final remoteResult = await _remoteDataSource.createNotification(
+      notificationDto,
+    );
 
-      return Right(notification);
-    } catch (e) {
-      return Left(ServerFailure('Failed to create notification: $e'));
-    }
+    return remoteResult.fold(
+      (failure) {
+        // 3. Rollback: remove optimistic cache
+        _localDataSource.deleteNotification(notification.id.value);
+        return Left(failure);
+      },
+      (_) => Right(notification),
+    );
   }
 
-  Future<Either<Failure, Notification>> markNotificationAsRead(
+  @override
+  Future<Either<Failure, Notification>> markAsRead(
     NotificationId notificationId,
   ) async {
-    try {
-      // Get the notification
-      final notificationResult = await getNotificationById(notificationId);
+    // 1. Snapshot for rollback
+    final prevDto = await _localDataSource.getNotificationById(notificationId.value);
 
-      return notificationResult.fold((failure) => Left(failure), (
-        notification,
-      ) async {
-        if (notification == null) {
-          return Left(ServerFailure('Notification not found'));
-        }
-
-        // Mark as read using domain logic
-        final readNotification = notification.markAsRead();
-        final notificationDto = NotificationDto.fromDomain(readNotification);
-
-        // Update locally immediately
-        await _localDataSource.updateNotification(notificationDto);
-
-        // Try to sync to remote if connected
-        try {
-          final isConnected = await _networkStateManager.isConnected;
-          if (isConnected) {
-            final remoteResult = await _remoteDataSource.updateNotification(
-              notificationDto,
-            );
-            remoteResult.fold(
-              (failure) {
-                AppLogger.warning(
-                  'Failed to sync read notification to remote: ${failure.message}',
-                  tag: 'NotificationRepository',
-                );
-              },
-              (_) {
-                AppLogger.info(
-                  'Read notification synced to remote successfully',
-                  tag: 'NotificationRepository',
-                );
-              },
-            );
-          }
-        } catch (e) {
-          AppLogger.warning(
-            'Background sync failed, but local update was successful: $e',
-            tag: 'NotificationRepository',
-          );
-        }
-
-        return Right(readNotification);
-      });
-    } catch (e) {
-      return Left(ServerFailure('Failed to mark notification as read: $e'));
+    if (prevDto == null) {
+      return Left(ServerFailure('Notification not found'));
     }
+
+    final originalNotification = prevDto.toDomain();
+
+    // 2. Optimistic: mark as read locally
+    final readNotification = originalNotification.markAsRead();
+    final readDto = NotificationDto.fromDomain(readNotification);
+    await _localDataSource.updateNotification(readDto);
+
+    // 3. Persist to remote (source of truth)
+    final remoteResult = await _remoteDataSource.updateNotification(readDto);
+
+    return remoteResult.fold(
+      (failure) {
+        // 4. Rollback: restore original state
+        _localDataSource.updateNotification(prevDto);
+        return Left(failure);
+      },
+      (_) => Right(readNotification),
+    );
   }
 
-  Future<Either<Failure, Unit>> markAllNotificationsAsRead(
-    UserId userId,
+  @override
+  Future<Either<Failure, Notification>> markAsUnread(
+    NotificationId notificationId,
   ) async {
-    try {
-      // Update locally immediately
-      await _localDataSource.markAllNotificationsAsRead(userId.value);
+    // 1. Snapshot for rollback
+    final prevDto = await _localDataSource.getNotificationById(notificationId.value);
 
-      // Try to sync to remote if connected
-      try {
-        final isConnected = await _networkStateManager.isConnected;
-        if (isConnected) {
-          final remoteResult = await _remoteDataSource.markAllNotificationsAsRead(userId.value);
-          remoteResult.fold(
-            (failure) {
-              AppLogger.warning(
-                'Failed to sync mark all as read to remote: ${failure.message}',
-                tag: 'NotificationRepository',
-              );
-            },
-            (_) {
-              AppLogger.info(
-                'Mark all as read synced to remote successfully',
-                tag: 'NotificationRepository',
-              );
-            },
-          );
-        }
-      } catch (e) {
-        AppLogger.warning(
-          'Background sync failed, but local update was successful: $e',
-          tag: 'NotificationRepository',
-        );
-      }
-
-      return Right(unit);
-    } catch (e) {
-      return Left(
-        ServerFailure('Failed to mark all notifications as read: $e'),
-      );
+    if (prevDto == null) {
+      return Left(ServerFailure('Notification not found'));
     }
+
+    final originalNotification = prevDto.toDomain();
+
+    // 2. Optimistic: mark as unread locally
+    final unreadNotification = originalNotification.markAsUnread();
+    final unreadDto = NotificationDto.fromDomain(unreadNotification);
+    await _localDataSource.updateNotification(unreadDto);
+
+    // 3. Persist to remote (source of truth)
+    final remoteResult = await _remoteDataSource.updateNotification(unreadDto);
+
+    return remoteResult.fold(
+      (failure) {
+        // 4. Rollback: restore original state
+        _localDataSource.updateNotification(prevDto);
+        return Left(failure);
+      },
+      (_) => Right(unreadNotification),
+    );
+  }
+
+  @override
+  Future<Either<Failure, Unit>> markAllAsRead(UserId userId) async {
+    // 1. Snapshot: capture all unread notifications for rollback
+    final unreadDtos = await _localDataSource.getUnreadNotificationsForUser(userId.value);
+
+    if (unreadDtos.isEmpty) {
+      return const Right(unit);
+    }
+
+    // 2. Optimistic: mark all as read locally
+    await _localDataSource.markAllNotificationsAsRead(userId.value);
+
+    // 3. Persist to remote (source of truth)
+    final remoteResult = await _remoteDataSource.markAllNotificationsAsRead(userId.value);
+
+    return remoteResult.fold(
+      (failure) {
+        // 4. Rollback: restore all original DTOs (with isRead=false)
+        for (final dto in unreadDtos) {
+          _localDataSource.updateNotification(dto);
+        }
+        return Left(failure);
+      },
+      (_) => const Right(unit),
+    );
   }
 
   @override
   Future<Either<Failure, Unit>> deleteNotification(
     NotificationId notificationId,
   ) async {
-    try {
-      // Delete locally immediately
-      await _localDataSource.deleteNotification(notificationId.value);
+    // 1. Snapshot for rollback (CRITICAL: must read before delete)
+    final prevDto = await _localDataSource.getNotificationById(notificationId.value);
 
-      // Try to sync to remote if connected
-      try {
-        final isConnected = await _networkStateManager.isConnected;
-        if (isConnected) {
-          final remoteResult = await _remoteDataSource.deleteNotification(
-            notificationId.value,
-          );
-          remoteResult.fold(
-            (failure) {
-              AppLogger.warning(
-                'Failed to sync delete notification to remote: ${failure.message}',
-                tag: 'NotificationRepository',
-              );
-            },
-            (_) {
-              AppLogger.info(
-                'Delete notification synced to remote successfully',
-                tag: 'NotificationRepository',
-              );
-            },
-          );
+    // 2. Optimistic: delete locally
+    await _localDataSource.deleteNotification(notificationId.value);
+
+    // 3. Persist to remote (source of truth)
+    final remoteResult = await _remoteDataSource.deleteNotification(notificationId.value);
+
+    return remoteResult.fold(
+      (failure) {
+        // 4. Rollback: re-insert notification
+        if (prevDto != null) {
+          _localDataSource.cacheNotification(prevDto);
         }
-      } catch (e) {
-        AppLogger.warning(
-          'Background sync failed, but local delete was successful: $e',
-          tag: 'NotificationRepository',
-        );
-      }
-
-      return Right(unit);
-    } catch (e) {
-      return Left(ServerFailure('Failed to delete notification: $e'));
-    }
+        return Left(failure);
+      },
+      (_) => const Right(unit),
+    );
   }
 
-  // Watcher Methods (for observing data)
+  @override
+  Future<Either<Failure, Unit>> deleteAllNotifications(UserId userId) async {
+    // 1. Snapshot for rollback
+    final notifications = await _localDataSource.getNotificationsForUser(
+      userId.value,
+    );
+
+    if (notifications.isEmpty) {
+      return const Right(unit);
+    }
+
+    // 2. Optimistic: delete all locally
+    for (final notification in notifications) {
+      await _localDataSource.deleteNotification(notification.id);
+    }
+
+    // 3. Persist to remote (source of truth) - fail fast on first error
+    for (final notification in notifications) {
+      final remoteResult = await _remoteDataSource.deleteNotification(
+        notification.id,
+      );
+
+      if (remoteResult.isLeft()) {
+        // 4. Rollback: re-insert ALL notifications
+        for (final dto in notifications) {
+          await _localDataSource.cacheNotification(dto);
+        }
+        return remoteResult.fold(
+          (failure) => Left(failure),
+          (_) => const Right(unit),
+        );
+      }
+    }
+
+    return const Right(unit);
+  }
+
+  // ============================================================
+  // READ METHODS (unchanged - local streams + sync pull)
+  // ============================================================
 
   @override
   Future<Either<Failure, Notification?>> getNotificationById(
@@ -291,127 +281,6 @@ class NotificationRepositoryImpl implements NotificationRepository {
   }
 
   @override
-  Future<Either<Failure, Notification>> markAsRead(
-    NotificationId notificationId,
-  ) async {
-    return markNotificationAsRead(notificationId);
-  }
-
-  @override
-  Future<Either<Failure, Notification>> markAsUnread(
-    NotificationId notificationId,
-  ) async {
-    try {
-      // Get the notification
-      final notificationResult = await getNotificationById(notificationId);
-
-      return notificationResult.fold((failure) => Left(failure), (
-        notification,
-      ) async {
-        if (notification == null) {
-          return Left(ServerFailure('Notification not found'));
-        }
-
-        // Mark as unread using domain logic
-        final unreadNotification = notification.markAsUnread();
-        final notificationDto = NotificationDto.fromDomain(unreadNotification);
-
-        // Update locally immediately
-        await _localDataSource.updateNotification(notificationDto);
-
-        // Try to sync to remote if connected
-        try {
-          final isConnected = await _networkStateManager.isConnected;
-          if (isConnected) {
-            final remoteResult = await _remoteDataSource.updateNotification(
-              notificationDto,
-            );
-            remoteResult.fold(
-              (failure) {
-                AppLogger.warning(
-                  'Failed to sync unread notification to remote: ${failure.message}',
-                  tag: 'NotificationRepository',
-                );
-              },
-              (_) {
-                AppLogger.info(
-                  'Unread notification synced to remote successfully',
-                  tag: 'NotificationRepository',
-                );
-              },
-            );
-          }
-        } catch (e) {
-          AppLogger.warning(
-            'Background sync failed, but local update was successful: $e',
-            tag: 'NotificationRepository',
-          );
-        }
-
-        return Right(unreadNotification);
-      });
-    } catch (e) {
-      return Left(ServerFailure('Failed to mark notification as unread: $e'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, Unit>> markAllAsRead(UserId userId) async {
-    return markAllNotificationsAsRead(userId);
-  }
-
-  @override
-  Future<Either<Failure, Unit>> deleteAllNotifications(UserId userId) async {
-    try {
-      // Get all notifications for the user
-      final notifications = await _localDataSource.getNotificationsForUser(
-        userId.value,
-      );
-
-      // Delete all locally
-      for (final notification in notifications) {
-        await _localDataSource.deleteNotification(notification.id);
-      }
-
-      // Try to sync to remote if connected
-      try {
-        final isConnected = await _networkStateManager.isConnected;
-        if (isConnected) {
-          // Note: This is a simplified approach. In a real app, you might want to batch delete
-          for (final notification in notifications) {
-            final remoteResult = await _remoteDataSource.deleteNotification(
-              notification.id,
-            );
-            remoteResult.fold(
-              (failure) {
-                AppLogger.warning(
-                  'Failed to sync delete notification to remote: ${failure.message}',
-                  tag: 'NotificationRepository',
-                );
-              },
-              (_) {
-                AppLogger.info(
-                  'Delete notification synced to remote successfully',
-                  tag: 'NotificationRepository',
-                );
-              },
-            );
-          }
-        }
-      } catch (e) {
-        AppLogger.warning(
-          'Background sync failed, but local delete was successful: $e',
-          tag: 'NotificationRepository',
-        );
-      }
-
-      return Right(unit);
-    } catch (e) {
-      return Left(ServerFailure('Failed to delete all notifications: $e'));
-    }
-  }
-
-  @override
   Future<Either<Failure, int>> getTotalNotificationsCount(UserId userId) async {
     try {
       // Get all notifications for the user
@@ -426,7 +295,9 @@ class NotificationRepositoryImpl implements NotificationRepository {
     }
   }
 
-  // Helper Methods
+  // ============================================================
+  // SYNC METHODS (unchanged - pull from remote to local cache)
+  // ============================================================
 
   Future<Either<Failure, Notification?>> syncNotificationFromRemote(
     NotificationId notificationId,
