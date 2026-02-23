@@ -13,18 +13,15 @@ import 'package:trackflow/core/utils/app_logger.dart';
 
 @LazySingleton(as: NotificationRepository)
 class NotificationRepositoryImpl implements NotificationRepository {
+  NotificationRepositoryImpl(
+    this._localDataSource,
+    this._remoteDataSource,
+    this._networkStateManager,
+  );
+
   final NotificationLocalDataSource _localDataSource;
   final NotificationRemoteDataSource _remoteDataSource;
   final NetworkStateManager _networkStateManager;
-
-  NotificationRepositoryImpl({
-    required NotificationLocalDataSource localDataSource,
-    required NotificationRemoteDataSource remoteDataSource,
-    required NetworkStateManager networkStateManager,
-  }) : _localDataSource = localDataSource,
-       _remoteDataSource = remoteDataSource,
-       _networkStateManager = networkStateManager;
-
   // Actor Methods (for performing actions)
 
   @override
