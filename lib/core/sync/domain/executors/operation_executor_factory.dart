@@ -2,7 +2,6 @@ import 'package:injectable/injectable.dart';
 import 'package:trackflow/core/di/injection.dart';
 import 'package:trackflow/core/sync/domain/executors/operation_executor.dart';
 import 'package:trackflow/core/sync/domain/executors/track_version_operation_executor.dart';
-import 'package:trackflow/core/sync/domain/executors/audio_comment_operation_executor.dart';
 
 /// Factory for creating operation executors based on entity type
 ///
@@ -21,8 +20,6 @@ class OperationExecutorFactory {
     switch (entityType) {
       case 'track_version':
         return sl<TrackVersionOperationExecutor>();
-      case 'audio_comment' || 'audio_comment_by_version':
-        return sl<AudioCommentOperationExecutor>();
       default:
         throw UnsupportedError(
           'No executor found for entity type: $entityType',
@@ -33,7 +30,5 @@ class OperationExecutorFactory {
   /// Get all supported entity types
   List<String> get supportedEntityTypes => [
     'track_version',
-    'audio_comment',
-    'audio_comment_by_version',
   ];
 }

@@ -1,47 +1,275 @@
+import 'dart:async';
 import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
+import 'package:trackflow/core/audio/domain/audio_file_repository.dart';
 import 'package:trackflow/core/entities/unique_id.dart';
 import 'package:trackflow/core/error/failures.dart';
 import 'package:trackflow/core/infrastructure/domain/directory_service.dart';
-import 'package:trackflow/core/sync/domain/services/background_sync_coordinator.dart';
-import 'package:trackflow/core/sync/domain/services/pending_operations_manager.dart';
-import 'package:trackflow/core/sync/data/models/sync_operation_document.dart';
 import 'package:trackflow/core/utils/app_logger.dart';
-import 'package:trackflow/features/audio_comment/data/datasources/audio_comment_local_datasource.dart';
-import 'package:trackflow/features/track_version/domain/repositories/track_version_repository.dart';
 import 'package:trackflow/features/audio_cache/domain/repositories/audio_storage_repository.dart';
+import 'package:trackflow/features/audio_comment/data/datasources/audio_comment_local_datasource.dart';
+import 'package:trackflow/features/audio_comment/data/datasources/audio_comment_remote_datasource.dart';
+import 'package:trackflow/features/audio_comment/data/models/audio_comment_dto.dart';
 import 'package:trackflow/features/audio_comment/domain/entities/audio_comment.dart';
 import 'package:trackflow/features/audio_comment/domain/repositories/audio_comment_repository.dart';
-import 'package:trackflow/features/audio_comment/data/models/audio_comment_dto.dart';
+import 'package:trackflow/features/track_version/domain/repositories/track_version_repository.dart';
 
 @LazySingleton(as: AudioCommentRepository)
 class AudioCommentRepositoryImpl implements AudioCommentRepository {
-  final AudioCommentLocalDataSource _localDataSource;
-  final BackgroundSyncCoordinator _backgroundSyncCoordinator;
-  final PendingOperationsManager _pendingOperationsManager;
-  final TrackVersionRepository
-  _trackVersionRepository; // need to get all versions of the track and delete comments per version
-  final AudioStorageRepository _audioStorageRepository;
+  AudioCommentRepositoryImpl(
+    this._localDataSource,
+    this._remoteDataSource,
+    this._audioFileRepository,
+    this._audioStorageRepository,
+    this._trackVersionRepository,
+  );
 
-  AudioCommentRepositoryImpl({
-    required AudioCommentLocalDataSource localDataSource,
-    required BackgroundSyncCoordinator backgroundSyncCoordinator,
-    required PendingOperationsManager pendingOperationsManager,
-    required TrackVersionRepository trackVersionRepository,
-    required AudioStorageRepository audioStorageRepository,
-  }) : _localDataSource = localDataSource,
-       _backgroundSyncCoordinator = backgroundSyncCoordinator,
-       _pendingOperationsManager = pendingOperationsManager,
-       _trackVersionRepository = trackVersionRepository,
-       _audioStorageRepository = audioStorageRepository;
+  final AudioCommentLocalDataSource _localDataSource;
+  final AudioCommentRemoteDataSource _remoteDataSource;
+  final AudioFileRepository _audioFileRepository;
+  final AudioStorageRepository _audioStorageRepository;
+  final TrackVersionRepository _trackVersionRepository;
+
+  // ============================================================
+  // WRITE METHODS (Online-First Optimistic + Rollback)
+  // ============================================================
+
+  @override
+  Future<Either<Failure, Unit>> addComment(AudioComment comment) async {
+    final dto = AudioCommentDTO.fromDomain(comment);
+
+    // 1. Optimistic: cache locally for immediate UI feedback
+    await _localDataSource.cacheComment(dto);
+
+    // 2. Handle audio file: local cache + Firebase Storage upload
+    String? audioStorageUrl;
+    String? cachedAudioPath;
+
+    if (comment.commentType != CommentType.text && comment.localAudioPath != null) {
+      // Store audio in permanent local cache
+      final trackId = AudioTrackId.fromUniqueString(comment.projectId.value);
+      final versionId = TrackVersionId.fromUniqueString(comment.id.value);
+
+      final audioFile = File(comment.localAudioPath!);
+      final cacheResult = await _audioStorageRepository.storeAudio(
+        trackId,
+        versionId,
+        audioFile,
+        directoryType: DirectoryType.audioComments,
+      );
+
+      cachedAudioPath = cacheResult.fold(
+        (failure) {
+          AppLogger.error(
+            'Failed to cache audio recording: ${failure.message}',
+            tag: 'AudioCommentRepositoryImpl',
+          );
+          return null;
+        },
+        (cachedAudio) => cachedAudio.filePath,
+      );
+
+      // Upload to Firebase Storage
+      if (cachedAudioPath != null) {
+        final storagePath = 'audio_comments/${trackId.value}/${versionId.value}/${comment.id.value}.m4a';
+
+        final uploadResult = await _audioFileRepository.uploadAudioFile(
+          audioFile: File(cachedAudioPath),
+          storagePath: storagePath,
+          metadata: {
+            'trackId': trackId.value,
+            'versionId': versionId.value,
+            'commentId': comment.id.value,
+            'type': 'audio_comment',
+          },
+        );
+
+        final uploadedUrl = uploadResult.fold(
+          (failure) => null,
+          (url) => url,
+        );
+
+        if (uploadedUrl == null) {
+          // Upload failed — rollback local cache
+          await _localDataSource.deleteCachedComment(comment.id.value);
+          return Left(ServerFailure('Failed to upload audio file'));
+        }
+
+        audioStorageUrl = uploadedUrl;
+      }
+    }
+
+    // 3. Build final DTO with audio URLs
+    final finalDto = dto.copyWith(
+      audioStorageUrl: audioStorageUrl,
+      localAudioPath: cachedAudioPath,
+    );
+
+    // 4. Persist to remote (source of truth)
+    final remoteResult = await _remoteDataSource.addComment(finalDto);
+
+    return remoteResult.fold(
+      (failure) {
+        // 5. Rollback: remove from local cache
+        _localDataSource.deleteCachedComment(comment.id.value);
+        return Left(failure);
+      },
+      (_) {
+        // 6. Success: update local cache with final DTO (contains audioStorageUrl + localAudioPath)
+        _localDataSource.cacheComment(finalDto);
+        return const Right(unit);
+      },
+    );
+  }
+
+  @override
+  Future<Either<Failure, Unit>> deleteComment(AudioCommentId commentId) async {
+    // 1. Snapshot for rollback
+    final prevResult = await _localDataSource.getCommentById(commentId.value);
+    final prevDto = prevResult.fold((_) => null, (dto) => dto);
+
+    if (prevDto == null) {
+      return Left(DatabaseFailure('Comment not found in local cache'));
+    }
+
+    // 2. Optimistic: delete locally
+    await _localDataSource.deleteCachedComment(commentId.value);
+
+    // 3. Persist to remote (soft delete)
+    final remoteResult = await _remoteDataSource.deleteComment(
+      commentId.value,
+    );
+
+    return remoteResult.fold(
+      (failure) {
+        // 4. Rollback: re-insert previous DTO
+        _localDataSource.cacheComment(prevDto);
+        return Left(failure);
+      },
+      (_) {
+        // 5. Fire-and-forget: clean up audio file from Storage
+        if (prevDto.audioStorageUrl != null && prevDto.audioStorageUrl!.isNotEmpty) {
+          unawaited(
+            _deleteAudioFromStorage(prevDto.audioStorageUrl!),
+          );
+        }
+        return const Right(unit);
+      },
+    );
+  }
+
+  @override
+  Future<Either<Failure, Unit>> deleteCommentsByVersion(TrackVersionId versionId) async {
+    // 1. Snapshot for rollback
+    final snapshotResult = await _localDataSource.getCachedCommentsByVersion(versionId.value);
+
+    final snapshotDtos = snapshotResult.fold((_) => <AudioCommentDTO>[], (l) => l);
+
+    // 2. Optimistic: delete all locally
+    await _localDataSource.deleteByVersion(versionId.value);
+
+    // 3. Persist to remote (batch soft delete)
+    final remoteResult = await _remoteDataSource.deleteByVersionId(versionId.value);
+
+    return remoteResult.fold(
+      (failure) {
+        // 4. Rollback: re-insert all saved DTOs
+        for (final dto in snapshotDtos) {
+          _localDataSource.cacheComment(dto);
+        }
+        return Left(failure);
+      },
+      (_) {
+        // 5. Fire-and-forget: clean up audio files from Storage
+        for (final dto in snapshotDtos) {
+          if (dto.audioStorageUrl != null && dto.audioStorageUrl!.isNotEmpty) {
+            unawaited(_deleteAudioFromStorage(dto.audioStorageUrl!));
+          }
+        }
+        return const Right(unit);
+      },
+    );
+  }
+
+  @override
+  Future<Either<Failure, Unit>> deleteByTrackId(AudioTrackId trackId) async {
+    // 1. Get all versions for this track
+    final versionsEither = await _trackVersionRepository.getVersionsByTrack(trackId);
+
+    if (versionsEither.isLeft()) return versionsEither.map((_) => unit);
+
+    final versions = versionsEither.getOrElse(() => []);
+
+    if (versions.isEmpty) return const Right(unit);
+
+    // 2. Snapshot ALL versions' comments for batch rollback
+    final allSnapshots = <String, List<AudioCommentDTO>>{};
+
+    for (final v in versions) {
+      final snapshotResult = await _localDataSource.getCachedCommentsByVersion(
+        v.id.value,
+      );
+      allSnapshots[v.id.value] = snapshotResult.fold(
+        (_) => <AudioCommentDTO>[],
+        (l) => l,
+      );
+    }
+
+    // 3. Optimistic: delete all locally
+    for (final v in versions) {
+      await _localDataSource.deleteByVersion(v.id.value);
+    }
+
+    // 4. Persist to remote — fail fast on first error
+    for (final v in versions) {
+      final remoteResult = await _remoteDataSource.deleteByVersionId(
+        v.id.value,
+      );
+
+      if (remoteResult.isLeft()) {
+        // 5. Rollback ALL versions (restore all snapshots)
+        for (final entry in allSnapshots.entries) {
+          for (final dto in entry.value) {
+            await _localDataSource.cacheComment(dto);
+          }
+        }
+        return remoteResult;
+      }
+    }
+
+    // 6. Fire-and-forget: clean up audio files from Storage
+    for (final entry in allSnapshots.entries) {
+      for (final dto in entry.value) {
+        if (dto.audioStorageUrl != null && dto.audioStorageUrl!.isNotEmpty) {
+          unawaited(_deleteAudioFromStorage(dto.audioStorageUrl!));
+        }
+      }
+    }
+
+    return const Right(unit);
+  }
+
+  @override
+  Future<Either<Failure, Unit>> deleteAllComments() async {
+    try {
+      await _localDataSource.deleteAllComments();
+      return const Right(unit);
+    } catch (e) {
+      return Left(DatabaseFailure('Failed to delete all comments: $e'));
+    }
+  }
+
+  // ============================================================
+  // READ METHODS (Local streams + Background Revalidation)
+  // ============================================================
 
   @override
   Future<Either<Failure, AudioComment>> getCommentById(
     AudioCommentId commentId,
   ) async {
     try {
-      // 1. ALWAYS try local cache first
       final result = await _localDataSource.getCommentById(commentId.value);
 
       final localComment = result.fold(
@@ -49,14 +277,9 @@ class AudioCommentRepositoryImpl implements AudioCommentRepository {
         (dto) => dto?.toDomain(),
       );
 
-      // 2. If found locally, return it and trigger background refresh
       if (localComment != null) {
-        // No sync in get methods - just return local data
-
         return Right(localComment);
       }
-
-      // 3. Not found locally - return not found (no sync in get methods)
 
       return Left(DatabaseFailure('Audio comment not found in local cache'));
     } catch (e) {
@@ -66,57 +289,11 @@ class AudioCommentRepositoryImpl implements AudioCommentRepository {
     }
   }
 
-  // Need to get all versions of the track and delete comments per version
-  @override
-  Future<Either<Failure, Unit>> deleteByTrackId(AudioTrackId trackId) async {
-    try {
-      final versionsEither = await _trackVersionRepository.getVersionsByTrack(
-        trackId,
-      );
-      if (versionsEither.isLeft()) return versionsEither.map((_) => unit);
-      final versions = versionsEither.getOrElse(() => []);
-
-      // Delete comments per version (local + queue for sync)
-      for (final v in versions) {
-        // 1. Delete locally first
-        try {
-          await _localDataSource.deleteByVersion(v.id.value);
-        } catch (e) {
-          AppLogger.warning(
-            'Failed to delete local comments for version ${v.id.value}: $e',
-            tag: 'AudioCommentRepositoryImpl',
-          );
-        }
-
-        // 2. Queue bulk delete operation for sync
-        try {
-          await _pendingOperationsManager.addDeleteOperation(
-            entityType: 'audio_comment_by_version',
-            entityId: v.id.value,
-            priority: SyncPriority.high,
-          );
-        } catch (e) {
-          AppLogger.warning(
-            'Failed to queue delete operation for version ${v.id.value}: $e',
-            tag: 'AudioCommentRepositoryImpl',
-          );
-        }
-      }
-
-      // Trigger background sync
-      unawaited(_backgroundSyncCoordinator.pushUpstream());
-
-      return const Right(unit);
-    } catch (e) {
-      return Left(DatabaseFailure('Failed to delete comments by track: $e'));
-    }
-  }
-
   @override
   Stream<Either<Failure, List<AudioComment>>> watchCommentsByTrack(
     AudioTrackId trackId,
   ) {
-    // Deprecated in favor of version-scoped watcher. Return empty stream for now.
+    // Deprecated in favor of version-scoped watcher. Return empty stream.
     return Stream.value(const Right(<AudioComment>[]));
   }
 
@@ -125,7 +302,9 @@ class AudioCommentRepositoryImpl implements AudioCommentRepository {
     TrackVersionId versionId,
   ) {
     try {
-      // NO sync in watch methods - just return local data stream
+      // Trigger background revalidation (fire-and-forget)
+      unawaited(_revalidateCommentsByVersion(versionId.value));
+
       return _localDataSource.watchCommentsByVersion(versionId.value).map((
         localResult,
       ) {
@@ -172,205 +351,33 @@ class AudioCommentRepositoryImpl implements AudioCommentRepository {
     }
   }
 
-  @override
-  Future<Either<Failure, Unit>> addComment(AudioComment comment) async {
+  // ============================================================
+  // Background Revalidation
+  // ============================================================
+
+  Future<void> _deleteAudioFromStorage(String storageUrl) async {
     try {
-      final dto = AudioCommentDTO.fromDomain(comment);
-
-      // 1. ALWAYS save locally first (ignore minor cache errors)
-      await _localDataSource.cacheComment(dto);
-
-      // 2. If audio comment, store recording in permanent cache
-      String? cachedAudioPath;
-      if (comment.commentType != CommentType.text &&
-          comment.commentType != CommentType.hybrid &&
-          comment.localAudioPath != null) {
-        // Use projectId as trackId, commentId as versionId for cache hierarchy
-        final trackId = AudioTrackId.fromUniqueString(comment.projectId.value);
-        final versionId = TrackVersionId.fromUniqueString(comment.id.value);
-
-        // Store audio directly using AudioStorageRepository
-        final audioFile = File(comment.localAudioPath!);
-        final cacheResult = await _audioStorageRepository.storeAudio(
-          trackId,
-          versionId,
-          audioFile,
-          directoryType: DirectoryType.audioComments,
-        );
-
-        cachedAudioPath = await cacheResult.fold(
-          (failure) {
-            AppLogger.error(
-              'Failed to cache audio recording: ${failure.message}',
-              tag: 'AudioCommentRepositoryImpl',
-            );
-            // Don't fail the whole operation, just log the error
-            return null;
-          },
-          (cachedAudio) => cachedAudio.filePath,
-        );
-
-        // Update DTO with cache path if successful
-        if (cachedAudioPath != null) {
-          final updatedDto = dto.copyWith(localAudioPath: cachedAudioPath);
-          await _localDataSource.cacheComment(updatedDto);
-        }
-      }
-
-      // 3. Try to queue for background sync
-      final queueResult = await _pendingOperationsManager.addCreateOperation(
-        entityType: 'audio_comment',
-        entityId: comment.id.value,
-        data: {
-          'trackId': comment.versionId.value,
-          'projectId': comment.projectId.value,
-          'createdBy': comment.createdBy.value,
-          'content': comment.content,
-          'timestamp': comment.timestamp.inMilliseconds,
-          'createdAt': comment.createdAt.toIso8601String(),
-          // Audio fields for sync
-          'localAudioPath': cachedAudioPath,
-          'audioDurationMs': comment.audioDuration?.inMilliseconds,
-          'commentType': comment.commentType.toString().split('.').last,
-        },
-        priority: SyncPriority.high,
-      );
-
-      // 4. Handle queue failure
-      if (queueResult.isLeft()) {
-        final failure = queueResult.fold((l) => l, (r) => null);
-        return Left(
-          DatabaseFailure(
-            'Failed to queue sync operation: ${failure?.message}',
-          ),
-        );
-      }
-
-      unawaited(_backgroundSyncCoordinator.pushUpstream());
-
-      // 5. Return success only after successful queue
-      return const Right(unit);
-    } catch (e) {
-      return Left(DatabaseFailure('Critical storage error: ${e.toString()}'));
+      await _audioFileRepository.deleteAudioFile(storageUrl: storageUrl);
+    } catch (_) {
+      // Audio file cleanup is best-effort; orphaned files can be
+      // handled by storage lifecycle rules.
     }
   }
 
-  @override
-  Future<Either<Failure, Unit>> deleteComment(AudioCommentId commentId) async {
+  Future<void> _revalidateCommentsByVersion(String versionId) async {
     try {
-      // 1. Get comment data to extract audioStorageUrl for later deletion
-      String? audioStorageUrl;
-      String? trackId;
-      String? versionId;
-
-      final commentResult = await _localDataSource.getCommentById(commentId.value);
-      await commentResult.fold(
-        (failure) {
-          AppLogger.warning(
-            'Could not fetch comment for deletion metadata: ${failure.message}',
-            tag: 'AudioCommentRepositoryImpl',
-          );
-        },
-        (dto) {
-          if (dto != null) {
-            audioStorageUrl = dto.audioStorageUrl;
-            trackId = dto.trackId;
-            versionId = dto.trackId; // Note: Using trackId as versionId based on existing pattern
-          }
-        },
+      final remoteComments = await _remoteDataSource.getCommentsByVersionId(
+        versionId,
       );
-
-      // 2. ALWAYS soft delete locally first
-      await _localDataSource.deleteCachedComment(commentId.value);
-
-      // 3. Try to queue for background sync with audio metadata
-      final queueResult = await _pendingOperationsManager.addDeleteOperation(
-        entityType: 'audio_comment',
-        entityId: commentId.value,
-        priority: SyncPriority.high,
-        data: {
-          if (audioStorageUrl != null) 'audioStorageUrl': audioStorageUrl,
-          if (trackId != null) 'trackId': trackId,
-          if (versionId != null) 'versionId': versionId,
-        },
+      await _localDataSource.replaceCommentsForVersion(
+        versionId,
+        remoteComments,
       );
-
-      // 4. Handle queue failure
-      if (queueResult.isLeft()) {
-        final failure = queueResult.fold((l) => l, (r) => null);
-        return Left(
-          DatabaseFailure(
-            'Failed to queue sync operation: ${failure?.message}',
-          ),
-        );
-      }
-
-      unawaited(_backgroundSyncCoordinator.pushUpstream());
-
-      // 5. Return success only after successful queue
-      return const Right(unit);
     } catch (e) {
-      return Left(DatabaseFailure('Critical storage error: ${e.toString()}'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, Unit>> deleteAllComments() async {
-    try {
-      await _localDataSource.deleteAllComments();
-      return const Right(unit);
-    } catch (e) {
-      return Left(DatabaseFailure('Failed to delete all comments: $e'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, Unit>> deleteCommentsByVersion(
-    TrackVersionId versionId,
-  ) async {
-    try {
-      // 1. Delete local comments first
-      try {
-        await _localDataSource.deleteByVersion(versionId.value);
-      } catch (e) {
-        AppLogger.warning(
-          'Failed to delete local comments for version ${versionId.value}: $e',
-          tag: 'AudioCommentRepositoryImpl',
-        );
-      }
-
-      // 2. Queue bulk delete operation for sync
-      final queueResult = await _pendingOperationsManager.addDeleteOperation(
-        entityType: 'audio_comment_by_version',
-        entityId: versionId.value,
-        priority: SyncPriority.high,
-      );
-
-      if (queueResult.isLeft()) {
-        final failure = queueResult.fold((l) => l, (r) => null);
-        AppLogger.warning(
-          'Failed to queue delete operation: ${failure?.message}',
-          tag: 'AudioCommentRepositoryImpl',
-        );
-      }
-
-      // 3. Trigger background sync
-      unawaited(_backgroundSyncCoordinator.pushUpstream());
-
-      return const Right(unit);
-    } catch (e) {
-      return Left(DatabaseFailure('Failed to delete comments by version: $e'));
-    }
-  }
-
-  // Helper method for fire-and-forget background operations
-  void unawaited(Future future) {
-    future.catchError((error) {
-      // Log error but don't propagate - this is background operation
       AppLogger.warning(
-        'Background sync trigger failed: $error',
+        'Background comment revalidation failed for version $versionId: $e',
         tag: 'AudioCommentRepositoryImpl',
       );
-    });
+    }
   }
 }

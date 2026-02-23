@@ -27,25 +27,34 @@ void main() {
       );
     });
 
+    test('should throw UnsupportedError for audio_comment entity type', () {
+      expect(
+        () => factory.getExecutor('audio_comment'),
+        throwsA(isA<UnsupportedError>()),
+      );
+    });
+
+    test('should throw UnsupportedError for audio_comment_by_version entity type', () {
+      expect(
+        () => factory.getExecutor('audio_comment_by_version'),
+        throwsA(isA<UnsupportedError>()),
+      );
+    });
+
     test('should have correct supported entity types', () {
       final supportedTypes = factory.supportedEntityTypes;
 
-      expect(
-        supportedTypes,
-        containsAll([
-          'track_version',
-          'audio_comment',
-          'audio_comment_by_version',
-        ]),
-      );
-      expect(supportedTypes.length, equals(3));
+      expect(supportedTypes, containsAll(['track_version']));
+      expect(supportedTypes.length, equals(1));
     });
 
-    test('should not include project or audio_track in supported entity types', () {
+    test('should not include project, audio_track, or audio_comment in supported entity types', () {
       final supportedTypes = factory.supportedEntityTypes;
 
       expect(supportedTypes, isNot(contains('project')));
       expect(supportedTypes, isNot(contains('audio_track')));
+      expect(supportedTypes, isNot(contains('audio_comment')));
+      expect(supportedTypes, isNot(contains('audio_comment_by_version')));
     });
   });
 }
