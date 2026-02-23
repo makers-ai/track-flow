@@ -35,7 +35,7 @@ class AudioCommentControls extends StatelessWidget {
       if (state is TrackVersionsLoaded && versionId != null) {
         if (state.versions.isNotEmpty) {
           final v = state.versions.firstWhere(
-            (vv) => vv.id == versionId,
+            (vv) => vv.id == versionId?.value,
             orElse: () => state.versions.first,
           );
           if (v.durationMs != null) {
