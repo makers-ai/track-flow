@@ -5,14 +5,6 @@ import 'package:trackflow/core/error/failures.dart';
 import 'package:trackflow/features/track_version/domain/entities/track_version.dart';
 
 abstract class TrackVersionRepository {
-  Future<Either<Failure, TrackVersion>> addVersion({
-    required AudioTrackId trackId,
-    required File file,
-    String? label,
-    Duration? duration,
-    required UserId createdBy,
-  });
-
   /// Adds a new version directly to Firebase (online-first approach).
   /// Uploads file to Firebase Storage first, then saves metadata to Firestore,
   /// and finally caches locally. Returns the created version with remote URL populated.

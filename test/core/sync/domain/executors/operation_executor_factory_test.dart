@@ -20,6 +20,13 @@ void main() {
       expect(() => factory.getExecutor(''), throwsA(isA<UnsupportedError>()));
     });
 
+    test('should throw UnsupportedError for track_version entity type', () {
+      expect(
+        () => factory.getExecutor('track_version'),
+        throwsA(isA<UnsupportedError>()),
+      );
+    });
+
     test('should throw UnsupportedError for audio_track entity type', () {
       expect(
         () => factory.getExecutor('audio_track'),
@@ -41,20 +48,21 @@ void main() {
       );
     });
 
-    test('should have correct supported entity types', () {
+    test('should have empty supported entity types', () {
       final supportedTypes = factory.supportedEntityTypes;
 
-      expect(supportedTypes, containsAll(['track_version']));
-      expect(supportedTypes.length, equals(1));
+      expect(supportedTypes, isEmpty);
+      expect(supportedTypes.length, equals(0));
     });
 
-    test('should not include project, audio_track, or audio_comment in supported entity types', () {
+    test('should not include any entity types in supported list', () {
       final supportedTypes = factory.supportedEntityTypes;
 
       expect(supportedTypes, isNot(contains('project')));
       expect(supportedTypes, isNot(contains('audio_track')));
       expect(supportedTypes, isNot(contains('audio_comment')));
       expect(supportedTypes, isNot(contains('audio_comment_by_version')));
+      expect(supportedTypes, isNot(contains('track_version')));
     });
   });
 }

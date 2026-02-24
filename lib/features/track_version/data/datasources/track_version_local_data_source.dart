@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:isar/isar.dart';
@@ -9,13 +8,6 @@ import 'package:trackflow/features/track_version/data/models/track_version_dto.d
 import 'package:trackflow/features/track_version/data/models/track_version_document.dart';
 
 abstract class TrackVersionLocalDataSource {
-  Future<Either<Failure, TrackVersionDTO>> addVersion({
-    required AudioTrackId trackId,
-    required File file,
-    String? label,
-    Duration? duration,
-  });
-
   Stream<Either<Failure, List<TrackVersionDTO>>> watchVersionsByTrack(
     AudioTrackId trackId,
   );
@@ -57,44 +49,6 @@ class IsarTrackVersionLocalDataSource implements TrackVersionLocalDataSource {
   final Isar _isar;
 
   IsarTrackVersionLocalDataSource(this._isar);
-
-  @override
-  Future<Either<Failure, TrackVersionDTO>> addVersion({
-    required AudioTrackId trackId,
-    required File file,
-    String? label,
-    Duration? duration,
-  }) async {
-    try {
-      // Get existing versions for this track to calculate version number
-      final existingVersions =
-          await _isar.trackVersionDocuments.filter().trackIdEqualTo(trackId.value).sortByVersionNumberDesc().findAll();
-
-      final nextVersionNumber = existingVersions.isNotEmpty ? existingVersions.first.versionNumber + 1 : 1;
-
-      final dto = TrackVersionDTO(
-        id: TrackVersionId().value,
-        trackId: trackId.value,
-        versionNumber: nextVersionNumber,
-        label: label,
-        fileLocalPath: file.path,
-        fileRemoteUrl: null,
-        durationMs: duration?.inMilliseconds,
-        status: 'processing',
-        createdAt: DateTime.now(),
-        createdBy: UserId().value,
-      );
-
-      final document = TrackVersionDocument.forUpload(dto);
-      await _isar.writeTxn(() async {
-        await _isar.trackVersionDocuments.put(document);
-      });
-
-      return Right(dto);
-    } catch (e) {
-      return Left(CacheFailure('Failed to add version: $e'));
-    }
-  }
 
   @override
   Stream<Either<Failure, List<TrackVersionDTO>>> watchVersionsByTrack(
