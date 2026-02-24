@@ -302,9 +302,6 @@ class AudioCommentRepositoryImpl implements AudioCommentRepository {
     TrackVersionId versionId,
   ) {
     try {
-      // Trigger background revalidation (fire-and-forget)
-      unawaited(_revalidateCommentsByVersion(versionId.value));
-
       return _localDataSource.watchCommentsByVersion(versionId.value).map((
         localResult,
       ) {
@@ -352,7 +349,7 @@ class AudioCommentRepositoryImpl implements AudioCommentRepository {
   }
 
   // ============================================================
-  // Background Revalidation
+  // Private Helpers
   // ============================================================
 
   Future<void> _deleteAudioFromStorage(String storageUrl) async {
@@ -361,23 +358,6 @@ class AudioCommentRepositoryImpl implements AudioCommentRepository {
     } catch (_) {
       // Audio file cleanup is best-effort; orphaned files can be
       // handled by storage lifecycle rules.
-    }
-  }
-
-  Future<void> _revalidateCommentsByVersion(String versionId) async {
-    try {
-      final remoteComments = await _remoteDataSource.getCommentsByVersionId(
-        versionId,
-      );
-      await _localDataSource.replaceCommentsForVersion(
-        versionId,
-        remoteComments,
-      );
-    } catch (e) {
-      AppLogger.warning(
-        'Background comment revalidation failed for version $versionId: $e',
-        tag: 'AudioCommentRepositoryImpl',
-      );
     }
   }
 }

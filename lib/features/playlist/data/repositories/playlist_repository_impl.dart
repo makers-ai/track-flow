@@ -2,7 +2,6 @@ import 'package:injectable/injectable.dart';
 import 'package:trackflow/core/entities/unique_id.dart';
 import 'package:dartz/dartz.dart';
 import 'package:trackflow/core/error/failures.dart';
-import 'package:trackflow/core/utils/app_logger.dart';
 
 import '../../domain/entities/playlist.dart';
 import '../../domain/repositories/playlist_repository.dart';
@@ -47,11 +46,8 @@ class PlaylistRepositoryImpl implements PlaylistRepository {
   @override
   Future<Either<Failure, List<Playlist>>> getAllPlaylists(String userId) async {
     try {
-      // 1. Return local cache immediately
+      // Return local cache
       final localResult = await _localDataSource.getAllPlaylists();
-
-      // 2. Fire-and-forget remote revalidation
-      _revalidatePlaylistsFromRemote(userId);
 
       return localResult.fold(
         (failure) => Left(failure),
@@ -65,11 +61,8 @@ class PlaylistRepositoryImpl implements PlaylistRepository {
   @override
   Future<Either<Failure, Playlist?>> getPlaylistById(PlaylistId id) async {
     try {
-      // 1. Return local cache first
+      // Return local cache
       final localResult = await _localDataSource.getPlaylistById(id.value);
-
-      // 2. Fire-and-forget remote revalidation
-      _revalidatePlaylistByIdFromRemote(id.value);
 
       return localResult.fold(
         (failure) => Left(failure),
@@ -138,51 +131,4 @@ class PlaylistRepositoryImpl implements PlaylistRepository {
     }
   }
 
-  void _revalidatePlaylistsFromRemote(String userId) {
-    _remoteDataSource
-        .getAllPlaylists(userId)
-        .then((result) {
-          result.fold(
-            (failure) => AppLogger.warning(
-              'Remote revalidation failed: ${failure.message}',
-              tag: 'PlaylistRepositoryImpl',
-            ),
-            (remoteDtos) async {
-              for (final dto in remoteDtos) {
-                await _localDataSource.addPlaylist(dto);
-              }
-            },
-          );
-        })
-        .catchError((e) {
-          AppLogger.warning(
-            'Remote revalidation error: $e',
-            tag: 'PlaylistRepositoryImpl',
-          );
-        });
-  }
-
-  void _revalidatePlaylistByIdFromRemote(String id) {
-    _remoteDataSource
-        .getPlaylistById(id)
-        .then((result) {
-          result.fold(
-            (failure) => AppLogger.warning(
-              'Remote revalidation failed for playlist $id: ${failure.message}',
-              tag: 'PlaylistRepositoryImpl',
-            ),
-            (remoteDto) async {
-              if (remoteDto != null) {
-                await _localDataSource.addPlaylist(remoteDto);
-              }
-            },
-          );
-        })
-        .catchError((e) {
-          AppLogger.warning(
-            'Remote revalidation error for playlist $id: $e',
-            tag: 'PlaylistRepositoryImpl',
-          );
-        });
-  }
 }

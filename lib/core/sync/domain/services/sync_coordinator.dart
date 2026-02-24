@@ -4,11 +4,17 @@ import 'package:trackflow/core/utils/app_logger.dart';
 import 'package:trackflow/core/sync/domain/services/incremental_sync_service.dart';
 import 'package:trackflow/core/di/injection.dart';
 import 'package:trackflow/features/notifications/data/services/notification_incremental_sync_service.dart';
+import 'package:trackflow/features/projects/data/models/project_dto.dart';
+import 'package:trackflow/features/audio_track/data/models/audio_track_dto.dart';
+import 'package:trackflow/features/audio_comment/data/models/audio_comment_dto.dart';
+import 'package:trackflow/features/user_profile/data/models/user_profile_dto.dart';
+import 'package:trackflow/features/user_profile/data/services/user_profile_collaborator_incremental_sync_service.dart';
 import 'package:trackflow/features/track_version/data/models/track_version_dto.dart';
+import 'package:trackflow/features/waveform/data/services/waveform_incremental_sync_service.dart';
 
 /// Interface for sync orchestration operations
 abstract class SyncOrchestrator {
-  /// Pull only critical data for app startup (projects)
+  /// Pull only critical data for app startup (user_profile, projects, collaborators)
   Future<void> pullStartupData(String userId);
 
   /// Pull all data (full downstream sync)
@@ -36,12 +42,24 @@ class SyncCoordinator implements SyncOrchestrator {
   final SharedPreferences _prefs;
 
   // Keys for SharedPreferences and service registry
+  static const String _projectsLastSyncKey = 'projects_last_sync';
+  static const String _tracksLastSyncKey = 'tracks_last_sync';
+  static const String _commentsLastSyncKey = 'comments_last_sync';
+  static const String _userProfileLastSyncKey = 'user_profile_last_sync';
+  static const String _collaboratorsLastSyncKey = 'collaborators_last_sync';
   static const String _notificationsLastSyncKey = 'notifications_last_sync';
   static const String _trackVersionsLastSyncKey = 'track_versions_last_sync';
+  static const String _waveformsLastSyncKey = 'waveforms_last_sync';
 
   // Service registry keys
+  static const String _projectsServiceKey = 'projects';
+  static const String _tracksServiceKey = 'audio_tracks';
+  static const String _commentsServiceKey = 'audio_comments';
+  static const String _userProfileServiceKey = 'user_profile';
+  static const String _collaboratorsServiceKey = 'collaborators';
   static const String _notificationsServiceKey = 'notifications';
   static const String _trackVersionsServiceKey = 'track_versions';
+  static const String _waveformsServiceKey = 'waveforms';
 
   SyncCoordinator(this._prefs);
 
@@ -50,8 +68,35 @@ class SyncCoordinator implements SyncOrchestrator {
   Future<void> pullStartupData(String userId) async {
     AppLogger.sync(
       'COORDINATOR',
-      'Startup sync for user: $userId (no critical entities to sync)',
+      'Starting startup sync for user: $userId',
     );
+
+    // Only sync the most critical data for startup
+    await _syncEntityByKey(
+      _userProfileServiceKey,
+      _userProfileLastSyncKey,
+      'user_profile',
+      userId,
+      isFullSync: true,
+    );
+
+    await _syncEntityByKey(
+      _projectsServiceKey,
+      _projectsLastSyncKey,
+      'projects',
+      userId,
+      isFullSync: false,
+    );
+
+    await _syncEntityByKey(
+      _collaboratorsServiceKey,
+      _collaboratorsLastSyncKey,
+      'collaborators',
+      userId,
+      isFullSync: false,
+    );
+
+    AppLogger.sync('COORDINATOR', 'Startup sync completed for user: $userId');
   }
 
   /// 🚀 Pull all data (full downstream sync)
@@ -64,6 +109,36 @@ class SyncCoordinator implements SyncOrchestrator {
 
     // Sync all entities
     await _syncEntityByKey(
+      _projectsServiceKey,
+      _projectsLastSyncKey,
+      'projects',
+      userId,
+    );
+    await _syncEntityByKey(
+      _tracksServiceKey,
+      _tracksLastSyncKey,
+      'audio_tracks',
+      userId,
+    );
+    await _syncEntityByKey(
+      _commentsServiceKey,
+      _commentsLastSyncKey,
+      'audio_comments',
+      userId,
+    );
+    await _syncEntityByKey(
+      _userProfileServiceKey,
+      _userProfileLastSyncKey,
+      'user_profile',
+      userId,
+    );
+    await _syncEntityByKey(
+      _collaboratorsServiceKey,
+      _collaboratorsLastSyncKey,
+      'collaborators',
+      userId,
+    );
+    await _syncEntityByKey(
       _notificationsServiceKey,
       _notificationsLastSyncKey,
       'notifications',
@@ -73,6 +148,12 @@ class SyncCoordinator implements SyncOrchestrator {
       _trackVersionsServiceKey,
       _trackVersionsLastSyncKey,
       'track_versions',
+      userId,
+    );
+    await _syncEntityByKey(
+      _waveformsServiceKey,
+      _waveformsLastSyncKey,
+      'waveforms',
       userId,
     );
 
@@ -115,13 +196,18 @@ class SyncCoordinator implements SyncOrchestrator {
   /// Get sync statistics for monitoring
   @override
   Future<Map<String, dynamic>> getSyncStatistics(String userId) async {
-    // Implementation would go here to collect sync stats from all services
     return {
       'userId': userId,
       'timestamp': DateTime.now().toIso8601String(),
       'services': [
+        _projectsServiceKey,
+        _tracksServiceKey,
+        _commentsServiceKey,
+        _userProfileServiceKey,
+        _collaboratorsServiceKey,
         _notificationsServiceKey,
         _trackVersionsServiceKey,
+        _waveformsServiceKey,
       ],
     };
   }
@@ -130,10 +216,23 @@ class SyncCoordinator implements SyncOrchestrator {
   IncrementalSyncService<dynamic>? _getServiceByKey(String serviceKey) {
     try {
       switch (serviceKey) {
+        case _projectsServiceKey:
+          return sl<IncrementalSyncService<ProjectDTO>>();
+        case _tracksServiceKey:
+          return sl<IncrementalSyncService<AudioTrackDTO>>();
+        case _commentsServiceKey:
+          return sl<IncrementalSyncService<AudioCommentDTO>>();
+        case _userProfileServiceKey:
+          return sl<IncrementalSyncService<UserProfileDTO>>();
+        case _collaboratorsServiceKey:
+          // Special case: registered as concrete class, not interface
+          return sl<UserProfileCollaboratorIncrementalSyncService>();
         case _notificationsServiceKey:
           return sl<NotificationIncrementalSyncService>();
         case _trackVersionsServiceKey:
           return sl<IncrementalSyncService<TrackVersionDTO>>();
+        case _waveformsServiceKey:
+          return sl<WaveformIncrementalSyncService>();
         default:
           return null;
       }
@@ -209,10 +308,22 @@ class SyncCoordinator implements SyncOrchestrator {
   /// 🔧 Get service key for entity type
   String? _getServiceKeyForEntity(String entityType) {
     switch (entityType) {
+      case 'projects':
+        return _projectsServiceKey;
+      case 'audio_tracks':
+        return _tracksServiceKey;
+      case 'audio_comments':
+        return _commentsServiceKey;
+      case 'user_profile':
+        return _userProfileServiceKey;
+      case 'collaborators':
+        return _collaboratorsServiceKey;
       case 'notifications':
         return _notificationsServiceKey;
       case 'track_versions':
         return _trackVersionsServiceKey;
+      case 'waveforms':
+        return _waveformsServiceKey;
       default:
         return null;
     }
@@ -221,10 +332,22 @@ class SyncCoordinator implements SyncOrchestrator {
   /// 🔧 Get sync key for entity type
   String _getSyncKeyForEntity(String entityType) {
     switch (entityType) {
+      case 'projects':
+        return _projectsLastSyncKey;
+      case 'audio_tracks':
+        return _tracksLastSyncKey;
+      case 'audio_comments':
+        return _commentsLastSyncKey;
+      case 'user_profile':
+        return _userProfileLastSyncKey;
+      case 'collaborators':
+        return _collaboratorsLastSyncKey;
       case 'notifications':
         return _notificationsLastSyncKey;
       case 'track_versions':
         return _trackVersionsLastSyncKey;
+      case 'waveforms':
+        return _waveformsLastSyncKey;
       default:
         throw ArgumentError('Unknown entity type: $entityType');
     }
@@ -251,8 +374,14 @@ class SyncCoordinator implements SyncOrchestrator {
     );
 
     // Remove all sync key entries
+    await _prefs.remove(_projectsLastSyncKey);
+    await _prefs.remove(_tracksLastSyncKey);
+    await _prefs.remove(_commentsLastSyncKey);
+    await _prefs.remove(_userProfileLastSyncKey);
+    await _prefs.remove(_collaboratorsLastSyncKey);
     await _prefs.remove(_notificationsLastSyncKey);
     await _prefs.remove(_trackVersionsLastSyncKey);
+    await _prefs.remove(_waveformsLastSyncKey);
 
     AppLogger.info('All sync keys cleared successfully', tag: 'COORDINATOR');
   }

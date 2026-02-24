@@ -1,8 +1,6 @@
-import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:trackflow/core/error/failures.dart';
-import 'package:trackflow/core/utils/app_logger.dart';
 import 'package:trackflow/features/projects/data/datasources/project_local_data_source.dart';
 import 'package:trackflow/features/projects/data/datasources/project_remote_data_source.dart';
 import 'package:trackflow/features/projects/data/models/project_dto.dart';
@@ -104,8 +102,6 @@ class ProjectsRepositoryImpl implements ProjectsRepository {
     final localDto = localResult.fold((_) => null, (dto) => dto);
 
     if (localDto != null && !localDto.isDeleted) {
-      // 2. Return local immediately + trigger background revalidation
-      unawaited(_revalidateProject(projectId.value));
       return Right(localDto.toDomain());
     }
 
@@ -126,10 +122,7 @@ class ProjectsRepositoryImpl implements ProjectsRepository {
 
   @override
   Stream<Either<Failure, List<Project>>> watchLocalProjects(UserId ownerId) {
-    // Trigger background revalidation (fire-and-forget)
-    unawaited(_revalidateProjects(ownerId.value));
-
-    // Return local stream - auto-emits when cache is updated by revalidation
+    // Return local stream - sync coordinator handles data population
     return _localDataSource
         .watchAllProjects(ownerId.value)
         .map((either) {
@@ -144,9 +137,6 @@ class ProjectsRepositoryImpl implements ProjectsRepository {
 
   @override
   Stream<Either<Failure, Project?>> watchProjectById(ProjectId projectId) {
-    // Trigger background revalidation (fire-and-forget)
-    unawaited(_revalidateProject(projectId.value));
-
     return _localDataSource
         .watchProjectById(projectId.value)
         .map((either) => either.map((dto) => dto?.toDomain()))
@@ -167,55 +157,4 @@ class ProjectsRepositoryImpl implements ProjectsRepository {
     }
   }
 
-  // ---------------------------------------------------------------------------
-  // Background revalidation (stale-while-revalidate)
-  // ---------------------------------------------------------------------------
-
-  /// Revalidates all projects for a user from remote.
-  /// Updates local cache with fresh data. Isar watches auto-emit on changes.
-  Future<void> _revalidateProjects(String userId) async {
-    try {
-      final remoteResult = await _remoteDataSource.getUserProjects(userId);
-
-      await remoteResult.fold(
-        (_) async {}, // Silently fail - local data still shown
-        (remoteDtos) async {
-          for (final dto in remoteDtos) {
-            if (dto.isDeleted) {
-              await _localDataSource.removeCachedProject(dto.id);
-            } else {
-              await _localDataSource.cacheProject(dto);
-            }
-          }
-        },
-      );
-    } catch (e) {
-      AppLogger.warning(
-        'Background project revalidation failed: $e',
-        tag: 'ProjectsRepositoryImpl',
-      );
-    }
-  }
-
-  /// Revalidates a single project from remote.
-  Future<void> _revalidateProject(String projectId) async {
-    try {
-      final remoteResult = await _remoteDataSource.getProjectById(projectId);
-      await remoteResult.fold(
-        (_) async {}, // Silently fail
-        (dto) async {
-          if (dto.isDeleted) {
-            await _localDataSource.removeCachedProject(dto.id);
-          } else {
-            await _localDataSource.cacheProject(dto);
-          }
-        },
-      );
-    } catch (e) {
-      AppLogger.warning(
-        'Background project revalidation failed: $e',
-        tag: 'ProjectsRepositoryImpl',
-      );
-    }
-  }
 }

@@ -1,10 +1,7 @@
-import 'dart:async';
-
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:trackflow/core/entities/unique_id.dart';
 import 'package:trackflow/core/error/failures.dart';
-import 'package:trackflow/core/utils/app_logger.dart';
 import 'package:trackflow/features/audio_track/data/datasources/audio_track_local_datasource.dart';
 import 'package:trackflow/features/audio_track/data/datasources/audio_track_remote_datasource.dart';
 import 'package:trackflow/features/audio_track/data/models/audio_track_dto.dart';
@@ -196,15 +193,12 @@ class AudioTrackRepositoryImpl implements AudioTrackRepository {
   }
 
   // ---------------------------------------------------------------------------
-  // watchTracksByProject — Stream + Background Revalidation
+  // watchTracksByProject — Stream (sync coordinator handles population)
   // ---------------------------------------------------------------------------
   @override
   Stream<Either<Failure, List<AudioTrack>>> watchTracksByProject(
     ProjectId projectId,
   ) {
-    // Trigger background revalidation (fire-and-forget)
-    unawaited(_revalidateTracksByProject(projectId.value));
-
     return _localDataSource.watchTracksByProject(projectId.value).map((
       localResult,
     ) {
@@ -260,38 +254,4 @@ class AudioTrackRepositoryImpl implements AudioTrackRepository {
     }
   }
 
-  // ---------------------------------------------------------------------------
-  // Background Revalidation
-  // ---------------------------------------------------------------------------
-
-  /// Revalidates tracks for a project from remote.
-  /// Fetches fresh data and reconciles with local cache.
-  Future<void> _revalidateTracksByProject(String projectId) async {
-    try {
-      final remoteTracks = await _remoteDataSource.getTracksByProjectIds([projectId]);
-
-      final remoteIds = <String>{};
-
-      // Update/add remote tracks to local cache
-      for (final dto in remoteTracks) {
-        remoteIds.add(dto.id.value);
-        await _localDataSource.cacheTrack(dto);
-      }
-
-      // Reconcile: remove local tracks not present in remote
-      // (they were deleted remotely)
-      final localResult = await _localDataSource.getAllTracks();
-      final localTracks = localResult.fold((_) => <AudioTrackDTO>[], (l) => l);
-      for (final localTrack in localTracks) {
-        if (localTrack.projectId.value == projectId && !remoteIds.contains(localTrack.id.value)) {
-          await _localDataSource.deleteTrack(localTrack.id.value);
-        }
-      }
-    } catch (e) {
-      AppLogger.warning(
-        'Background track revalidation failed: $e',
-        tag: 'AudioTrackRepositoryImpl',
-      );
-    }
-  }
 }

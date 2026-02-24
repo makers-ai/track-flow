@@ -2,7 +2,6 @@ import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:trackflow/core/entities/unique_id.dart';
 import 'package:trackflow/core/error/failures.dart';
-import 'package:trackflow/core/utils/app_logger.dart';
 import 'package:trackflow/core/utils/image_utils.dart';
 import 'package:trackflow/features/user_profile/data/datasources/user_profile_local_datasource.dart';
 import 'package:trackflow/features/user_profile/data/datasources/user_profile_remote_datasource.dart';
@@ -26,8 +25,6 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
       final localDto = await _localDataSource.watchUserProfile(userId.value).first;
 
       if (localDto != null) {
-        // Fire-and-forget remote revalidation
-        _revalidateProfileFromRemote(userId.value);
         return Right(localDto.toDomain());
       }
 
@@ -185,25 +182,4 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
     }
   }
 
-  void _revalidateProfileFromRemote(String userId) {
-    _remoteDataSource
-        .getProfileById(userId)
-        .then((result) {
-          result.fold(
-            (failure) => AppLogger.warning(
-              'Remote revalidation failed: ${failure.message}',
-              tag: 'UserProfileRepository',
-            ),
-            (remoteDto) async {
-              await _localDataSource.cacheUserProfile(remoteDto);
-            },
-          );
-        })
-        .catchError((e) {
-          AppLogger.warning(
-            'Remote revalidation error: $e',
-            tag: 'UserProfileRepository',
-          );
-        });
-  }
 }
